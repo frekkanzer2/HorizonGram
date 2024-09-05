@@ -1,4 +1,5 @@
 const axios = require('axios');
+const errorFiles = require('../utils/error-files');
 const FormData = require('form-data'); // Importa FormData
 require('dotenv').config();
 
@@ -17,12 +18,10 @@ exports.upload = async (req, res) => {
         // Crea una nuova istanza di FormData
         const form = new FormData();
         form.append('chat_id', process.env.ARCHIVE_CHATID);
-        form.append('document', file.buffer, file.originalname); // Aggiungi il file come buffer
+        form.append('document', file.buffer, file.originalname);
         form.append('caption', file.originalname);
+        const headers = form.getHeaders();
 
-        const headers = form.getHeaders(); // Ottieni gli header per il multipart/form-data
-
-        // Invia la richiesta POST con axios e FormData
         const telegramResponse = await axios.post(fileUploadEndpoint, form, { headers });
 
         res.status(200).json({
@@ -30,17 +29,7 @@ exports.upload = async (req, res) => {
             telegramData: telegramResponse.data,
         });
     } catch (error) {
-        console.error(`File not uploaded, received error: ${error}`);
-        if (error.response) {
-            console.log('Status:', error.response.status); // Status code
-            console.log('Headers:', error.response.headers); // Headers della risposta
-            console.log('Data:', error.response.data); // Dati della risposta
-        } else if (error.request) {
-            console.log('Request data:', error.request);
-        } else {
-            console.log('Errore:', error.message);
-        }
-        console.log('Config:', error.config); // Configurazione della richiesta
+        errorFiles.PrintUploadError(error);
         res.status(500).json({ message: 'Error sending file to Telegram' });
     }
 };
