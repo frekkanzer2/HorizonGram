@@ -1,1 +1,1 @@
-exports.MAX_CHUNK_SIZE = 50 * 1024 * 1023;
+exports.MAX_CHUNK_SIZE = 20 * 1024 * 1023;
