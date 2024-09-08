@@ -9,6 +9,13 @@ let routes = {
 // Middleware per parsing JSON
 app.use(express.json());
 
+// CORS Policies
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*'); // Permetti tutte le origini
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+});
+
 // Collegare le rotte al server
 app.use('/api/status', routes.status);
 app.use('/api/file', routes.files);
