@@ -7,6 +7,8 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // Definizione delle rotte
+router.delete('/', controller.deleteFile);
 router.post('/upload', upload.single('file'), controller.upload);
+router.post('/download', controller.download);
 
 module.exports = router;

@@ -1,46 +1,144 @@
+const CONST = require('../utils/const');
+const ChunkData = require('../dtos/ChunkData'); 
+const errorFiles = require('../utils/error-files');
+const chunkManagement = require('../utils/chunks-management')
+const sizes = require('../utils/sizes')
 const axios = require('axios');
-const FormData = require('form-data'); // Importa FormData
 require('dotenv').config();
 
 exports.upload = async (req, res) => {
     // Controlla se il file è stato caricato
-    if (!req.file) {
-        return res.status(400).json({ message: 'No file uploaded' });
+    if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
+    if (!req.body.folder) return res.status(400).json({ message: 'No folder specified' });
+    const file = req.file;
+    const folder = req.body.folder;
+    if (file.originalname.includes("-$") || file.originalname.includes("xDOTx"))
+        return res.status(400).json({ message: 'File name not valid' });
+    file.originalname = file.originalname.replace('.', 'xDOTx');
+
+    
+    if ((await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}.json`)).data == null) {
+        res.status(400).json({
+            message: 'Folder does not exists',
+        });
+        return;
+    }
+    if ((await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}/${file.originalname}.json`)).data != null) {
+        res.status(400).json({
+            message: 'File already exists',
+        });
+        return;
     }
 
-    const file = req.file;
-    const fileUploadEndpoint = `https://api.telegram.org/bot${process.env.BOT_TOKEN}/sendDocument`;
+    console.log(`The following file will be uploaded: \"${file.originalname}\" | ${sizes.bytesToSize(file.size)}`);
 
-    console.log(`Received file \"${file.originalname}\" with dimension of ${file.size} bytes`);
+    const databaseResponse = await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}.json`);
+    const topic = databaseResponse.data.id;
 
     try {
-        // Crea una nuova istanza di FormData
-        const form = new FormData();
-        form.append('chat_id', process.env.ARCHIVE_CHATID);
-        form.append('document', file.buffer, file.originalname); // Aggiungi il file come buffer
-        form.append('caption', file.originalname);
-
-        const headers = form.getHeaders(); // Ottieni gli header per il multipart/form-data
-
-        // Invia la richiesta POST con axios e FormData
-        const telegramResponse = await axios.post(fileUploadEndpoint, form, { headers });
-
-        res.status(200).json({
-            message: 'File successfully uploaded and sent to Telegram',
-            telegramData: telegramResponse.data,
-        });
-    } catch (error) {
-        console.error(`File not uploaded, received error: ${error}`);
-        if (error.response) {
-            console.log('Status:', error.response.status); // Status code
-            console.log('Headers:', error.response.headers); // Headers della risposta
-            console.log('Data:', error.response.data); // Dati della risposta
-        } else if (error.request) {
-            console.log('Request data:', error.request);
-        } else {
-            console.log('Errore:', error.message);
+        if (file.size <= CONST.MAX_CHUNK_SIZE){
+            await axios.patch(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}.json`, {
+                [file.originalname]: 1
+            });
+            await chunkManagement.send(new ChunkData(file.originalname, file.buffer), topic, folder);
+        } 
+        else {
+            let chunks = chunkManagement.split(file.buffer, file.originalname, file.size);
+            console.log(`File splitted in ${chunks.length} chunks`)
+            await axios.patch(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}.json`, {
+                [file.originalname]: chunks.length
+            });
+            for (let i = 0; i < chunks.length; i++) {
+                await chunkManagement.send(chunks[i], topic, folder);
+            }
         }
-        console.log('Config:', error.config); // Configurazione della richiesta
+    } catch (error) {
+        errorFiles.PrintUploadError(error);
         res.status(500).json({ message: 'Error sending file to Telegram' });
     }
+    res.status(200).json({
+        message: 'File successfully uploaded and sent to Telegram'
+    });
+};
+
+exports.deleteFile = async (req, res) => {
+    if (!req.body.folder) return res.status(400).json({ message: 'No folder specified' });
+    if (!req.body.filename) return res.status(400).json({ message: 'No file name specified' });
+    let folder = req.body.folder;
+    let filename = req.body.filename;
+    if (filename.includes("-$") || filename.includes("xDOTx"))
+        return res.status(400).json({ message: 'File name not valid' });
+    filename = filename.replace('.', 'xDOTx');
+    if ((await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}/${filename}.json`)).data == null) {
+        res.status(400).json({
+            message: 'Folder or file does not exists',
+        });
+        return;
+    }
+    let filedataRes = (await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`)).data;
+    const idsToDelete = filedataRes.slice(1).map(item => item.msgid);
+    for (let i=1; i < filedataRes.length; i++)
+        axios.delete(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}/${i}.json`);
+    axios.delete(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}/${filename}.json`);
+    await axios.post(`https://api.telegram.org/bot${process.env.BOT_TOKEN}/deleteMessages`, {
+        chat_id: process.env.ARCHIVE_CHATID,
+        message_ids: idsToDelete
+    });
+    
+    console.log(`File ${filename} deleted`);
+    res.status(200).json({
+        message: 'File successfully deleted'
+    });
+}
+
+exports.download = async (req, res) => {
+    if (!req.body.folder) return res.status(400).json({ message: 'No folder specified' });
+    if (!req.body.filename) return res.status(400).json({ message: 'No file name specified' });
+    const folder = req.body.folder;
+    let filename = req.body.filename;
+    if (filename.includes("-$") || filename.includes("xDOTx"))
+        return res.status(400).json({ message: 'File name not valid' });
+    filename = filename.replace('.', 'xDOTx');
+    
+    let chunksNumber = (await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}/${filename}.json`)).data;
+    if (chunksNumber == null) {
+        res.status(400).json({
+            message: 'Folder or file does not exists',
+        });
+        return;
+    }
+
+    console.log(`The following file will be downloaded in ${chunksNumber} chunks: \"${filename}\"`);
+
+    const chunksToDownload = (await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`)).data;
+    let fileBufferArray = [];
+
+    if (chunksNumber != chunksToDownload.length - 1) {
+        res.status(400).json({
+            message: 'File corrupted'
+        });
+        return;
+    }
+
+    for (let i = 1; i <= chunksNumber; i++) {
+        const chunkName = `${filename}-$[${i}]`;
+        const fileId = chunksToDownload[i].fileid;
+        console.log(`Downloading chunk ${chunkName} with file ID: ${fileId}`);
+        let chunkBuffer = await chunkManagement.fetch(fileId);
+        fileBufferArray.push(chunkBuffer);
+    }
+
+    const completeFileBuffer = Buffer.concat(fileBufferArray);
+    filename = filename.replace('xDOTx', '.');
+
+    console.log(`Chunks merge done`);
+
+    // Imposta l'header per il download del file
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.setHeader('Content-Type', 'application/octet-stream');
+
+    // Invia il file al client
+    res.send(completeFileBuffer);
+
+    console.log(`File ${filename} sent to client`);
 };
