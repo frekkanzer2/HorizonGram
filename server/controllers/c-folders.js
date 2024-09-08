@@ -1,7 +1,5 @@
 require('dotenv').config();
-const idManager = require('../utils/numeric-encryption');
 const axios = require('axios');
-const errorFiles = require('../utils/error-files');
 
 exports.createTopic = async (req, res) => {
     const body = req.body;
@@ -38,3 +36,11 @@ exports.createTopic = async (req, res) => {
 
     res.status(200).json(telegramResponse);
 };
+
+exports.getFileList = async (req, res) => {
+    let databaseResponse = await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names.json`);
+    for (const key in databaseResponse.data) if (databaseResponse.data[key].hasOwnProperty('xDOTx')) delete databaseResponse.data[key]['xDOTx'];
+    res.status(200).json({
+        data: databaseResponse.data
+    });
+}

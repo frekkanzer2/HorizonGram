@@ -61,14 +61,6 @@ exports.upload = async (req, res) => {
     });
 };
 
-exports.getFileList = async (req, res) => {
-    let databaseResponse = await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names.json`);
-    for (const key in databaseResponse.data) if (databaseResponse.data[key].hasOwnProperty('xDOTx')) delete databaseResponse.data[key]['xDOTx'];
-    res.status(200).json({
-        data: databaseResponse.data
-    });
-}
-
 exports.deleteFile = async (req, res) => {
     if (!req.body.folder) return res.status(400).json({ message: 'No folder specified' });
     if (!req.body.filename) return res.status(400).json({ message: 'No file name specified' });

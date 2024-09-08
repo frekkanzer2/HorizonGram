@@ -10,9 +10,9 @@ let routes = {
 app.use(express.json());
 
 // Collegare le rotte al server
-app.use('', routes.status);
-app.use('/api', routes.files);
-app.use('/api', routes.folders);
+app.use('/api/status', routes.status);
+app.use('/api/file', routes.files);
+app.use('/api/folder', routes.folders);
 
 const PORT = 3000;
 app.listen(PORT, () => {

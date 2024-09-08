@@ -3,6 +3,6 @@ const router = express.Router();
 const controller = require('../controllers/c-status');
 
 // Definizione delle rotte
-router.get('/status', controller.getStatus);
+router.get('/', controller.getStatus);
 
 module.exports = router;
