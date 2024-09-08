@@ -3,12 +3,14 @@ const router = express.Router();
 const multer = require('multer');
 const controller = require('../controllers/c-files');
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const direct_api_upload_settings = multer({
+  limits: { fileSize: 1073741824 },
+  storage: multer.memoryStorage() 
+});
 
 // Definizione delle rotte
 router.delete('/', controller.deleteFile);
-router.post('/upload', upload.single('file'), controller.upload);
+router.post('/upload', direct_api_upload_settings.single('file'), controller.upload);
 router.post('/download', controller.download);
 
 module.exports = router;
