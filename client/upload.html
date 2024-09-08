@@ -37,7 +37,7 @@
 			.status-error {
 				color: rgb(255, 105, 105);
 			}
-    </style>
+    	</style>
 	</head>
 	<body class="is-preload">
 
@@ -55,10 +55,11 @@
 						<div class="container">
 
 							<header>
-								<h2 class="alt">Insert the new folder name
-								<div><input id="folder-name"  type="text" name="fname" placeholder="Insert here" /></div>
+								<h2 class="alt">Choose the file to upload
+								<div><input id="file-picker" type="file" /></div>
+								<div><input id="folder-name"  type="text" name="fname" placeholder="Destination folder" /></div>
 								<div id="status-message"></div>
-								<input id="create-folder" type="button" value="Submit" />
+								<input id="upload-button" type="button" value="Submit" />
 							</header>
 
 						</div>
@@ -67,7 +68,10 @@
 			</div>
 
 			<!-- Loading Overlay and Status Message -->
-			<div id="loading-overlay">Loading. Do not close this page.</div>
+			<div id="loading-overlay">
+				<span id="loading-message">Loading. Do not close this page.</span>
+			</div>
+			
 
 		<!-- Scripts -->
 		<script src="assets/js/jquery.min.js"></script>
@@ -79,7 +83,7 @@
 		<script src="assets/js/main.js"></script>
 		<!-- Custom scripts -->
 		<script src="assets/scripts/header.js"></script>
-		<script src="assets/scripts/create_folder.js"></script>
+		<script src="assets/scripts/upload.js"></script>
 
 	</body>
 </html>

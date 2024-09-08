@@ -1,25 +1,21 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
+
 let routes = {
     status: require('./routes/r-status'),
     files: require('./routes/r-files'),
-    folders: require('./routes/r-folders')
+    folders: require('./routes/r-folders'),
+    chunks: require('./routes/r-chunks')
 };
 
-// Middleware per parsing JSON
+app.use(cors());
 app.use(express.json());
 
-// CORS Policies
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*'); // Permetti tutte le origini
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    next();
-});
-
-// Collegare le rotte al server
 app.use('/api/status', routes.status);
 app.use('/api/file', routes.files);
 app.use('/api/folder', routes.folders);
+app.use('/api/chunks', routes.chunks);
 
 const PORT = 3000;
 app.listen(PORT, () => {
