@@ -4,6 +4,12 @@ const ChunkData = require('../dtos/ChunkData');
 const FormData = require('form-data');
 const axios = require('axios');
 
+exports.fetch = async (chunkFileId) => {
+    let filePath = (await axios.get(`https://api.telegram.org/bot${process.env.BOT_TOKEN}/getFile?file_id=${chunkFileId}`)).data.result.file_path;
+    const fileResponse = await axios.get(`https://api.telegram.org/file/bot${process.env.BOT_TOKEN}/${filePath}`, { responseType: 'arraybuffer' });
+    return fileResponse.data;
+}
+
 /// INPUT
 // - chunkData type of ChunkData
 /// OUTPUT

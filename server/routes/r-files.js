@@ -10,5 +10,6 @@ const upload = multer({ storage: storage });
 router.get('/file', controller.getFileList);
 router.delete('/file', controller.deleteFile);
 router.post('/upload', upload.single('file'), controller.upload);
+router.post('/download', controller.download);
 
 module.exports = router;
