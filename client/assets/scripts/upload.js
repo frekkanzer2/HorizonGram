@@ -12,8 +12,8 @@ document.addEventListener("DOMContentLoaded", function() {
         return;
     }
 
-    function updateLoadingMessage(percent) {
-        loadingMessage.textContent = `Loading status: ${percent}%`;
+    function updateLoadingMessage(chunk, totalChunks) {
+        loadingMessage.textContent = `Loading status: ${chunk}/${totalChunks} chunks`;
     }
 
     function uploadChunk(file, chunk, index, folderName) {
@@ -36,6 +36,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function checkFile(file, folderName) {
+        loadingMessage.textContent = `Do not close this window! Preparing upload.`;
         return fetch('http://localhost:3000/api/chunks/upload/checks', {
             method: 'POST',
             headers: {
@@ -105,12 +106,12 @@ document.addEventListener("DOMContentLoaded", function() {
                     const start = (currentChunkIndex - 1) * CHUNK_SIZE;
                     const end = Math.min(start + CHUNK_SIZE, file.size);
                     const chunk = file.slice(start, end);
+                    updateLoadingMessage(currentChunkIndex, totalChunks); // Update progress
 
                     uploadChunk(file, chunk, currentChunkIndex, folderName)
                         .then(() => {
                             currentChunkIndex++;
-                            const progress = Math.round(((currentChunkIndex - 1) / totalChunks) * 100); // Calculate progress
-                            updateLoadingMessage(progress); // Update progress
+                            updateLoadingMessage(currentChunkIndex, totalChunks); // Update progress
                             uploadNextChunk();
                         })
                         .catch(error => {
