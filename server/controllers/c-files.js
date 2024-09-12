@@ -149,7 +149,7 @@ exports.download = async (req, res) => {
         if (fs.existsSync(dirPath)) {
             fs.rmdirSync(dirPath, { recursive: true });
         }
-        return res.status(200).json({ message: "ok" });
+        return res.status(200).json({ downloadPath: completeFilePath });
     } catch (error) {
         console.error('Errore durante il download del file:', error);
         if (fs.existsSync(dirPath)) {

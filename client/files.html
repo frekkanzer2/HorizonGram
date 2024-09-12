@@ -32,11 +32,13 @@
 				margin-top: 10px;
 				font-size: 0.5em;
 			}
-			.status-success {
+			.status-success-bg {
 				color: rgb(96, 255, 96);
-			}
-			.status-error {
-				color: rgb(255, 105, 105);
+				background-color: #41484c;
+				font-weight: bold;
+				padding-left: 12px;
+				padding-top: 8px;
+				padding-bottom: 8px;
 			}
     </style>
 	</head>
@@ -63,7 +65,10 @@
 			</div>
 
 			<!-- Loading Overlay and Status Message -->
-			<div id="loading-overlay">Loading. Do not close this page.</div>
+			<div id="loading-overlay">
+				<span id="loading-message">Downloading. Do not close this page.</span>
+				<span id="loading-sub-message">Check server console to see the progress.</span>
+			</div>
 
 		<!-- Scripts -->
 		<script src="assets/js/jquery.min.js"></script>
