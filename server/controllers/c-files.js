@@ -142,3 +142,20 @@ exports.download = async (req, res) => {
 
     console.log(`File ${filename} sent to client`);
 };
+
+exports.downloadList = async (req, res) => {
+    if (!req.body.folder) return res.status(400).json({ message: 'No folder specified' });
+    if (!req.body.filename) return res.status(400).json({ message: 'No file name specified' });
+    const folder = req.body.folder;
+    let filename = req.body.filename;
+    if (filename.includes("-$") || filename.includes("xDOTx"))
+        return res.status(400).json({ message: 'File name not valid' });
+    filename = filename.replace('.', 'xDOTx');
+
+    let chunksToDownload = (await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`)).data;
+    chunksToDownload.shift();
+
+    chunksToDownload = chunksToDownload.map(chunk => chunk.fileid);
+    
+    return res.status(200).json({ data: chunksToDownload });
+};
