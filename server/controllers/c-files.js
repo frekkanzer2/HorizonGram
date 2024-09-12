@@ -3,7 +3,9 @@ const ChunkData = require('../dtos/ChunkData');
 const errorFiles = require('../utils/error-files');
 const chunkManagement = require('../utils/chunks-management')
 const sizes = require('../utils/sizes')
+const path = require('path');
 const axios = require('axios');
+const fs = require('fs');
 require('dotenv').config();
 
 exports.upload = async (req, res) => {
@@ -91,58 +93,6 @@ exports.deleteFile = async (req, res) => {
     });
 }
 
-exports.download = async (req, res) => {
-    if (!req.body.folder) return res.status(400).json({ message: 'No folder specified' });
-    if (!req.body.filename) return res.status(400).json({ message: 'No file name specified' });
-    const folder = req.body.folder;
-    let filename = req.body.filename;
-    if (filename.includes("-$") || filename.includes("xDOTx"))
-        return res.status(400).json({ message: 'File name not valid' });
-    filename = filename.replace('.', 'xDOTx');
-    
-    let chunksNumber = (await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}/${filename}.json`)).data;
-    if (chunksNumber == null) {
-        res.status(400).json({
-            message: 'Folder or file does not exists',
-        });
-        return;
-    }
-
-    console.log(`The following file will be downloaded in ${chunksNumber} chunks: \"${filename}\"`);
-
-    const chunksToDownload = (await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`)).data;
-    let fileBufferArray = [];
-
-    if (chunksNumber != chunksToDownload.length - 1) {
-        res.status(400).json({
-            message: 'File corrupted'
-        });
-        return;
-    }
-
-    for (let i = 1; i <= chunksNumber; i++) {
-        const chunkName = `${filename}-$[${i}]`;
-        const fileId = chunksToDownload[i].fileid;
-        console.log(`Downloading chunk ${chunkName} with file ID: ${fileId}`);
-        let chunkBuffer = await chunkManagement.fetch(fileId);
-        fileBufferArray.push(chunkBuffer);
-    }
-
-    const completeFileBuffer = Buffer.concat(fileBufferArray);
-    filename = filename.replace('xDOTx', '.');
-
-    console.log(`Chunks merge done`);
-
-    // Imposta l'header per il download del file
-    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-    res.setHeader('Content-Type', 'application/octet-stream');
-
-    // Invia il file al client
-    res.send(completeFileBuffer);
-
-    console.log(`File ${filename} sent to client`);
-};
-
 exports.downloadList = async (req, res) => {
     if (!req.body.folder) return res.status(400).json({ message: 'No folder specified' });
     if (!req.body.filename) return res.status(400).json({ message: 'No file name specified' });
@@ -179,5 +129,71 @@ exports.downloadChunk = async (req, res) => {
     } catch (error) {
         console.error('Errore durante il download del chunk:', error);
         res.status(500).json({ message: 'Errore durante il download del chunk' });
+    }
+};
+
+exports.download = async (req, res) => {
+    if (!req.body.folder) return res.status(400).json({ message: 'No folder specified' });
+    if (!req.body.filename) return res.status(400).json({ message: 'No file name specified' });
+    const folder = req.body.folder;
+    let filename = req.body.filename;
+
+    if (filename.includes("-$") || filename.includes("xDOTx"))
+        return res.status(400).json({ message: 'File name not valid' });
+
+    filename = filename.replace('.', 'xDOTx');
+
+    let chunksNumber = (await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}/${filename}.json`)).data;
+    if (chunksNumber == null) {
+        res.status(400).json({
+            message: 'Folder or file does not exist',
+        });
+        return;
+    }
+    console.log(`The following file will be downloaded in ${chunksNumber} chunks: "${filename.replace('xDOTx', '.')}"`);
+
+    const chunksToDownload = (await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`)).data;
+    if (chunksNumber != chunksToDownload.length - 1) {
+        res.status(400).json({
+            message: 'File corrupted'
+        });
+        return;
+    }
+
+    const dirPath = "../downloads/"
+    if (!fs.existsSync(dirPath)){
+        fs.mkdirSync(dirPath);
+    }
+    const tempFilePath = path.join(dirPath, `${filename}-temp`);
+
+    try {
+        const writeStream = fs.createWriteStream(tempFilePath);
+        // Scarica ogni chunk e salvalo su disco
+        for (let i = 1; i <= chunksNumber; i++) {
+            const chunkName = `${filename}-$[${i}]`;
+            const fileId = chunksToDownload[i].fileid;
+            console.log(`Downloading chunk ${chunkName}`);
+            const chunkBuffer = await chunkManagement.fetch(fileId);
+            writeStream.write(chunkBuffer);
+        }
+        writeStream.end();
+        const downloadFolder = (process.env.DOWNLOAD_FOLDER_PATH.endsWith('\\') || process.env.DOWNLOAD_FOLDER_PATH.endsWith('/'))
+            ? process.env.DOWNLOAD_FOLDER_PATH + `${folder}\\`: process.env.DOWNLOAD_FOLDER_PATH + `\\${folder}\\`;
+        if (!fs.existsSync(downloadFolder)) {
+            fs.mkdirSync(downloadFolder);
+        }
+        const completeFilePath = path.join(downloadFolder, filename.replace('xDOTx', '.'));
+        fs.renameSync(tempFilePath, completeFilePath);
+        console.log(`File ${completeFilePath} saved`);
+        if (fs.existsSync(dirPath)) {
+            fs.rmdirSync(dirPath, { recursive: true });
+        }
+        return res.status(200).json({ message: "ok" });
+    } catch (error) {
+        console.error('Errore durante il download del file:', error);
+        if (fs.existsSync(dirPath)) {
+            fs.rmdirSync(dirPath, { recursive: true });
+        }
+        res.status(500).json({ message: 'Internal server error' });
     }
 };
