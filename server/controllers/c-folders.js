@@ -44,3 +44,25 @@ exports.getFileList = async (req, res) => {
         data: databaseResponse.data
     });
 }
+
+exports.deleteTopic = async (req, res) => {
+    const body = req.body;
+    if (!body.name) return res.status(400).json({ message: 'No folder name specified' });
+    const filesInFolder = (await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${body.name}.json`)).data;
+    if (Object.keys(filesInFolder).length > 1) {
+        res.status(400).json({
+            message: `Folder has ${Object.keys(filesInFolder).length - 1} file${(Object.keys(filesInFolder).length > 2) ? "s" : ""}. Please delete all files within it.`,
+        });
+        return;
+    }
+    const thread_id = await axios.get(`${process.env.REALTIME_DATABASE_URL}/${body.name}/id.json`);
+    const topicDeletionEndpoint = `https://api.telegram.org/bot${process.env.BOT_TOKEN}/deleteForumTopic`;
+    await axios.post(topicDeletionEndpoint, {
+        chat_id: process.env.ARCHIVE_CHATID,
+        message_thread_id: thread_id.data
+    });
+    await axios.delete(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${body.name}.json`)
+    await axios.delete(`${process.env.REALTIME_DATABASE_URL}${body.name}.json`)
+    console.log(`Deleted folder \"${body.name}\"`);
+    res.status(200).json({message: "Folder deleted successfully"});
+}
