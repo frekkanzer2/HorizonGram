@@ -159,3 +159,12 @@ exports.downloadList = async (req, res) => {
     
     return res.status(200).json({ data: chunksToDownload });
 };
+
+exports.getDownloadUrl = async (req, res) => {
+    if (!req.body.fileid) return res.status(400).json({ message: 'No file ID specified' });
+    let filePath = (await axios.get(`https://api.telegram.org/bot${process.env.BOT_TOKEN}/getFile?file_id=${req.body.fileid}`)).data.result.file_path;
+    return res.status(200).json({ 
+        url: `https://api.telegram.org/file/bot${process.env.BOT_TOKEN}/${filePath}`,
+        responseType: 'arraybuffer'
+    });
+};
