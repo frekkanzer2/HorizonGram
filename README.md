@@ -69,6 +69,7 @@ Base URL: http://localhost:3000/
 - [GET] api/status -> check if server is alive
 - [GET] api/folder -> get folders and files list
 - [POST] api/folder -> create a new folder
+- [DELETE] api/folder -> delete a folder
 - [POST] api/file/upload -> upload a new file
 - [POST] api/file/download -> download a file
 - [DELETE] api/file -> delete a file
