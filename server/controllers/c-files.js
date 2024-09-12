@@ -168,3 +168,16 @@ exports.getDownloadUrl = async (req, res) => {
         responseType: 'arraybuffer'
     });
 };
+
+exports.downloadChunk = async (req, res) => {
+    if (!req.body.dwnurl) return res.status(400).json({ message: 'No download URL specified' });
+
+    try {
+        const response = await axios.get(req.body.dwnurl, { responseType: 'arraybuffer' });
+        res.set('Content-Type', 'application/octet-stream');
+        res.send(response.data);
+    } catch (error) {
+        console.error('Errore durante il download del chunk:', error);
+        res.status(500).json({ message: 'Errore durante il download del chunk' });
+    }
+};

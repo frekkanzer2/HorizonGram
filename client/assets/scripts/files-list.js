@@ -98,6 +98,78 @@ async function deleteFile() {
     closePopup(); // Chiudi il popup
 }
 
+// Funzione per scaricare i chunk di un file grande
+async function downloadLargeFileInChunks() {
+    document.getElementById('loading-overlay').style.display = 'block'; // Mostra il messaggio di caricamento
+
+    try {
+        // 1. Ottieni la lista dei chunk del file con la richiesta POST
+        const listResponse = await fetch('http://localhost:3000/api/file/download/list', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                filename: selectedFile,
+                folder: selectedFolder
+            })
+        });
+        console.log(`Downloading file ${selectedFile} from folder ${selectedFolder}`)
+        const chunks = await listResponse.json();
+        console.log(chunks)
+
+        const chunkBlobs = [];
+
+        // 2. Scarica ogni chunk usando la nuova richiesta POST
+        for (const chunk of chunks.data) {
+            let downloadRequestData = await fetch('http://localhost:3000/api/file/download/url', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    fileid: chunk
+                })
+            });
+            downloadRequestData = await downloadRequestData.json();
+            console.log(downloadRequestData);
+            const chunkData = await fetch('http://localhost:3000/api/file/download/chunk', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    dwnurl: downloadRequestData.url
+                })
+            });
+            console.log(chunkData);
+            const buffer = await chunkData.arrayBuffer();
+            console.log(buffer);
+            chunkBlobs.push(new Blob([buffer]));
+        }
+
+        // 3. Unisci i chunk in un unico file
+        const finalBlob = new Blob(chunkBlobs);
+
+        // 4. Crea un URL per il file completo e scaricalo
+        const downloadLink = document.createElement('a');
+        downloadLink.href = URL.createObjectURL(finalBlob);
+        downloadLink.download = selectedFile; // Imposta il nome del file
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+
+        alert(`Il file ${selectedFile} è stato scaricato con successo.`);
+    } catch (error) {
+        console.error('Errore durante il download a chunk:', error);
+        alert('Errore durante il download del file. Riprovare.');
+    } finally {
+        document.getElementById('loading-overlay').style.display = 'none'; // Nascondi il messaggio di caricamento
+    }
+
+    closePopup(); // Chiudi il popup
+}
+
 // Funzione per recuperare i dati dall'API
 async function fetchData() {
     let errMsgComponent = document.getElementById('status-message');
@@ -112,13 +184,8 @@ async function fetchData() {
 }
 
 // Event listeners per i pulsanti del popup
-document.getElementById('download-btn').addEventListener('click', () => {
-    alert(`Download del file: ${selectedFile}`);
-    closePopup();
-});
-
+document.getElementById('download-btn').addEventListener('click', downloadLargeFileInChunks);
 document.getElementById('delete-btn').addEventListener('click', deleteFile);
-
 document.getElementById('back-btn').addEventListener('click', closePopup);
 
 // Esegui fetch dei dati appena la pagina viene caricata
