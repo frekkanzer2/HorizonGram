@@ -93,45 +93,6 @@ exports.deleteFile = async (req, res) => {
     });
 }
 
-exports.downloadList = async (req, res) => {
-    if (!req.body.folder) return res.status(400).json({ message: 'No folder specified' });
-    if (!req.body.filename) return res.status(400).json({ message: 'No file name specified' });
-    const folder = req.body.folder;
-    let filename = req.body.filename;
-    if (filename.includes("-$") || filename.includes("xDOTx"))
-        return res.status(400).json({ message: 'File name not valid' });
-    filename = filename.replace('.', 'xDOTx');
-
-    let chunksToDownload = (await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`)).data;
-    chunksToDownload.shift();
-
-    chunksToDownload = chunksToDownload.map(chunk => chunk.fileid);
-    
-    return res.status(200).json({ data: chunksToDownload });
-};
-
-exports.getDownloadUrl = async (req, res) => {
-    if (!req.body.fileid) return res.status(400).json({ message: 'No file ID specified' });
-    let filePath = (await axios.get(`https://api.telegram.org/bot${process.env.BOT_TOKEN}/getFile?file_id=${req.body.fileid}`)).data.result.file_path;
-    return res.status(200).json({ 
-        url: `https://api.telegram.org/file/bot${process.env.BOT_TOKEN}/${filePath}`,
-        responseType: 'arraybuffer'
-    });
-};
-
-exports.downloadChunk = async (req, res) => {
-    if (!req.body.dwnurl) return res.status(400).json({ message: 'No download URL specified' });
-
-    try {
-        const response = await axios.get(req.body.dwnurl, { responseType: 'arraybuffer' });
-        res.set('Content-Type', 'application/octet-stream');
-        res.send(response.data);
-    } catch (error) {
-        console.error('Errore durante il download del chunk:', error);
-        res.status(500).json({ message: 'Errore durante il download del chunk' });
-    }
-};
-
 exports.download = async (req, res) => {
     if (!req.body.folder) return res.status(400).json({ message: 'No folder specified' });
     if (!req.body.filename) return res.status(400).json({ message: 'No file name specified' });
