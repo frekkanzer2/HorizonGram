@@ -61,15 +61,14 @@ function closePopup() {
 
 // Funzione per recuperare i dati dall'API
 async function fetchData() {
+    let errMsgComponent = document.getElementById('status-message');
     try {
         const response = await fetch('http://localhost:3000/api/folder');
-        if (!response.ok) {
-            throw new Error('Errore nella risposta del server');
-        }
         const data = await response.json();
         createFolderStructure(data.data);
     } catch (error) {
-        console.error('Errore durante il fetch dei dati:', error);
+        errMsgComponent.textContent = "Server offline. Start the server and refresh the page.";
+        console.log(error);
     }
 }
 

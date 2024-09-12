@@ -86,3 +86,7 @@ body {
 button {
     font-size: 18px!important;
 }
+
+#status-message {
+    font-size: 24px!important;
+}

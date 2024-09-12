@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 <ul>
                     <li><a href="upload.html" id="top-link"><span class="icon solid fa-upload">Upload a file</span></a></li>
                     <li><a href="newfolder.html" id="top-link"><span class="icon solid fa-folder">New folder</span></a></li>
-                    <li><a href="" id="top-link"><span class="icon solid fa-file">Your files</span></a></li>
+                    <li><a href="files.html" id="top-link"><span class="icon solid fa-file">Your files</span></a></li>
                 </ul>
             </nav>
 
