@@ -5,13 +5,10 @@ Infinite cloud storage manager that uses Telegram cloud storage to upload and do
 - Download and install Docker
 - Telegram account
 - Firebase account
-- Node.js v18.19.1 (for devs)
-- Npm v10.8.3 (for devs)
+- Node.js v18.19.1
+- Npm v10.8.3
 
-### How to install dependencies
-- npm install
-
-### Configuration
+### Installation
 1. Start a chat with https://t.me/BotFather on Telegram
 2. Send the following message: /newbot
 3. Choose a unique username that we are going to reference with <BOT_USERNAME>
@@ -45,28 +42,45 @@ Infinite cloud storage manager that uses Telegram cloud storage to upload and do
 }
 ```
 
-12. Go on the following folder: <REPOSITORY_FOLDER>/server
-13. Create a .env file in the server root and add the following code:
+12. Create a folder on your local computer. It will be used to store downloaded files. We are going to reference this folder with <DOWNLOADS_FOLDER>
+13. Go on the following folder: <REPOSITORY_FOLDER>/server
+14. Create a .env file in the server root and add the following code:
 
 ```yaml
 BOT_TOKEN=<BOT_TOKEN>
 ARCHIVE_CHATID=-100<GROUP_ARCHIVE>
 REALTIME_DATABASE_URL=<FIREBASE_REALTIME_DATABASE_BASE_URL>
+DOWNLOAD_FOLDER_PATH=<DOWNLOADS_FOLDER>
 ```
 
-14. Change <...> with the correct values
-15. Run the following commands:
+15. Change <...> with the correct values
+16. Run the following commands on a console:
 
 ```
-docker build -t horizongram-server .
-docker run -d -p 3000:3000 --name horizongram-server horizongram-server
+npm install
 ```
+
+### Start client and server
+1. Open <REPOSITORY_FOLDER>/server folder
+2. Run the following command on a console:
+
+```
+npm start
+```
+
+3. Keep the console open while using HorizonGram
+4. Open <REPOSITORY_FOLDER>/client folder
+5. Open index.html file with a browser
 
 ### Server endpoints
 Base URL: http://localhost:3000/
 - [GET] api/status -> check if server is alive
 - [GET] api/folder -> get folders and files list
 - [POST] api/folder -> create a new folder
+- [DELETE] api/folder -> delete a folder
 - [POST] api/file/upload -> upload a new file
 - [POST] api/file/download -> download a file
 - [DELETE] api/file -> delete a file
+- [POST] api/chunks/upload/checks -> do some integrity checks on the file to upload with chunks upload service
+- [POST] api/chunks/upload/preparation -> prepare the file to be uploaded with chunks upload service
+- [POST] api/chunks/upload -> it's the chunks upload service, upload a single chunk
