@@ -5,13 +5,10 @@ Infinite cloud storage manager that uses Telegram cloud storage to upload and do
 - Download and install Docker
 - Telegram account
 - Firebase account
-- Node.js v18.19.1 (for devs)
-- Npm v10.8.3 (for devs)
+- Node.js v18.19.1
+- Npm v10.8.3
 
-### How to install dependencies
-- npm install
-
-### Configuration
+### Installation
 1. Start a chat with https://t.me/BotFather on Telegram
 2. Send the following message: /newbot
 3. Choose a unique username that we are going to reference with <BOT_USERNAME>
@@ -61,14 +58,26 @@ DOWNLOAD_FOLDER_PATH=<DOWNLOADS_FOLDER>
 
 ```
 npm install
+```
+
+### Start client and server
+1. Open <REPOSITORY_FOLDER>/server folder
+2. Run the following command on a console:
+
+```
 npm start
 ```
+
+3. Keep the console open while using HorizonGram
+4. Open <REPOSITORY_FOLDER>/client folder
+5. Open index.html file with a browser
 
 ### Server endpoints
 Base URL: http://localhost:3000/
 - [GET] api/status -> check if server is alive
 - [GET] api/folder -> get folders and files list
 - [POST] api/folder -> create a new folder
+- [DELETE] api/folder -> delete a folder
 - [POST] api/file/upload -> upload a new file
 - [POST] api/file/download -> download a file
 - [DELETE] api/file -> delete a file
