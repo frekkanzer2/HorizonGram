@@ -39,6 +39,40 @@
 			}
     	</style>
 	</head>
+	<script>
+		// Funzione per popolare la dropdown con le cartelle
+		function populateFolderDropdown() {
+			const folderLoadingMessage = document.getElementById('folder-loading-message');
+			const folderSelectContainer = document.getElementById('folder-select-container');
+		
+			// Effettua la richiesta GET per ottenere le cartelle
+			fetch('http://localhost:3000/api/folder')
+				.then(response => response.json())
+				.then(data => {
+					const folderDropdown = document.getElementById('folder-name');
+					const folders = data.data;
+		
+					// Aggiungi ogni cartella come opzione nella dropdown
+					for (const folder in folders) {
+						const option = document.createElement('option');
+						option.value = folder;  // Il valore è la chiave della cartella
+						option.text = folder;   // Mostra la chiave della cartella
+						folderDropdown.add(option);
+					}
+		
+					// Nascondi il messaggio di caricamento e mostra la dropdown
+					folderLoadingMessage.style.display = 'none';
+					folderSelectContainer.style.display = 'block';
+				})
+				.catch(error => {
+					console.error('Error fetching folders:', error);
+					folderLoadingMessage.innerText = 'Error loading folders. Please restart the server and reload the page.';
+				});
+		}
+		
+		// Popola la dropdown al caricamento della pagina
+		window.onload = populateFolderDropdown;
+	</script>
 	<body class="is-preload">
 
 		<!-- Header -->
@@ -57,7 +91,12 @@
 							<header>
 								<h2 class="alt">Choose the file to upload
 								<div><input id="file-picker" type="file" /></div>
-								<div><input id="folder-name"  type="text" name="fname" placeholder="Destination folder" /></div>
+								<div id="folder-loading-message" style="font-size: 32px;">Waiting for folder loading...</div>
+								<div id="folder-select-container" style="display: none;">
+									<select id="folder-name" name="fname">
+										<option value="">Select a folder</option> <!-- Default empty option -->
+									</select>
+								</div>
 								<div id="status-message"></div>
 								<input id="upload-button" type="button" value="Submit" />
 							</header>

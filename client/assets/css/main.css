@@ -7,6 +7,13 @@
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 */
 
+select#folder-name {
+    width: 420px; /* Imposta la larghezza della select al 100% del contenitore */
+    font-size: 24px; /* Riduci la dimensione del testo all'interno della select */
+    padding: 10px; /* Aggiungi padding per dare un po' di spazio all'interno */
+    box-sizing: border-box; /* Assicura che il padding sia incluso nella larghezza totale */
+}
+
 html, body, div, span, applet, object,
 iframe, h1, h2, h3, h4, h5, h6, p, blockquote,
 pre, a, abbr, acronym, address, big, cite,
