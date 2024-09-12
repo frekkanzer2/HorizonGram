@@ -15,16 +15,13 @@ exports.upload_checks = async (req, res) => {
         return res.status(400).json({ message: 'File name not valid' });
     filename = filename.replace('.', 'xDOTx');
     try {
-        console.log("Started checks for chunk upload");
         if ((await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}.json`)).data == null) {
-            console.log("Folder does not exists");
             res.status(400).json({
                 message: 'Folder does not exists',
             });
             return;
         }
         if ((await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}/${filename}.json`)).data != null) {
-            console.log("File already exists");
             res.status(400).json({
                 message: 'File already exists',
             });
@@ -35,7 +32,6 @@ exports.upload_checks = async (req, res) => {
         res.status(500).json({ message: 'Error sending file to Telegram' });
         return;
     }
-    console.log("Everything is okay");
     res.status(200).json({
         message: 'Checks are OK'
     });
@@ -47,7 +43,6 @@ exports.upload_preparation = async (req, res) => {
     if (!req.body.totalChunks) return res.status(400).json({ message: 'No total number of chunks specified' });
     const folder = req.body.folder;
     req.body.filename = req.body.filename.replace('.', 'xDOTx');
-    console.log("Preparation started for chunk");
     try {
         await axios.patch(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}.json`, {
             [req.body.filename]: req.body.totalChunks
@@ -57,7 +52,6 @@ exports.upload_preparation = async (req, res) => {
         res.status(500).json({ message: 'Error sending file to Telegram' });
         return;
     }
-    console.log("Preparation ended");
     res.status(200).json({
         message: 'Registration completed'
     });
@@ -73,7 +67,7 @@ exports.upload = async (req, res) => {
         const folder = req.body.folder;
         const chunk_number = req.body.chunkno;
         file.originalname = file.originalname.replace('.', 'xDOTx');
-        console.log(`Upload of: \"${file.originalname}\" | Chunk: ${chunk_number} | ${sizes.bytesToSize(file.size)}`);
+        console.log(`Upload of: \"${file.originalname}\" | Chunk n.${chunk_number} | ${sizes.bytesToSize(file.size)}`);
         const databaseResponse = await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}.json`);
         const topic = databaseResponse.data.id;
         await chunkManagement.send(new ChunkData(`${file.originalname}-$[${chunk_number}]`, file.buffer), topic, folder);

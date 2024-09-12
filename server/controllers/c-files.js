@@ -32,7 +32,8 @@ exports.upload = async (req, res) => {
         return;
     }
 
-    console.log(`The following file will be uploaded: \"${file.originalname}\" | ${sizes.bytesToSize(file.size)}`);
+    console.log(`Upload service warning: use it for files with low size`);
+    console.log(`Upload of: \"${file.originalname}\" | ${sizes.bytesToSize(file.size)}`);
 
     const databaseResponse = await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}.json`);
     const topic = databaseResponse.data.id;
@@ -46,7 +47,7 @@ exports.upload = async (req, res) => {
         } 
         else {
             let chunks = chunkManagement.split(file.buffer, file.originalname, file.size);
-            console.log(`File splitted in ${chunks.length} chunks`)
+            console.log(`File \"${file.originalname}\" splitted in ${chunks.length} chunks`)
             await axios.patch(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}.json`, {
                 [file.originalname]: chunks.length
             });
@@ -54,6 +55,7 @@ exports.upload = async (req, res) => {
                 await chunkManagement.send(chunks[i], topic, folder);
             }
         }
+        console.log(`File \"${file.originalname}\" uploaded`)
     } catch (error) {
         errorFiles.PrintUploadError(error);
         res.status(500).json({ message: 'Error sending file to Telegram' });
@@ -87,7 +89,7 @@ exports.deleteFile = async (req, res) => {
         message_ids: idsToDelete
     });
     
-    console.log(`File ${filename} deleted`);
+    console.log(`File ${filename} deleted from folder ${folder}`);
     res.status(200).json({
         message: 'File successfully deleted'
     });
@@ -111,7 +113,7 @@ exports.download = async (req, res) => {
         });
         return;
     }
-    console.log(`The following file will be downloaded in ${chunksNumber} chunks: "${filename.replace('xDOTx', '.')}"`);
+    console.log(`Download of: "${filename.replace('xDOTx', '.')}" | Chunks: ${chunksNumber}`);
 
     const chunksToDownload = (await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`)).data;
     if (chunksNumber != chunksToDownload.length - 1) {
@@ -133,9 +135,9 @@ exports.download = async (req, res) => {
         for (let i = 1; i <= chunksNumber; i++) {
             const chunkName = `${filename}-$[${i}]`;
             const fileId = chunksToDownload[i].fileid;
-            console.log(`Downloading chunk ${chunkName}`);
             const chunkBuffer = await chunkManagement.fetch(fileId);
             writeStream.write(chunkBuffer);
+            console.log(`Chunk ${chunkName} downloaded`)
         }
         writeStream.end();
         const downloadFolder = (process.env.DOWNLOAD_FOLDER_PATH.endsWith('\\') || process.env.DOWNLOAD_FOLDER_PATH.endsWith('/'))
@@ -145,13 +147,12 @@ exports.download = async (req, res) => {
         }
         const completeFilePath = path.join(downloadFolder, filename.replace('xDOTx', '.'));
         fs.renameSync(tempFilePath, completeFilePath);
-        console.log(`File ${completeFilePath} saved`);
+        console.log(`File ${completeFilePath} downloaded`);
         if (fs.existsSync(dirPath)) {
             fs.rmdirSync(dirPath, { recursive: true });
         }
         return res.status(200).json({ downloadPath: completeFilePath });
     } catch (error) {
-        console.error('Errore durante il download del file:', error);
         if (fs.existsSync(dirPath)) {
             fs.rmdirSync(dirPath, { recursive: true });
         }
