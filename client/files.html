@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<!--
+	Prologue by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>HorizonGram</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="assets/css/files-list.css" />
+		<style>
+			/* Stile per il messaggio di caricamento e la sovrapposizione */
+			#loading-overlay {
+				display: none;
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: rgba(0, 0, 0, 0.5);
+				color: white;
+				text-align: center;
+				padding-top: 20%;
+				font-size: 1.5em;
+				z-index: 1000;
+			}
+			/* Stile per il messaggio di stato */
+			#status-message {
+				margin-top: 10px;
+				font-size: 0.5em;
+			}
+			.status-success {
+				color: rgb(96, 255, 96);
+			}
+			.status-error {
+				color: rgb(255, 105, 105);
+			}
+    </style>
+	</head>
+	<body class="is-preload">
+
+		<!-- Header -->
+		<!-- Contenitore per l'header -->
+		<div id="header-container"></div>
+
+		<!-- Includi il file header.js -->
+
+		<!-- Main -->
+			<div id="main">
+                <div id="folder-structure"></div>
+                <!-- Overlay e popup -->
+                <div class="overlay" id="overlay"></div>
+                <div class="popup" id="file-popup">
+                    <p id="selected-file-name"></p>
+                    <p id="selected-file-blocks"></p>
+                    <button id="download-btn">Download</button>
+                    <button id="delete-btn">Delete</button>
+                    <button id="back-btn">Back</button>
+                </div>
+			</div>
+
+			<!-- Loading Overlay and Status Message -->
+			<div id="loading-overlay">Loading. Do not close this page.</div>
+
+		<!-- Scripts -->
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/jquery.scrolly.min.js"></script>
+		<script src="assets/js/jquery.scrollex.min.js"></script>
+		<script src="assets/js/browser.min.js"></script>
+		<script src="assets/js/breakpoints.min.js"></script>
+		<script src="assets/js/util.js"></script>
+		<script src="assets/js/main.js"></script>
+		<!-- Custom scripts -->
+		<script src="assets/scripts/header.js"></script>
+		<script src="assets/scripts/files-list.js"></script>
+
+	</body>
+</html>
