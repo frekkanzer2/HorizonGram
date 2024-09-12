@@ -1,4 +1,5 @@
 let selectedFile = '';
+let selectedFolder = '';
 
 // Funzione per creare la struttura HTML per le cartelle e i file
 function createFolderStructure(data) {
@@ -27,7 +28,9 @@ function createFolderStructure(data) {
                 fileDiv.classList.add('file');
                 fileName = fileName.replace(/xDOTx/g, '.');
                 fileDiv.textContent = `${fileName}`;
-                fileDiv.addEventListener('click', () => showPopup(fileName));
+                
+                // Aggiungi evento per mostrare il popup con il file selezionato
+                fileDiv.addEventListener('click', () => showPopup(fileName, folderName));
                 filesDiv.appendChild(fileDiv);
             }
 
@@ -46,8 +49,9 @@ function createFolderStructure(data) {
 }
 
 // Funzione per mostrare il popup
-function showPopup(fileName) {
+function showPopup(fileName, folderName) {
     selectedFile = fileName;
+    selectedFolder = folderName;
     document.getElementById('selected-file-name').textContent = `File: ${fileName}`;
     document.getElementById('overlay').style.display = 'block';
     document.getElementById('file-popup').style.display = 'block';
@@ -57,6 +61,41 @@ function showPopup(fileName) {
 function closePopup() {
     document.getElementById('overlay').style.display = 'none';
     document.getElementById('file-popup').style.display = 'none';
+}
+
+// Funzione per eliminare il file
+async function deleteFile() {
+    document.getElementById('loading-overlay').style.display = 'block'; // Mostra il messaggio di caricamento
+
+    const deleteUrl = 'http://localhost:3000/api/file';
+    const deleteBody = {
+        folder: selectedFolder,
+        filename: selectedFile
+    };
+
+    try {
+        const response = await fetch(deleteUrl, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(deleteBody)
+        });
+
+        if (response.ok) {
+            alert(`Il file ${selectedFile} è stato eliminato con successo.`);
+            window.location.reload(); // Aggiorna la pagina
+        } else {
+            alert('Errore durante l\'eliminazione del file. Riprovare.');
+        }
+    } catch (error) {
+        console.error('Errore durante la richiesta DELETE:', error);
+        alert('Errore di rete. Verificare la connessione e riprovare.');
+    } finally {
+        document.getElementById('loading-overlay').style.display = 'none'; // Nascondi il messaggio di caricamento
+    }
+
+    closePopup(); // Chiudi il popup
 }
 
 // Funzione per recuperare i dati dall'API
@@ -78,10 +117,7 @@ document.getElementById('download-btn').addEventListener('click', () => {
     closePopup();
 });
 
-document.getElementById('delete-btn').addEventListener('click', () => {
-    alert(`Elimina il file: ${selectedFile}`);
-    closePopup();
-});
+document.getElementById('delete-btn').addEventListener('click', deleteFile);
 
 document.getElementById('back-btn').addEventListener('click', closePopup);
 
