@@ -72,3 +72,6 @@ Base URL: http://localhost:3000/
 - [POST] api/file/upload -> upload a new file
 - [POST] api/file/download -> download a file
 - [DELETE] api/file -> delete a file
+- [POST] api/chunks/upload/checks -> do some integrity checks on the file to upload with chunks upload service
+- [POST] api/chunks/upload/preparation -> prepare the file to be uploaded with chunks upload service
+- [POST] api/chunks/upload -> it's the chunks upload service, upload a single chunk
