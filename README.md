@@ -8,7 +8,7 @@ Infinite cloud storage manager that uses Telegram cloud storage to upload and do
 - Node.js v18.19.1
 - Npm v10.8.3
 
-### Configuration
+### Installation
 1. Start a chat with https://t.me/BotFather on Telegram
 2. Send the following message: /newbot
 3. Choose a unique username that we are going to reference with <BOT_USERNAME>
