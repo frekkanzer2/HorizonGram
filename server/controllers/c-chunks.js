@@ -13,6 +13,9 @@ exports.upload_checks = async (req, res) => {
     const folder = req.body.folder;
     if (filename.includes("-$") || filename.includes("xDOTx"))
         return res.status(400).json({ message: 'File name not valid' });
+    const occurrences = filename.match(/\./g);  // Cerca tutte le occorrenze di '.'
+    if (occurrences && occurrences.length > 1) filename = filename.replace(/\.(?=.*\.)/g, '-');
+
     filename = filename.replace('.', 'xDOTx');
     try {
         console.log("Started checks for chunk upload");
@@ -46,8 +49,13 @@ exports.upload_preparation = async (req, res) => {
     if (!req.body.folder) return res.status(400).json({ message: 'No folder specified' });
     if (!req.body.totalChunks) return res.status(400).json({ message: 'No total number of chunks specified' });
     const folder = req.body.folder;
-    req.body.filename = req.body.filename.replace('.', 'xDOTx');
+    const occurrences = req.body.filename.match(/\./g);  // Cerca tutte le occorrenze di '.'
     console.log("Preparation started for chunk");
+    if (occurrences && occurrences.length > 1) {
+        req.body.filename = req.body.filename.replace(/\.(?=.*\.)/g, '-');
+        console.log("Filename contains multiple dots, replacing them with \'-\'")
+    }
+    req.body.filename = req.body.filename.replace('.', 'xDOTx');
     try {
         await axios.patch(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}.json`, {
             [req.body.filename]: req.body.totalChunks
@@ -72,6 +80,8 @@ exports.upload = async (req, res) => {
         const file = req.file;
         const folder = req.body.folder;
         const chunk_number = req.body.chunkno;
+        const occurrences = file.originalname.match(/\./g);  // Cerca tutte le occorrenze di '.'
+        if (occurrences && occurrences.length > 1) file.originalname = file.originalname.replace(/\.(?=.*\.)/g, '-');
         file.originalname = file.originalname.replace('.', 'xDOTx');
         console.log(`Upload of: \"${file.originalname}\" | Chunk: ${chunk_number} | ${sizes.bytesToSize(file.size)}`);
         const databaseResponse = await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}.json`);
