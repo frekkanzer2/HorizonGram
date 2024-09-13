@@ -2,7 +2,6 @@
 Infinite cloud storage manager that uses Telegram cloud storage to upload and download files.
 
 ### Requirements
-- Download and install Docker
 - Telegram account
 - Firebase account
 - Node.js v18.19.1
