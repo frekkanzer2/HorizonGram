@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<!--
+	Prologue by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>HorizonGram</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<style>
+			/* Stile per il messaggio di caricamento e la sovrapposizione */
+			#loading-overlay {
+				display: none;
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: rgba(0, 0, 0, 0.5);
+				color: white;
+				text-align: center;
+				padding-top: 20%;
+				font-size: 1.5em;
+				z-index: 1000;
+			}
+			/* Stile per il messaggio di stato */
+			#status-message {
+				margin-top: 10px;
+				font-size: 0.5em;
+			}
+			.status-success {
+				color: rgb(96, 255, 96);
+			}
+			.status-error {
+				color: rgb(255, 105, 105);
+			}
+    	</style>
+	</head>
+	<script>
+		// Funzione per popolare la dropdown con le cartelle
+		function populateFolderDropdown() {
+			const folderLoadingMessage = document.getElementById('folder-loading-message');
+			const folderSelectContainer = document.getElementById('folder-select-container');
+		
+			// Effettua la richiesta GET per ottenere le cartelle
+			fetch('http://localhost:3000/api/folder')
+				.then(response => response.json())
+				.then(data => {
+					const folderDropdown = document.getElementById('folder-name');
+					const folders = data.data;
+		
+					// Aggiungi ogni cartella come opzione nella dropdown
+					for (const folder in folders) {
+						const option = document.createElement('option');
+						option.value = folder;  // Il valore è la chiave della cartella
+						option.text = folder;   // Mostra la chiave della cartella
+						folderDropdown.add(option);
+					}
+		
+					// Nascondi il messaggio di caricamento e mostra la dropdown
+					folderLoadingMessage.style.display = 'none';
+					folderSelectContainer.style.display = 'block';
+				})
+				.catch(error => {
+					console.error('Error fetching folders:', error);
+					folderLoadingMessage.innerText = 'Error loading folders. Please restart the server and reload the page.';
+				});
+		}
+		
+		// Popola la dropdown al caricamento della pagina
+		window.onload = populateFolderDropdown;
+	</script>
+	<body class="is-preload">
+
+		<!-- Header -->
+		<!-- Contenitore per l'header -->
+		<div id="header-container"></div>
+
+		<!-- Includi il file header.js -->
+
+		<!-- Main -->
+			<div id="main">
+
+				<!-- Intro -->
+					<section id="home" class="other dark cover">
+						<div class="container">
+
+							<header>
+								<h2 class="alt">Choose multiple files to upload in the same folder
+								<div><input id="file-picker" type="file" multiple /></div>
+								<div id="folder-loading-message" style="font-size: 28px;">Waiting for folder loading...</div>
+								<div id="folder-select-container" style="display: none;">
+									<select id="folder-name" name="fname">
+										<option value="">Select a folder</option> <!-- Default empty option -->
+									</select>
+								</div>
+								<div id="status-message"></div>
+								<input id="upload-button" type="button" value="Submit" />
+							</header>
+
+						</div>
+					</section>
+
+			</div>
+
+			<!-- Loading Overlay and Status Message -->
+			<div id="loading-overlay">
+				<span id="loading-message-up">Loading. Do not close this page.</span><br/>
+				<span id="loading-message-down" style="font-size: 24px;">Loading. Do not close this page.</span>
+			</div>
+			
+
+		<!-- Scripts -->
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/jquery.scrolly.min.js"></script>
+		<script src="assets/js/jquery.scrollex.min.js"></script>
+		<script src="assets/js/browser.min.js"></script>
+		<script src="assets/js/breakpoints.min.js"></script>
+		<script src="assets/js/util.js"></script>
+		<script src="assets/js/main.js"></script>
+		<!-- Custom scripts -->
+		<script src="assets/scripts/header.js"></script>
+		<script src="assets/scripts/bulk_upload.js"></script>
+
+	</body>
+</html>
