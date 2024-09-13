@@ -68,6 +68,8 @@ async function deleteFile() {
     document.getElementById('loading-overlay').style.display = 'block'; // Mostra il messaggio di caricamento
     document.getElementById('loading-sub-message').style.display = 'none'; // Mostra il messaggio di caricamento
 
+    document.getElementById('loading-message').textContent = "Deleting. Do not close this page."
+
     const deleteUrl = 'http://localhost:3000/api/file';
     const deleteBody = {
         folder: selectedFolder,
@@ -105,6 +107,9 @@ async function downloadFile() {
     const statusMessage = document.getElementById('status-message');
     document.getElementById('loading-overlay').style.display = 'block'; // Mostra il messaggio di caricamento
     document.getElementById('loading-sub-message').style.display = 'block'; // Mostra il messaggio di caricamento
+    
+    document.getElementById('loading-message').textContent = "Downloading. Do not close this page."
+    document.getElementById('loading-sub-message').textContent = "Check server console to see the progress."
 
     console.log(`Downloading file ${selectedFile} from folder ${selectedFolder}`);
     const downloadResponse = await fetch('http://localhost:3000/api/file/download', {

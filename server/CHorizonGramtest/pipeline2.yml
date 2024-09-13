@@ -1,0 +1,111 @@
+
+variables:
+  - name: execdir
+    value: '$(System.DefaultWorkingDirectory)/iac'
+    readonly: true
+  - name: artdir
+    value: '$(System.DefaultWorkingDirectory)/iac/'
+    readonly: true
+
+trigger:
+  branches:
+    exclude:
+      - '*'
+  paths:
+    exclude:
+      - '*'
+
+pr:
+  branches:
+    exclude:
+      - '*'
+  paths:
+    exclude:
+      - '*'
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Initialization
+    jobs:
+      - job: init
+        displayName: 'Terraform Initialization'
+        steps:
+        - task: TerraformCLI@2
+          inputs:
+            command: 'init'
+            workingDirectory: '$(execdir)'
+            backendType: 'azurerm'
+            backendServiceArm: 'arm-conn-tfgroup'
+            backendAzureRmSubscriptionId: '92cd99b3-41b4-490c-8a4c-234292872956'
+            backendAzureRmResourceGroupName: 'terraform'
+            backendAzureRmStorageAccountName: 'tfstate1590'
+            backendAzureRmContainerName: 'state'
+            backendAzureRmKey: 'terraform.tfstate'
+            allowTelemetryCollection: true
+          displayName: 'terraform init'
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: '$(artdir)'
+            artifact: 'tfinit'
+            publishLocation: 'pipeline'
+          displayName: 'saving init status'
+  - stage: Planning
+    jobs:
+      - job: plan
+        displayName: 'Terraform plan'
+        steps:
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            buildType: 'current'
+            artifactName: 'tfinit'
+            targetPath: '$(artdir)'
+          displayName: 'loading init status'
+        - script: 
+            chmod -R +x .terraform
+          workingDirectory: '$(execdir)'
+          displayName: 'change permissions of .terraform folder'
+        - script: 
+            echo "$(secret-mongo-connectionstring)"
+          displayName: 'Debugging mongo connection string'
+        - task: TerraformCLI@2
+          inputs:
+            command: 'plan'
+            workingDirectory: '$(execdir)'
+            environmentServiceName: 'arm-conn-tfgroup'
+            providerAzureRmSubscriptionId: '92cd99b3-41b4-490c-8a4c-234292872956'
+            allowTelemetryCollection: true
+            commandOptions: '-var="secret-mongo-connectionstring=$(secret-mongo-connectionstring)"'
+          displayName: 'terraform plan'
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: '$(artdir)'
+            artifact: 'tfplan'
+            publishLocation: 'pipeline'
+          displayName: 'saving plan status'
+  - stage: Applying
+    jobs:
+      - job: apply
+        displayName: 'Terraform apply'
+        steps:
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            buildType: 'current'
+            artifactName: 'tfplan'
+            targetPath: '$(artdir)'
+          displayName: 'loading plan status'
+        - script: 
+            chmod -R +x .terraform
+          workingDirectory: '$(execdir)'
+          displayName: 'changing .terraform folder permissions'
+        - task: TerraformCLI@2
+          inputs:
+            command: 'apply'
+            workingDirectory: '$(execdir)'
+            environmentServiceName: 'arm-conn-tfgroup'
+            providerAzureRmSubscriptionId: '92cd99b3-41b4-490c-8a4c-234292872956'
+            allowTelemetryCollection: true
+            commandOptions: '-var="secret-mongo-connectionstring=$(secret-mongo-connectionstring)"'
+          displayName: 'terraform apply'
+        
