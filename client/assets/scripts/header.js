@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function() {
             <nav id="nav">
                 <ul>
                     <li><a href="upload.html" id="top-link"><span class="icon solid fa-upload">Upload a file</span></a></li>
+                    <li><a href="bulkupload.html" id="top-link"><span class="icon solid fa-upload">Bulk upload</span></a></li>
                     <li><a href="newfolder.html" id="top-link"><span class="icon solid fa-folder-plus">New folder</span></a></li>
                     <li><a href="deletefolder.html" id="top-link"><span class="icon solid fa-folder-minus">Delete folder</span></a></li>
                     <li><a href="files.html" id="top-link"><span class="icon solid fa-file">Your files</span></a></li>
