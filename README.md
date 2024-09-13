@@ -41,7 +41,7 @@ Infinite cloud storage manager that uses Telegram cloud storage to upload and do
 }
 ```
 
-12. Create a folder on your local computer. It will be used to store downloaded files. We are going to reference this folder with <DOWNLOADS_FOLDER>
+12. Create a folder on your local computer to store downloaded files. We are going to reference its absolute path with <DOWNLOADS_FOLDER>
 13. Go on the following folder: <REPOSITORY_FOLDER>/server
 14. Create a .env file in the server root and add the following code:
 
