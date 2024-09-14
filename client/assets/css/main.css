@@ -1952,7 +1952,7 @@ input, select, textarea {
 		position: relative;
 		display: inline-block;
 		border-radius: 0.35em;
-		color: #fff !important;
+		color: #fff;
 		text-decoration: none;
 		padding: 0.2em 2.5em 0.2em 2.5em;
 		background-color: #8ebebc;
