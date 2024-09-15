@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <title>HorizonGram Documentation</title>
+    
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="favicon.ico"> 
+    
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome JS-->
+    <script defer src="assets/fontawesome/js/all.min.js"></script>
+    
+    <!-- Plugins CSS -->
+    <link rel="stylesheet" href="assets/plugins/simplelightbox/simple-lightbox.min.css">
+
+    <!-- Theme CSS -->  
+    <link id="theme-style" rel="stylesheet" href="assets/css/theme.css">
+
+</head> 
+
+<body class="docs-page">    
+
+    <header class="header fixed-top">
+        <div class="branding docs-branding">
+            <div class="container-fluid position-relative py-2">
+                <div class="docs-logo-wrapper">
+	                <div class="site-logo"><a class="navbar-brand" href="index.html"><img class="logo-icon me-2" src="./assets/images/avatar-big.png" alt="logo" width="50"></a></div>    
+                </div><!--//docs-logo-wrapper-->
+            </div><!--//container-->
+        </div><!--//branding-->
+    </header><!--//header-->
+    
+    
+    <div class="docs-wrapper">
+	    <div id="docs-sidebar" class="docs-sidebar">
+		    <nav id="docs-nav" class="docs-nav navbar">
+			    <ul class="section-items list-unstyled nav flex-column pb-3">
+				    <li class="nav-item section-title"><a class="nav-link scrollto active" href="#section-1"><span class="theme-icon-holder me-2"><i class="fa-brands fa-telegram"></i></span>Telegram setup</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-1-1">Bot</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-1-2">Archive chat</a></li>
+				    <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-2"><span class="theme-icon-holder me-2"><i class="fas fa-fire"></i></span>Firebase setup</a></li>
+				    <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-3"><span class="theme-icon-holder me-2"><i class="fas fa-gear"></i></span>Server setup</a></li>
+			    </ul>
+		    </nav><!--//docs-nav-->
+	    </div><!--//docs-sidebar-->
+
+	    <div class="docs-content">
+		    <div class="container">
+			    <article class="docs-article" id="section-1">
+				    <header class="docs-header">
+					    <h1 class="docs-heading">Telegram setup</h1>
+						<section class="docs-intro">
+							<p>It will be necessary to create and setup a bot to manipulate all the files in an archive chat.</p>
+						</section>
+				    </header>
+				    <section class="docs-section" id="item-1-1">
+						<h2 class="section-heading">Bot</h2>
+						<ol>
+							<li>Start a chat with <a href="https://t.me/BotFather">BotFather</a></li>
+							<li>Send the following message: <code>/newbot</code></li>
+							<li>Choose a name</li>
+							<li>Choose a unique username that we are going to reference with <code>&ltBOT_USERNAME&gt</code></li>
+							<li>If the creation successes, BotFather will send you a message with the bot token, that we are going to reference with <code>&ltBOT_TOKEN&gt</code></li>
+						</ol>
+					<section class="docs-section" id="item-1-2">
+						<h2 class="section-heading">Archive chat</h2>
+						<ol>
+							<li>Create a group chat named <code>Archive</code></li>
+							<li>Make the Archive group chat as a topic chat by editing the following settings:<br/>
+								<code>
+									<a href="https://github.com/frekkanzer2/HorizonGram/raw/develop/blobs/set_topics_1.png?raw=true" target="_blank">Group info</a> -> 
+									<a href="https://github.com/frekkanzer2/HorizonGram/raw/develop/blobs/set_topics_2.png?raw=true" target="_blank">Edit group, Topics toggle is off</a> -> 
+									<a href="https://github.com/frekkanzer2/HorizonGram/raw/develop/blobs/set_topics_3.png?raw=true" target="_blank">Topics toggle to on</a></code></li>
+							<li>Open <a href="https://web.telegram.org/k/" target="_blank">Telegram Web K version</a></li>
+							<li>Open: <code>Archive group chat -> General topic</code></li>
+							<li>Copy the <a href="https://github.com/frekkanzer2/HorizonGram/raw/develop/blobs/save_chat_id.png?raw=true" target="_blank">chat ID in the browser URL</a>. We are going to reference it with <code>&ltGROUP_ARCHIVE&gt</code></li>
+							<li>Add the bot <code>&ltBOT_USERNAME&gt</code> into the Archive group</li>
+							<li>Give administrator privilege to the bot:<br/>
+								<code>
+									<a href="https://github.com/frekkanzer2/HorizonGram/raw/develop/blobs/set_admin_1.png?raw=true" target="_blank">Edit group</a> -> 
+									<a href="https://github.com/frekkanzer2/HorizonGram/raw/develop/blobs/set_admin_2.png?raw=true" target="_blank">Administrators</a> -> 
+									<a href="https://github.com/frekkanzer2/HorizonGram/raw/develop/blobs/set_admin_3.png?raw=true" target="_blank">Add Administrator, choose the bot</a> -> 
+									<a href="https://github.com/frekkanzer2/HorizonGram/raw/develop/blobs/set_admin_4.png?raw=true" target="_blank">Save</a>
+								</code></li>
+						</ol>
+					</section><!--//section-->
+			    </article>
+			    
+			    <article class="docs-article" id="section-2">
+				    <header class="docs-header">
+					    <h1 class="docs-heading">Firebase setup</h1>
+						<section class="docs-intro">
+							<p>It will be necessary to create a Firebase Realtime Database to store managed file metadata.</p>
+						</section>
+						<ol>
+							<li>Open <a href="https://firebase.google.com/" target="_blank">Firebase</a></li>
+							<li>Click on "Go to console"</li>
+							<li>Create a new project by choosing a name and accepting Firebase terms</li>
+							<li>Go to the project console</li>
+							<li>Go to the "Build" section, open "Realtime Database" and press "Create Database"</li>
+							<li>Go forward the "Set up database" wizard</li>
+							<li>In the database dashboard you'll <a href="https://github.com/frekkanzer2/HorizonGram/raw/develop/blobs/database_url.png?raw=true" target="_blank"></a>see an URL</a>: it's the <code>&ltFIREBASE_REALTIME_DATABASE_BASE_URL&gt</code></li>
+							<li>Open "Rules" section and set the following code:<br/>
+								<script src="https://gist.github.com/frekkanzer2/0d6aed8461b4978b18b0e1ae83ed159d.js"></script></li>
+						</ol>
+				    </header>
+				    
+			    </article><!--//docs-article-->
+
+				<article class="docs-article" id="section-3">
+				    <header class="docs-header">
+					    <h1 class="docs-heading">Server setup</h1>
+						<section class="docs-intro">
+							<p>It will be necessary to create a download folder and a settings file to connect the server with Telegram and the database.</p>
+						</section>
+						<ol>
+							<li>Create a folder on your local computer to store downloaded files. We are going to reference its absolute path with <code>&ltDOWNLOADS_FOLDER&gt</code></li>
+							<li>Open the <code>&ltREPOSITORY_FOLDER&gtserver</code> folder</li>
+							<li>Create a file named <code>.env</code> and add the following code:<br/>
+								<script src="https://gist.github.com/frekkanzer2/04b200b680af724f8237aa03f57acfea.js"></script></li>
+							<li>Change <code>&lt...&gt</code> with the values obtained during this guide</li>
+							<li>Open a terminal in the server folder and run the following command:<br/><code>npm install</code></li>
+						</ol>
+				    </header>
+				    
+			    </article><!--//docs-article-->
+
+		    </div> 
+	    </div>
+    </div><!--//docs-wrapper-->
+   
+       
+    <!-- Javascript -->          
+    <script src="assets/plugins/popper.min.js"></script>
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>  
+    
+    
+    <!-- Page Specific JS -->
+    <script src="assets/plugins/smoothscroll.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+    <script src="assets/js/highlight-custom.js"></script> 
+    <script src="assets/plugins/simplelightbox/simple-lightbox.min.js"></script>      
+    <script src="assets/plugins/gumshoe/gumshoe.polyfills.min.js"></script> 
+    <script src="assets/js/docs.js"></script> 
+    <script src="assets/js/links.js"></script> 
+
+</body>
+</html> 
+
