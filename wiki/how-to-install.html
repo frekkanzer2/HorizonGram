@@ -118,13 +118,27 @@
 						<section class="docs-intro">
 							<p>It will be necessary to create a download folder and a settings file to connect the server with Telegram and the database.</p>
 						</section>
+						<div class="callout-block callout-block-info">
+							<div class="content">
+								<h4 class="callout-title">
+									<span class="callout-icon-holder me-1">
+										<i class="fas fa-info-circle"></i>
+									</span><!--//icon-holder-->
+									Note
+								</h4>
+								<p>If you installed Node.js via WSL (Windows method), the terminal you need to open is the WSL.</p>
+							</div><!--//content-->
+						</div>
 						<ol>
 							<li>Create a folder on your local computer to store downloaded files. We are going to reference its absolute path with <code>&ltDOWNLOADS_FOLDER&gt</code></li>
 							<li>Open the <code>&ltREPOSITORY_FOLDER&gtserver</code> folder</li>
 							<li>Create a file named <code>.env</code> and add the following code:<br/>
 								<script src="https://gist.github.com/frekkanzer2/04b200b680af724f8237aa03f57acfea.js"></script></li>
 							<li>Change <code>&lt...&gt</code> with the values obtained during this guide</li>
-							<li>Open a terminal in the server folder and run the following command:<br/><code>npm install</code></li>
+							<li>
+								Open a terminal in the server folder and run the following command:<br/>
+								<code>npm install</code><br/>
+							</li>
 						</ol>
 				    </header>
 				    

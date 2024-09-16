@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <title>HorizonGram Documentation</title>
+    
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="favicon.ico"> 
+    
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome JS-->
+    <script defer src="assets/fontawesome/js/all.min.js"></script>
+    
+    <!-- Plugins CSS -->
+    <link rel="stylesheet" href="assets/plugins/simplelightbox/simple-lightbox.min.css">
+
+    <!-- Theme CSS -->  
+    <link id="theme-style" rel="stylesheet" href="assets/css/theme.css">
+
+</head> 
+
+<body class="docs-page">    
+
+    <header class="header fixed-top">
+        <div class="branding docs-branding">
+            <div class="container-fluid position-relative py-2">
+                <div class="docs-logo-wrapper">
+	                <div class="site-logo"><a class="navbar-brand" href="index.html"><img class="logo-icon me-2" src="./assets/images/avatar-big.png" alt="logo" width="50"></a></div>    
+                </div><!--//docs-logo-wrapper-->
+            </div><!--//container-->
+        </div><!--//branding-->
+    </header><!--//header-->
+    
+    
+    <div class="docs-wrapper">
+	    <div id="docs-sidebar" class="docs-sidebar">
+		    <nav id="docs-nav" class="docs-nav navbar">
+			    <ul class="section-items list-unstyled nav flex-column pb-3">
+				    <li class="nav-item section-title"><a class="nav-link scrollto active" href="#section-1"><span class="theme-icon-holder me-2"><i class="fas fa-toolbox"></i></span>Requirements</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-1-1">Telegram account</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-1-2">Firebase account</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-1-3">Node.js, Npm</a></li>
+			    </ul>
+		    </nav>
+	    </div>
+
+	    <div class="docs-content">
+		    <div class="container">
+			    <article class="docs-article" id="section-1">
+
+				    <header class="docs-header">
+					    <h1 class="docs-heading">Requirements</h1>
+					    <section class="docs-intro">
+						    <p>The following is a list of requirements needed in terms of software applications and tools to properly execute HorizonGram.</p>
+						</section>
+				    </header>
+
+				    <section class="docs-section" id="item-1-1">
+						<h2 class="section-heading">Telegram account</h2>
+						<p>You can create a Telegram account by downloading the Telegram application on your smartphone. You need a phone number.</p>
+						<ul>
+						    <li><strong class="me-1">Android</strong>: you can find it on Play Store</li>
+						    <li><strong class="me-1">Apple</strong>: you can find it on App Store</li>
+						</ul>
+					</section>
+
+					<section class="docs-section" id="item-1-2">
+						<h2 class="section-heading">Firebase account</h2>
+						<p>You can create a Firebase account by logging in with a Google account. You need a Google account.</p>
+						<ul>
+						    <li><strong class="me-1">Firebase</strong>: <a href="https://firebase.google.com/" target="_blank"></a>go to the platform</a></li>
+						</ul>
+					</section>
+					
+				    <section class="docs-section" id="item-1-3">
+						<h2 class="section-heading">Node.js, Npm</h2>
+						<p>Node.js is a JavaScript runtime used to execute HorizonGram server code.</p>
+						<p>HorizonGram was developed on <strong>Node.js v18.19.1</strong> and <strong>Npm v10.8.3</strong>.</p>
+						<p>HorizonGram might also work on earlier versions of Node.js, but it has not been tested. You can open an issue on the repository to report that it works with an older version of Node.js.</p>
+						<ul>
+							<li>
+								<strong class="me-1">Windows</strong><br/>
+								Install WSL:<br/>
+								<ol>
+									<li><code>wsl --install -d Ubuntu</code></li>
+									<li>Setup username and password</li>
+								</ol>
+								Restart the computer, open the WSL and follow Linux guide.<br/>
+								To run the server you will need to use WSL.
+							</li>
+						    <li>
+								<strong class="me-1">Linux</strong><br/>
+								Execute the following commands:<br/>
+								<ol>
+									<li><code>sudo apt install nodejs</code></li>
+									<li><code>sudo apt install npm</code></li>
+								</ol>
+								Check if everything works by printing the versions:<br/>
+								<ol>
+									<li><code>node -v</code></li>
+									<li><code>npm -v</code></li>
+								</ol>
+							</li>
+						    <li>
+								<strong class="me-1">Apple</strong><br/>
+								Install Homebrew:<br/>
+								<ol>
+									<li><code>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code></li>
+									<li><code>echo "export PATH=/opt/homebrew/bin:$PATH" >> ~/.zprofile && source ~/.zprofile</code></li>
+								</ol>
+								Execute the following commands:<br/>
+								<ol>
+									<li><code>brew install node</code></li>
+								</ol>
+								Check if everything works by printing the versions:<br/>
+								<ol>
+									<li><code>node -v</code></li>
+									<li><code>npm -v</code></li>
+								</ol>
+							</li>
+						</ul>
+					</section>
+
+			    </article>
+
+		    </div> 
+	    </div>
+    </div><!--//docs-wrapper-->
+   
+       
+    <!-- Javascript -->          
+    <script src="assets/plugins/popper.min.js"></script>
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>  
+    
+    
+    <!-- Page Specific JS -->
+    <script src="assets/plugins/smoothscroll.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+    <script src="assets/js/highlight-custom.js"></script> 
+    <script src="assets/plugins/simplelightbox/simple-lightbox.min.js"></script>      
+    <script src="assets/plugins/gumshoe/gumshoe.polyfills.min.js"></script> 
+    <script src="assets/js/docs.js"></script> 
+    <script src="assets/js/links.js"></script> 
+
+</body>
+</html> 
+
