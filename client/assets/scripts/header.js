@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     <li><a href="newfolder.html" id="top-link"><span class="icon solid fa-folder-plus">New folder</span></a></li>
                     <li><a href="deletefolder.html" id="top-link"><span class="icon solid fa-folder-minus">Delete folder</span></a></li>
                     <li><a href="files.html" id="top-link"><span class="icon solid fa-file">Your files</span></a></li>
+                    <li><a href="./../wiki/index.html" id="top-link"><span class="icon solid fa-question">Help</span></a></li>
                 </ul>
             </nav>
 
