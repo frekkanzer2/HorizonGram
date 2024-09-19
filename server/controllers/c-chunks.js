@@ -13,7 +13,7 @@ exports.upload_checks = async (req, res) => {
     const folder = req.body.folder;
     const occurrences = filename.match(/\./g);  // Cerca tutte le occorrenze di '.'
     if (occurrences && occurrences.length > 1) filename = filename.replace(/\.(?=.*\.)/g, '-');
-    const validFilenameRegex = /^[A-Z0-9 ._+\-&]+\.?[A-Z0-9]{0,4}$/;
+    const validFilenameRegex = /^[A-Za-z0-9 ._+\-&()]+\.?[A-Za-z0-9]{0,4}$/;
     if (filename.includes("-$") || filename.includes("xDOTx") || !validFilenameRegex.test(filename) || filename.length > 50) {
         let errMessage = "";
         if (filename.length > 50) errMessage = 'File name too long (50 chars limit)';
