@@ -37,6 +37,10 @@
 			.status-error {
 				color: rgb(255, 105, 105);
 			}
+			.important-button {
+				color: black!important;
+				font-weight: bold;
+			}
     </style>
 	</head>
 	<script>
@@ -93,9 +97,10 @@
 								<div id="folder-loading-message" style="font-size: 32px;">Waiting for folder loading...</div>
 								<div id="folder-select-container" style="display: none;">
 									<select id="folder-name" name="fname">
-										<option value="">Select a folder</option> <!-- Default empty option -->
+										<option value="">Select a folder</option>
 									</select>
 								</div>
+								<input type="button" id="toggle-delete-files" value="Internal file deletion disabled"/>
 								<div id="status-message"></div>
 								<input id="delete-folder" type="button" value="Submit" />
 							</header>

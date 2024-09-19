@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <title>HorizonGram Documentation</title>
+    
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="favicon.ico"> 
+    
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome JS-->
+    <script defer src="assets/fontawesome/js/all.min.js"></script>
+    
+    <!-- Plugins CSS -->
+    <link rel="stylesheet" href="assets/plugins/simplelightbox/simple-lightbox.min.css">
+
+    <!-- Theme CSS -->  
+    <link id="theme-style" rel="stylesheet" href="assets/css/theme.css">
+
+</head> 
+
+<body class="docs-page">    
+
+    <header class="header fixed-top">
+        <div class="branding docs-branding">
+            <div class="container-fluid position-relative py-2">
+                <div class="docs-logo-wrapper">
+	                <div class="site-logo"><a class="navbar-brand" href="index.html"><img class="logo-icon me-2" src="./assets/images/avatar-big.png" alt="logo" width="50"></a></div>    
+                </div><!--//docs-logo-wrapper-->
+            </div><!--//container-->
+        </div><!--//branding-->
+    </header><!--//header-->
+    
+    
+    <div class="docs-wrapper">
+	    <div id="docs-sidebar" class="docs-sidebar">
+		    <nav id="docs-nav" class="docs-nav navbar">
+			    <ul class="section-items list-unstyled nav flex-column pb-3">
+				    <li class="nav-item section-title"><a class="nav-link scrollto active" href="#section-1"><span class="theme-icon-holder me-2"><i class="fas fa-heart"></i></span>Contributing</a></li>
+				    <li class="nav-item section-title"><a class="nav-link scrollto" href="#section-2"><span class="theme-icon-holder me-2"><i class="fas fa-bug"></i></span>Reporting</a></li>
+				    <li class="nav-item section-title"><a class="nav-link scrollto" href="#section-3"><span class="theme-icon-holder me-2"><i class="fas fa-code"></i></span>APIs</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-3-1">Status</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-3-2">Folder</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-3-3">File</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-3-4">Chunks</a></li>
+			    </ul>
+		    </nav>
+	    </div>
+
+	    <div class="docs-content">
+		    <div class="container">
+			    <article class="docs-article" id="section-1">
+
+				    <header class="docs-header">
+					    <h1 class="docs-heading">Contributing</h1>
+					    <section class="docs-intro">
+						    <p>Thank you for considering contributing to our open-source project! Your support helps make this cloud storage solution, powered by Telegram APIs, even better.</p>
+						</section>
+				    </header>
+					<h5>How to contribute</h5>
+					<ol>
+						<li>
+							<strong class="me-1">Fork the repository</strong><br/>
+							Start by forking the project repository to your own GitHub account. This creates a copy where you can work freely<br/>
+							<a href="https://github.com/frekkanzer2/HorizonGram" target="_blank">Go to HorizonGram repository</a>
+						</li>
+						<li>
+							<strong class="me-1">Clone your fork</strong><br/>
+							Clone the forked repository locally to begin working on your features or fixes
+						</li>
+						<li>
+							<strong class="me-1">Create a feature branch</strong><br/>
+							Create a new branch named <code>feature/&ltBRANCH_NAME&gt</code> for your changes
+						</li>
+						<li>
+							<strong class="me-1">Make your changes</strong><br/>
+							Implement your new features, bug fixes, or enhancements. Feel free to refer to the project's documentation and existing codebase for guidance
+						</li>
+						<li>
+							<strong class="me-1">Submit a Pull Request (PR)</strong><br/>
+							Once your changes are complete, push them to your fork and open a Pull Request (PR) to the main repository
+						</li>
+						<li>
+							<strong class="me-1">Review and discuss</strong><br/>
+							Your PR will be reviewed. We may suggest improvements or ask for further clarification. Once everything is clear, your PR will be merged into the project!
+						</li>
+					</ol>
+					<h5>Customized HorizonGram Client</h5>
+					<p>If you're interested in building a customized client for the cloud storage system, we'd love to hear from you! You can develop your own client in a separate repository.</p>
+					<p>
+						When the client is done, open an issue on GitHub with the following tags: <code>priority:low</code> and <code>type:enhancement</code>.<br/>
+						Provide a brief description of your idea or customization, include screenshots that showcase the proposed UI and add a link to your repository.
+					</p>
+					<p>Your issue will be reviewed and, in case it is accepted, your client will be integrated into the HorizonGram repository.</p>
+			    </article>
+
+				<article class="docs-article" id="section-2">
+
+				    <header class="docs-header">
+					    <h1 class="docs-heading">Reporting</h1>
+					    <section class="docs-intro">
+						    <p>
+								Do you have any suggestions to make or bugs to report?<br/>
+								We really appreciate reports, so don't hesitate to open one!
+							</p>
+						</section>
+				    </header>
+					<p>You can open an <a href="https://github.com/frekkanzer2/HorizonGram/issues" target="_blank">issue on GitHub</a> in the following way:</p>		
+					<ol>
+						<li>
+							Add an explanatory title
+						</li>
+						<li>
+							Add a very detailed description. In case you are reporting a bug, clarify when it happens and what steps to follow to reproduce it
+						</li>
+						<li>
+							Add two tags. One with <code>priority</code> label, one with <code>type</code> label:
+							<ul>
+								<li>
+									<strong>priority:low</strong><br/>
+									Indicates that the issue does not affect user activity
+								</li>
+								<li>
+									<strong>priority:medium</strong><br/>
+									The issue impacts user activity, but user data remains intact
+								</li>
+								<li>
+									<strong>priority:low</strong><br/>
+									The issue impacts user activity and the integrity of user data is invalidated
+								</li>
+								<li>
+									<strong>type:bug</strong><br/>
+									Something isn't working
+								</li>
+								<li>
+									<strong>type:documentation</strong><br/>
+									Improvements or additions to documentation
+								</li>
+								<li>
+									<strong>type:enhancement</strong><br/>
+									New feature or request
+								</li>
+								<li>
+									<strong>type:question</strong><br/>
+									Further information is requested
+								</li>
+							</ul>
+						</li>
+					</ol>
+					<div class="callout-block callout-block-warning">
+						<div class="content">
+							<h4 class="callout-title">
+								<span class="callout-icon-holder me-1">
+									<i class="fas fa-bullhorn"></i>
+								</span><!--//icon-holder-->
+								Warning
+							</h4>
+							<p>In addition to the listed tags, there are others that indicate whether the report already exists and the status. Well, all tags not listed should not be used.</p>
+						</div><!--//content-->
+					</div><!--//callout-block-->
+					<div class="callout-block callout-block-info">
+						<div class="content">
+							<h4 class="callout-title">
+								<span class="callout-icon-holder me-1">
+									<i class="fas fa-info-circle"></i>
+								</span><!--//icon-holder-->
+								Note
+							</h4>
+							<p>In case of reports for doubts/suggestions, always set tag <code>priority:low</code></p>
+						</div><!--//content-->
+					</div><!--//callout-block-->
+			    </article>
+
+				<article class="docs-article" id="section-3">
+
+				    <header class="docs-header">
+					    <h1 class="docs-heading">APIs</h1>
+					    <section class="docs-intro">
+						    <p>The following is the documentation of the API exposed by the server at the latest updated version</p>
+						</section>
+				    </header>
+
+					<section class="docs-section" id="item-3-1">
+						<h2 class="section-heading">Status</h2>
+						<div class="alert alert-success" role="alert" style="margin-bottom: 0px;">
+							<strong>GET</strong> - http://localhost:3000/api/status
+						</div>
+						<div class="alert alert-light" role="alert">
+							Used to check if the server is working
+						</div>
+					</section>
+
+					<section class="docs-section" id="item-3-2">
+						<!-- GET-->
+						<h2 class="section-heading">Folder</h2>
+						<div class="alert alert-success" role="alert" style="margin-bottom: 0px;">
+							<strong>GET</strong> - http://localhost:3000/api/folder
+						</div>
+						<div class="alert alert-light" role="alert">
+							Get folders and files hierarchy
+						</div>
+
+						<!-- POST-->
+						<div class="alert alert-warning" role="alert" style="margin-bottom: 0px;">
+							<strong>POST</strong> - http://localhost:3000/api/folder
+						</div>
+						<div class="alert alert-light" role="alert">
+							Create a new folder
+						</div>
+
+						<!-- DELETE-->
+						<div class="alert alert-danger" role="alert" style="margin-bottom: 0px;">
+							<strong>DELETE</strong> - http://localhost:3000/api/folder
+						</div>
+						<div class="alert alert-light" role="alert">
+							Delete an existing folder
+						</div>
+					</section>
+
+					<section class="docs-section" id="item-3-3">
+						<h2 class="section-heading">File</h2>
+						<!-- POST-->
+						<div class="alert alert-warning" role="alert" style="margin-bottom: 0px;">
+							<strong>POST</strong> - http://localhost:3000/api/file/upload
+						</div>
+						<div class="alert alert-light" role="alert">
+							Upload a file by a single chunk (files that are too large could saturate RAM memory and cause the server to go Out Of Memory)
+						</div>
+						<!-- POST-->
+						<div class="alert alert-warning" role="alert" style="margin-bottom: 0px;">
+							<strong>POST</strong> - http://localhost:3000/api/file/download
+						</div>
+						<div class="alert alert-light" role="alert">
+							Download a file in the downloads folder set during HorizonGram setup
+						</div>
+						<!-- DELETE-->
+						<div class="alert alert-danger" role="alert" style="margin-bottom: 0px;">
+							<strong>DELETE</strong> - http://localhost:3000/api/file
+						</div>
+						<div class="alert alert-light" role="alert">
+							Delete a file
+						</div>
+					</section>
+
+					<section class="docs-section" id="item-3-4">
+						<h2 class="section-heading">Chunks</h2>
+						<!-- POST-->
+						<div class="alert alert-warning" role="alert" style="margin-bottom: 0px;">
+							<strong>POST</strong> - http://localhost:3000/api/chunks/upload/checks
+						</div>
+						<div class="alert alert-light" role="alert">
+							It does some integrity checks on the file to upload
+						</div>
+						<!-- POST-->
+						<div class="alert alert-warning" role="alert" style="margin-bottom: 0px;">
+							<strong>POST</strong> - http://localhost:3000/api/chunks/upload/preparation
+						</div>
+						<div class="alert alert-light" role="alert">
+							Reports the number of chunks required to complete the upload of a file
+						</div>
+						<!-- POST-->
+						<div class="alert alert-warning" role="alert" style="margin-bottom: 0px;">
+							<strong>POST</strong> - http://localhost:3000/api/chunks/upload
+						</div>
+						<div class="alert alert-light" role="alert">
+							Upload a single chunk of a file
+						</div>
+
+						<h3 style="margin-top: 18px">Additional chunks documentation</h3>
+						<p>
+							As stated in the documentation, there are 3 endpoints under the Chunks route: <code>checks</code>, <code>preparation</code>, and <code>upload</code>.<br/>
+							These are three endpoints that must be invoked in order by the FE when uploading a file by splitting into chunks.
+						</p>
+						<p>
+							First invoked is <code>checks</code>, which takes care of checking whether the file can be uploaded to the cloud.<br/>
+							Now the client must proceed to divide the file to be uploaded into chunks. After that, <code>preparation</code> is invoked, which saves chunks number to the database.<br/>
+							For each chunk, then, <code>upload</code> service will be called.
+						</p>
+						<img src="./assets/images/chunk-upload-explained.png" width="86%">
+					</section>
+
+			    </article>
+
+		    </div> 
+	    </div>
+    </div><!--//docs-wrapper-->
+   
+       
+    <!-- Javascript -->          
+    <script src="assets/plugins/popper.min.js"></script>
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>  
+    
+    
+    <!-- Page Specific JS -->
+    <script src="assets/plugins/smoothscroll.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+    <script src="assets/js/highlight-custom.js"></script> 
+    <script src="assets/plugins/simplelightbox/simple-lightbox.min.js"></script>      
+    <script src="assets/plugins/gumshoe/gumshoe.polyfills.min.js"></script> 
+    <script src="assets/js/docs.js"></script> 
+    <script src="assets/js/links.js"></script> 
+
+</body>
+</html> 
+

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <title>HorizonGram Documentation</title>
+    
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="favicon.ico"> 
+    
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome JS-->
+    <script defer src="assets/fontawesome/js/all.min.js"></script>
+    
+    <!-- Plugins CSS -->
+    <link rel="stylesheet" href="assets/plugins/simplelightbox/simple-lightbox.min.css">
+
+    <!-- Theme CSS -->  
+    <link id="theme-style" rel="stylesheet" href="assets/css/theme.css">
+
+</head> 
+
+<body class="docs-page">    
+
+    <header class="header fixed-top">
+        <div class="branding docs-branding">
+            <div class="container-fluid position-relative py-2">
+                <div class="docs-logo-wrapper">
+	                <div class="site-logo"><a class="navbar-brand" href="index.html"><img class="logo-icon me-2" src="./assets/images/avatar-big.png" alt="logo" width="50"></a></div>    
+                </div><!--//docs-logo-wrapper-->
+            </div><!--//container-->
+        </div><!--//branding-->
+    </header><!--//header-->
+    
+    
+    <div class="docs-wrapper">
+	    <div id="docs-sidebar" class="docs-sidebar">
+		    <nav id="docs-nav" class="docs-nav navbar">
+			    <ul class="section-items list-unstyled nav flex-column pb-3">
+				    <li class="nav-item section-title"><a class="nav-link scrollto active" href="#section-1"><span class="theme-icon-holder me-2"><i class="fas fa-angle-double-up"></i></span>Update</a></li>
+				    <li class="nav-item section-title"><a class="nav-link scrollto" href="#section-2"><span class="theme-icon-holder me-2"><i class="fas fa-angle-double-up"></i></span>Breaking changes updates</a></li>
+			    </ul>
+		    </nav><!--//docs-nav-->
+	    </div><!--//docs-sidebar-->
+
+	    <div class="docs-content">
+		    <div class="container">
+			    <article class="docs-article" id="section-1">
+				    <header class="docs-header">
+					    <h1 class="docs-heading">Update</h1>
+						<h5><a href="https://github.com/frekkanzer2/HorizonGram/releases" target="_blank">Click me to check new updates</a></h5>
+					    <section class="docs-intro">
+						    <p>You have already downloaded HorizonGram but would like to upgrade it to the latest version. Well, re-installing from scratch 
+								is not a good option since creating a new bot and chat archive would mean losing the files saved in the cloud. Therefore, 
+								there is a simple procedure to follow in general. For certain updates (named "breaking changes updates"), however, 
+								specific procedures will be listed.</p>
+						</section><!--//docs-intro-->
+						
+						<h5>Generic update</h5>
+						<p>
+							Suppose you are using version X and want to upgrade to Y.<br/>
+							Suppose you checked the list of breaking changes updates and there is no version Z that falls in the list and that is X &lt Z <span>&#8804;</span> Y.
+						</p>
+						<ol>
+							<li>Extract the Y version to a temporary folder</li>
+							<li>Copy all files and folders except <code>server</code> from the temporary folder where you extracted update Y to the HorizonGram version X folder</li>
+							<li>Open the server folder in Y and X HorizonGram folders</li>
+							<li>Copy all files from server Y folder to server X folder (this prevents the .env file from being overwritten or deleted)</li>
+						</ol>
+						<h5>Breaking changes updates</h5>
+						<p>
+							Suppose you are using version X and want to upgrade to Y.<br/>
+							Suppose you checked the list of breaking changes updates and there is one or more version Z that falls in the list and that is X &lt Z <span>&#8804;</span> Y.<br/>
+							You must first execute in order all the updates present between version X and version Y listed in the breaking changes updates.
+						</p>
+						<p>
+							<code>Example: you have installed version 2 and want to upgrade to version 8. In the update list of breaking changes updated there is version 6.</code><br/>
+							<code>You must upgrade to version 6 by following the appropriate section in the breaking changes updates, then you can upgrade to version 8 by following the generic procedure.</code>
+						</p>
+				    </header>
+			    </article>
+
+				<article class="docs-article" id="section-2">
+				    <header class="docs-header">
+					    <h1 class="docs-heading">Breaking changes updates</h1>
+					    <section class="docs-intro">
+						    <p>No breaking changes updates found</p>
+						</section><!--//docs-intro-->
+				    </header>
+			    </article>
+
+		    </div> 
+	    </div>
+    </div><!--//docs-wrapper-->
+   
+       
+    <!-- Javascript -->          
+    <script src="assets/plugins/popper.min.js"></script>
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>  
+    
+    
+    <!-- Page Specific JS -->
+    <script src="assets/plugins/smoothscroll.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+    <script src="assets/js/highlight-custom.js"></script> 
+    <script src="assets/plugins/simplelightbox/simple-lightbox.min.js"></script>      
+    <script src="assets/plugins/gumshoe/gumshoe.polyfills.min.js"></script> 
+    <script src="assets/js/docs.js"></script> 
+    <script src="assets/js/links.js"></script> 
+
+</body>
+</html> 
+

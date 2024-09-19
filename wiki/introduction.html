@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <title>HorizonGram Documentation</title>
+    
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="favicon.ico"> 
+    
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome JS-->
+    <script defer src="assets/fontawesome/js/all.min.js"></script>
+    
+    <!-- Plugins CSS -->
+    <link rel="stylesheet" href="assets/plugins/simplelightbox/simple-lightbox.min.css">
+
+    <!-- Theme CSS -->  
+    <link id="theme-style" rel="stylesheet" href="assets/css/theme.css">
+
+</head> 
+
+<body class="docs-page">    
+
+    <header class="header fixed-top">
+        <div class="branding docs-branding">
+            <div class="container-fluid position-relative py-2">
+                <div class="docs-logo-wrapper">
+	                <div class="site-logo"><a class="navbar-brand" href="index.html"><img class="logo-icon me-2" src="./assets/images/avatar-big.png" alt="logo" width="50"></a></div>    
+                </div><!--//docs-logo-wrapper-->
+            </div><!--//container-->
+        </div><!--//branding-->
+    </header><!--//header-->
+    
+    
+    <div class="docs-wrapper">
+	    <div id="docs-sidebar" class="docs-sidebar">
+		    <nav id="docs-nav" class="docs-nav navbar">
+			    <ul class="section-items list-unstyled nav flex-column pb-3">
+				    <li class="nav-item section-title"><a class="nav-link scrollto active" href="#section-1"><span class="theme-icon-holder me-2"><i class="fas fa-ellipsis"></i></span>About</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-1-1">How it works</a></li>
+				    <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-2"><span class="theme-icon-holder me-2"><i class="fas fa-thumbs-up"></i></span>Before the use</a></li>
+				    <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-3"><span class="theme-icon-holder me-2"><i class="fas fa-question"></i></span>How to use</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-3-1">Files</a></li>
+					<li class="nav-item"><a class="nav-link scrollto" href="#item-3-2">Folders</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-3-3">Upload</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-3-4">Download</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-3-5">Upload patterns</a></li>
+				    <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-4"><span class="theme-icon-holder me-2"><i class="fas fa-xmark"></i></span>Warnings</a></li>
+			    </ul>
+		    </nav><!--//docs-nav-->
+	    </div><!--//docs-sidebar-->
+
+	    <div class="docs-content">
+		    <div class="container">
+			    <article class="docs-article" id="section-1">
+				    <header class="docs-header">
+					    <h1 class="docs-heading">About</h1>
+					    <section class="docs-intro">
+						    <p>
+								HorizonGram is an innovative application designed to leverage Telegram's cloud infrastructure to create a custom storage solution with unlimited capacity. This platform offers users seamless file upload, download, and monitoring capabilities, all through a user-friendly graphical interface powered by AI (ChatGPT).
+							</p>
+						</section><!--//docs-intro-->
+
+						<p>
+							By utilizing Telegram as the primary storage medium, HorizonGram ensures that users can store unlimited amounts of data without traditional limitations. Additionally, it integrates Firebase as a backend to store and manage essential metadata, enabling efficient file retrieval and reconstruction for downloads.
+						</p>
+
+						<p>
+							HorizonGram combines the best of cloud storage and AI-driven usability, providing a powerful, scalable solution for managing files with ease and efficiency.
+						</p>
+						<p>
+							Developed by <a href="https://www.linkedin.com/in/francescoabateimtech/" target="_blank">Francesco Abate</a> taking inspiration from <a href="https://youtu.be/QiGKrBDqmKg?si=smTwsTtNVOo6qn8R" target="_blank">this video</a>.
+						</p>
+				    </header>
+
+				    <section class="docs-section" id="item-1-1">
+						<h2 class="section-heading">How it works</h2>
+						<p>
+							HorizonGram leverages Telegram's cloud infrastructure through the use of a dedicated bot to create a custom, unlimited storage solution.
+						</p>
+						<p>
+							The application communicates directly with the Telegram bot, issuing commands such as uploading or downloading files. The bot then handles these tasks by organizing the files into specific topics within a Telegram group, ensuring the files remain structured and easy to manage.
+						</p>
+						<p>
+							HorizonGram interacts with the bot via Telegram's API, which acts as the communication interface for executing commands like file uploads and downloads.<br/>
+							However, due to the API's file size limitations, which are relatively low, HorizonGram employs a solution to manage larger files. Each file is divided into segments, with a maximum size of 20MB per portion, allowing the platform to bypass these restrictions and efficiently store and retrieve large data sets. The bot organizes these file segments into a dedicated Telegram group.
+						</p>
+						<img src="./assets/images/chunks1.png" width="50%" style="margin-bottom: 12px;">
+						<img src="./assets/images/chunks2.png" width="68%" style="margin-bottom: 12px;">
+						<p>
+							When a file download is initiated, HorizonGram retrieves all the individual segments stored on Telegram and merges them back together to reassemble the complete file. This reconstruction process ensures that users can seamlessly access and utilize their files as if they were never fragmented.
+						</p>
+						<img src="./assets/images/chunks3.png" width="70%" style="margin-bottom: 16px;">
+						<p>
+							Each fragment is associated with a unique message ID on Telegram, as each file piece is stored as a separate message. To download and reconstruct a file, HorizonGram retrieves all the necessary message IDs corresponding to the file's fragments. These IDs, or metadata, are stored in Firebase Realtime Database, a cloud-based solution that securely tracks and manages all metadata for efficient file reconstruction and retrieval.
+						</p>
+						<p>
+							This metadata management ensures that HorizonGram can seamlessly reassemble the file from its fragments, providing users with smooth access to their complete files.
+						</p>
+					</section>
+			    </article>
+			    
+			    <article class="docs-article" id="section-2">
+				    <header class="docs-header">
+					    <h1 class="docs-heading">Before the use</h1>
+					    <section class="docs-intro">
+						    <p>Before launching HorizonGram, it's important to follow the guides listed below.<br/>These guides will help you install all the necessary tools efficiently, ensuring a smooth setup process.</p>
+						</section>
+						<ol>
+							<li>
+								<a href="./requirements.html#section-1" target="_blank">Requirements</a>
+							</li>
+							<li>
+								<a href="./how-to-install.html#section-1" target="_blank">How to install</a>
+							</li>
+							<li>
+								<a href="./how-to-start.html#section-1" target="_blank">How to start</a>
+							</li>
+						</ol>
+				    </header>
+			    </article>
+			    
+			    <article class="docs-article" id="section-3">
+				    <header class="docs-header">
+					    <h1 class="docs-heading">How to use</h1>
+				    </header>
+					
+				    <section class="docs-section" id="item-3-1">
+						<h2 class="section-heading">Files</h2>
+						<p>
+							To see your uploaded files, click on the “Your files” section.<br/>All uploaded files divided by folders will be shown. If you have just set up HorizonGram and haven't uploaded anything yet, you will see a plain white page.
+						</p>
+						<img src="./assets/images/hg1.png" width="40%" style="margin-bottom: 16px; margin-right: 64px;">
+						<img src="./assets/images/hg2.png" width="16%" style="margin-bottom: 16px;"><br/>
+						<p>
+							Clicking on a file will open a popup giving the opportunity to download or delete it. Deletion is irreversible.
+						</p>
+						<img src="./assets/images/hg3.png" width="45%" style="margin-bottom: 16px;"><br/>
+						<p>
+							Files cannot be renamed or moved to other folders unless deleted and re-uploaded.
+						</p>
+					</section><!--//section-->
+					
+					<section class="docs-section" id="item-3-2">
+						<h2 class="section-heading">Folders</h2>
+						<p>
+							Folders that organize files can be viewed in the same way that uploaded files are viewed, so by clicking the “Your files” section.
+						</p>
+						<img src="./assets/images/hg1.png" width="40%" style="margin-bottom: 16px;">
+						<p>
+							You can create new folders by clicking the “New folders” section.
+						</p>
+						<img src="./assets/images/new-folder.png" width="36%" style="margin-bottom: 16px;">
+						<p>
+							For deletion, on the other hand, click the “Delete folder” section.
+						</p>
+						<img src="./assets/images/del-folder.png" width="34%" style="margin-bottom: 16px;">
+						<p>
+							Folder deletion can be performed if the folder appears to be empty.<br/>
+							If it contains files and you want to force deletion, there is a button named "Internal file deletion disabled" that enables forced deletion. Forced deletion also involves deleting the files contained in the folder.
+						</p>
+						<img src="./assets/images/del-folder-forced.png" width="36%" style="margin-bottom: 16px;">
+						<p>
+							Folders cannot be renamed.
+						</p>
+
+					</section><!--//section-->
+					
+					<section class="docs-section" id="item-3-3">
+						<h2 class="section-heading">Upload</h2>
+						<p>You can upload one or more files by selecting the appropriate section.</p>
+						<p>Clicking on “Upload a file” will allow you to upload a single file.</p>
+						<img src="./assets/images/single-upload.png" width="34%" style="margin-bottom: 16px;">
+						<p>Clicking on “Bulk upload” will allow you to upload multiple files with one click.</p>
+						<img src="./assets/images/multiple-upload.png" width="58%" style="margin-bottom: 16px;">
+						<p>Select files to upload, confirm and choose a folder.</p>
+						<img src="./assets/images/select.png" width="60%" style="margin-bottom: 16px;"><br/>
+						<img src="./assets/images/multiple-upload-pre.png" width="58%" style="margin-bottom: 16px;">
+						<p>
+							Pressing submit button, the upload status will appear: just sit and wait.<br/>
+							The number of chunks shown indicates the number of fragments to be loaded. The loading screen indicates the number of chunks uploaded out of the total chunks to be uploaded.
+						</p>
+						<img src="./assets/images/chunks-status.png" width="50%" style="margin-bottom: 16px;">
+					</section>
+					
+					<section class="docs-section" id="item-3-4">
+						<h2 class="section-heading">Download</h2>
+						<p>You can download a single file by going to the “Your files” section, opening a folder, and clicking on a file: a download button will appear and start the download.</p>
+						<img src="./assets/images/download-single.png" width="50%" style="margin-bottom: 16px;">
+						<p>After the download is completed, the local path where the file was saved will be shown.</p>
+						<img src="./assets/images/download-single-ok.png" width="48%" style="margin-bottom: 16px;">
+						<p>You can even download an entire folder! Just click “Bulk download”, choose the folder and wait for it to load! Simple, isn't it?</p>
+						<img src="./assets/images/bulk-dwn.png" width="38%" style="margin-bottom: 16px;">
+
+						<div class="callout-block callout-block-info">
+                            <div class="content">
+                                <h4 class="callout-title">
+	                                <span class="callout-icon-holder me-1">
+		                                <i class="fas fa-info-circle"></i>
+		                            </span>
+	                                Note
+	                            </h4>
+                                <p>
+									The downloaded files will always all end up in the download folder set during HorizonGram setup.<br/>
+									The server will replicate the same structure you have in the cloud, so if you download a file belonging to a folder called X, then X will be created in your download path and the downloaded file will be placed inside it.
+								</p>
+                            </div>
+                        </div>
+
+					</section><!--//section-->
+					
+					<section class="docs-section" id="item-3-5">
+						<h2 class="section-heading">Upload patterns</h2>
+						<p>Suppose you want to backup several files: what is the best way to upload and manage them through HorizonGram?</p>
+						<p>There are some loading patterns to adopt in order to efficiently manage your files. However, in case you want to upload a few files or a single file, continue as usual.</p>
+						<h5>Upload a folder containing only files</h5>
+						<p>Suppose we want to upload such a folder:</p>
+						<img src="./assets/images/ff.png" width="45%" style="margin-bottom: 16px;">
+						<p>The best solution consists of:</p>
+						<ol>
+							<li>Create a folder on HorizonGram with the same name as the folder to be uploaded</li>
+							<li>Go to "Bulk upload"</li>
+							<li>Selects all files in the folder to be uploaded</li>
+							<li>Select the created folder</li>
+							<li>Confirm by pressing the submit button</li>
+						</ol>
+						<h5>Upload a folder containing files and folders</h5>
+						<p>Suppose we want to upload such a folder:</p>
+						<img src="./assets/images/ffo.png" width="45%" style="margin-bottom: 16px;">
+						<p>The best solution consists of:</p>
+						<ol>
+							<li>Select all the contents of the folder to be uploaded (including subfolders) and create a zip archive named "Contents.zip"</li>
+							<li>Create a folder on HorizonGram with the same name as the folder to be uploaded</li>
+							<li>Go to "Upload a file"</li>
+							<li>Select "Contents.zip"</li>
+							<li>Select the created folder</li>
+							<li>Confirm by pressing the submit button</li>
+						</ol>
+					</section>
+
+			    </article><!--//docs-article-->
+			    
+			    <article class="docs-article" id="section-4">
+				    <header class="docs-header">
+					    <h1 class="docs-heading">Warnings</h1>
+				    </header>
+					<div class="callout-block callout-block-info">
+						<div class="content">
+							<h4 class="callout-title">
+								<span class="callout-icon-holder me-1">
+									<i class="fas fa-info-circle"></i>
+								</span><!--//icon-holder-->
+								Note: files on Telegram are divided into many small files of 20MB
+							</h4>
+							<p>It is normal, HorizonGram fragments files so it gets around some limitations of Telegram.</p>
+						</div><!--//content-->
+					</div><!--//callout-block-->
+					<div class="callout-block callout-block-info">
+						<div class="content">
+							<h4 class="callout-title">
+								<span class="callout-icon-holder me-1">
+									<i class="fas fa-info-circle"></i>
+								</span><!--//icon-holder-->
+								Note: the file downloaded directly from Telegram does not open
+							</h4>
+							<p>It is normal, files must be downloaded via HorizonGram since it will take care of their reconstruction from small blocks to a single file.</p>
+						</div><!--//content-->
+					</div><!--//callout-block-->
+					<div class="callout-block callout-block-warning">
+						<div class="content">
+							<h4 class="callout-title">
+								<span class="callout-icon-holder me-1">
+									<i class="fas fa-bullhorn"></i>
+								</span><!--//icon-holder-->
+								Warning: upload or download stucked
+							</h4>
+							<p>The operation is not stucked, it is always good to monitor via the server console the progress. If nothing is shown, click in an empty space in the console and press the “Enter” key.</p>
+						</div><!--//content-->
+					</div><!--//callout-block-->
+					<div class="callout-block callout-block-danger me-1">
+						<div class="content">
+							<h4 class="callout-title">
+								<span class="callout-icon-holder">
+									<i class="fas fa-exclamation-triangle"></i>
+								</span><!--//icon-holder-->
+								Danger: do not close the browser or the server console during an operation
+							</h4>
+							<p>If you close the browser or the server console during the loading of an operation (be it deleting a folder, uploading a file, and so on), inconsistencies will most likely be generated that will risk seriously damaging your saved data. Actually, HorizonGram has no procedures for restoring and resolving corrupted data.</p>
+						</div><!--//content-->
+					</div><!--//callout-block-->
+					<div class="callout-block callout-block-danger me-1">
+						<div class="content">
+							<h4 class="callout-title">
+								<span class="callout-icon-holder">
+									<i class="fas fa-exclamation-triangle"></i>
+								</span><!--//icon-holder-->
+								Danger: do not manipulate the Archive group on Telegram
+							</h4>
+							<p>Manipulating messages and attachments on the Archive group on Telegram risks compromising your data, then making it unreadable for HorizonGram. Even the simplest of operations (such as renaming a channel or adding a message) could break the entire system.</p>
+						</div><!--//content-->
+					</div><!--//callout-block-->
+			    </article>
+
+		    </div> 
+	    </div>
+    </div><!--//docs-wrapper-->
+   
+       
+    <!-- Javascript -->          
+    <script src="assets/plugins/popper.min.js"></script>
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>  
+    
+    
+    <!-- Page Specific JS -->
+    <script src="assets/plugins/smoothscroll.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+    <script src="assets/js/highlight-custom.js"></script> 
+    <script src="assets/plugins/simplelightbox/simple-lightbox.min.js"></script>      
+    <script src="assets/plugins/gumshoe/gumshoe.polyfills.min.js"></script> 
+    <script src="assets/js/docs.js"></script> 
+    <script src="assets/js/links.js"></script> 
+
+</body>
+</html> 
+
