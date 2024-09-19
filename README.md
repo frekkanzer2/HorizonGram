@@ -1,4 +1,4 @@
-<img src="https://github.com/frekkanzer2/HorizonGram/blob/develop/blobs/avatar.png?raw=true" height="100">
+
 
 Infinite cloud storage manager that uses Telegram cloud storage to upload and download files.
 
