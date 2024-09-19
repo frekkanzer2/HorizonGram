@@ -11,11 +11,16 @@ exports.upload_checks = async (req, res) => {
     if (!req.body.folder) return res.status(400).json({ message: 'No folder specified' });
     let filename = req.body.filename;
     const folder = req.body.folder;
-    if (filename.includes("-$") || filename.includes("xDOTx"))
-        return res.status(400).json({ message: 'File name not valid' });
     const occurrences = filename.match(/\./g);  // Cerca tutte le occorrenze di '.'
     if (occurrences && occurrences.length > 1) filename = filename.replace(/\.(?=.*\.)/g, '-');
-
+    const validFilenameRegex = /^[A-Z0-9 ._+\-&]+\.?[A-Z0-9]{0,4}$/;
+    if (filename.includes("-$") || filename.includes("xDOTx") || !validFilenameRegex.test(filename) || filename.length > 50) {
+        let errMessage = "";
+        if (filename.length > 50) errMessage = 'File name too long (50 chars limit)';
+        else if (!validFilenameRegex.test(filename)) errMessage = 'Remove special characters from the file name';
+        else errMessage = 'File name not valid';
+        return res.status(400).json({ message: errMessage });
+    }
     filename = filename.replace('.', 'xDOTx');
     try {
         console.log("Started checks for chunk upload");
