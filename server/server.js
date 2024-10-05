@@ -2,8 +2,14 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const path = require('path');
-const { exec } = require('child_process');  // Modulo per eseguire comandi di sistema
-const os = require('os');  // Per rilevare il sistema operativo
+const { exec } = require('child_process');
+const os = require('os');
+const fs = require('fs');
+
+if (!fs.existsSync(path.join(__dirname, '.env'))) {
+    console.error('Settings file (.env) not configured. Please read the configuration guide to start the server.');
+    process.exit(1);
+}
 
 let routes = {
     status: require('./routes/r-status'),
