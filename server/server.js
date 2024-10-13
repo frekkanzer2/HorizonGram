@@ -47,7 +47,16 @@ function open_client() {
 }
 
 const PORT = 3000;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
     open_client();
+});
+// Gestione degli errori
+server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+        console.error(`Errore: il server risulta essere già avviato.`);
+        process.exit(1); // Uscita dal processo
+    } else {
+        console.error(`Errore del server: ${err.message}`);
+    }
 });
