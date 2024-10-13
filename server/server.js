@@ -2,14 +2,9 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const path = require('path');
-const { exec } = require('child_process');
-const os = require('os');
-const fs = require('fs');
+const engine = require('./utils/engine')
 
-if (!fs.existsSync(path.join(__dirname, '.env'))) {
-    console.error('Settings file (.env) not configured. Please read the configuration guide to start the server.');
-    process.exit(1);
-}
+engine.envfile_exists(path.join(__dirname, '.env'));
 
 let routes = {
     status: require('./routes/r-status'),
@@ -26,37 +21,22 @@ app.use('/api/file', routes.files);
 app.use('/api/folder', routes.folders);
 app.use('/api/chunks', routes.chunks);
 
-function open_client() {
-    let url = path.join(__dirname, './../client/index.html');
-    const platform = os.platform();
-    let command;
-    if (platform === 'win32') {
-        command = `start ${url}`;
-    } else if (platform === 'darwin') {
-        command = `open ${url}`;
-    } else if (platform === 'linux') {
-        command = `xdg-open ${url}`;
-    }
-    if (command) {
-        exec(command, (err) => {
-            if (err) {
-                console.error('Errore nell\'apertura del browser\n', err);
+const PORT = 3000;
+
+engine.integrity_checks().then(
+    () => {
+        const server = app.listen(PORT, () => {
+            console.log(`RUN > Server successfully started on http://localhost:${PORT}`);
+            engine.open_client();
+        });
+        // Gestione degli errori
+        server.on('error', (err) => {
+            if (err.code === 'EADDRINUSE') {
+                console.error(`RUN > Server already started`);
+                process.exit(1); // Uscita dal processo
+            } else {
+                console.error(`RUN > Generical server error: ${err.message}`);
             }
         });
     }
-}
-
-const PORT = 3000;
-const server = app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-    open_client();
-});
-// Gestione degli errori
-server.on('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
-        console.error(`Errore: il server risulta essere già avviato.`);
-        process.exit(1); // Uscita dal processo
-    } else {
-        console.error(`Errore del server: ${err.message}`);
-    }
-});
+)

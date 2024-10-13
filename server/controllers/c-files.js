@@ -78,6 +78,7 @@ exports.deleteFile = async (req, res) => {
         return;
     }
     let filedataRes = (await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`)).data;
+    console.log(filedataRes);
     const idsToDelete = filedataRes.slice(1).map(item => item.msgid);
     for (let i=1; i < filedataRes.length; i++)
         axios.delete(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}/${i}.json`);
@@ -93,6 +94,29 @@ exports.deleteFile = async (req, res) => {
     });
 }
 
+exports.integrity_check = async (req, res) => {
+    if (!req.body.folder) return res.status(400).json({ message: 'No folder specified' });
+    if (!req.body.filename) return res.status(400).json({ message: 'No file name specified' });
+    const folder = req.body.folder;
+    let filename = req.body.filename;
+    if (filename.includes("-$") || filename.includes("xDOTx"))
+        return res.status(400).json({ message: 'File name not valid' });
+    filename = filename.replace('.', 'xDOTx');
+    let filedataRes = (await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`)).data;
+    let chunksNumber = (await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}/${filename}.json`)).data;
+    if (Array.isArray(filedataRes) && (chunksNumber != null && chunksNumber == filedataRes.length-1))
+        return res.status(200).json();
+    else return res.status(400).json();
+}
+
+exports.integrity_check_explicit = async (raw_folder, raw_filename) => {
+    const folder = raw_folder;
+    let filename = raw_filename;
+    let filedataRes = (await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`)).data;
+    let chunksNumber = (await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}/${filename}.json`)).data;
+    return (Array.isArray(filedataRes) && (chunksNumber != null && chunksNumber == filedataRes.length-1));
+}
+
 exports.download = async (req, res) => {
     if (!req.body.folder) return res.status(400).json({ message: 'No folder specified' });
     if (!req.body.filename) return res.status(400).json({ message: 'No file name specified' });
@@ -101,7 +125,6 @@ exports.download = async (req, res) => {
 
     if (filename.includes("-$") || filename.includes("xDOTx"))
         return res.status(400).json({ message: 'File name not valid' });
-
     filename = filename.replace('.', 'xDOTx');
 
     let chunksNumber = (await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}/${filename}.json`)).data;

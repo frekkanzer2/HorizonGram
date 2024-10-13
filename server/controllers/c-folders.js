@@ -45,6 +45,12 @@ exports.getFileList = async (req, res) => {
     });
 }
 
+exports.getFileList_explicit = async () => {
+    let databaseResponse = await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names.json`);
+    for (const key in databaseResponse.data) if (databaseResponse.data[key].hasOwnProperty('xDOTx')) delete databaseResponse.data[key]['xDOTx'];
+    return databaseResponse.data;
+}
+
 exports.deleteTopic = async (req, res) => {
     const body = req.body;
     if (!body.name) return res.status(400).json({ message: 'No folder name specified' });
