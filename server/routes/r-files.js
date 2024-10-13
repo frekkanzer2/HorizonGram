@@ -12,4 +12,5 @@ const direct_api_upload_settings = multer({
 router.delete('/', controller.deleteFile);
 router.post('/upload', direct_api_upload_settings.single('file'), controller.upload);
 router.post('/download', controller.download);
+router.post('/integrity', controller.integrity_check);
 module.exports = router;

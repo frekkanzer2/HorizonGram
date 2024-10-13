@@ -32,8 +32,7 @@ exports.upload = async (req, res) => {
         return;
     }
 
-    console.log(`Upload service warning: use it for files with low size`);
-    console.log(`Upload of: \"${file.originalname}\" | ${sizes.bytesToSize(file.size)}`);
+    console.log(`UPL > Uploading "${file.originalname.replace('xDOTx', '.')}" | ${sizes.bytesToSize(file.size)}`);
 
     const databaseResponse = await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}.json`);
     const topic = databaseResponse.data.id;
@@ -47,7 +46,7 @@ exports.upload = async (req, res) => {
         } 
         else {
             let chunks = chunkManagement.split(file.buffer, file.originalname, file.size);
-            console.log(`File \"${file.originalname}\" splitted in ${chunks.length} chunks`)
+            console.log(`UPL > File splitted in ${chunks.length} chunks`)
             await axios.patch(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}.json`, {
                 [file.originalname]: chunks.length
             });
@@ -55,7 +54,6 @@ exports.upload = async (req, res) => {
                 await chunkManagement.send(chunks[i], topic, folder);
             }
         }
-        console.log(`File \"${file.originalname}\" uploaded`)
     } catch (error) {
         errorFiles.PrintUploadError(error);
         res.status(500).json({ message: 'Error sending file to Telegram' });
@@ -89,10 +87,51 @@ exports.deleteFile = async (req, res) => {
         message_ids: idsToDelete
     });
     
-    console.log(`File ${filename} deleted from folder ${folder}`);
+    console.log(`DEL > File "${filename.replace('xDOTx', '.')}" deleted`);
     res.status(200).json({
         message: 'File successfully deleted'
     });
+}
+
+exports.integrity_check = async (req, res) => {
+    if (!req.body.folder) return res.status(400).json({ message: 'No folder specified' });
+    if (!req.body.filename) return res.status(400).json({ message: 'No file name specified' });
+    const folder = req.body.folder;
+    let filename = req.body.filename;
+    if (filename.includes("-$") || filename.includes("xDOTx"))
+        return res.status(400).json({ message: 'File name not valid' });
+    filename = filename.replace('.', 'xDOTx');
+    let filedataRes = (await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`)).data;
+    let chunksNumber = (await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}/${filename}.json`)).data;
+    if (Array.isArray(filedataRes) && (chunksNumber != null && chunksNumber == filedataRes.length-1))
+        return res.status(200).json();
+    else return res.status(400).json();
+}
+
+exports.integrity_check_explicit = async (raw_folder, raw_filename) => {
+    const folder = raw_folder;
+    let filename = raw_filename;
+    let filedataRes = (await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`)).data;
+    let chunksNumber = (await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}/${filename}.json`)).data;
+    return (Array.isArray(filedataRes) && (chunksNumber != null && chunksNumber == filedataRes.length-1));
+}
+
+exports.delete_corrupted_file_explicit = async (raw_folder, raw_filename) => {
+    let folder = raw_folder;
+    let filename = raw_filename;
+    filename = filename.replace('.', 'xDOTx');
+    let filedataRes = (await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`)).data;
+    filedataRes = Object.values(filedataRes);
+    filedataRes = filedataRes.filter(element => element !== null);
+    const idsToDelete = filedataRes.map(item => item.msgid);
+    try {
+        await axios.post(`https://api.telegram.org/bot${process.env.BOT_TOKEN}/deleteMessages`, {
+            chat_id: process.env.ARCHIVE_CHATID,
+            message_ids: idsToDelete
+        });
+    } catch (err) {}
+    await axios.delete(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`);
+    await axios.delete(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}/${filename}.json`);
 }
 
 exports.download = async (req, res) => {
@@ -103,7 +142,6 @@ exports.download = async (req, res) => {
 
     if (filename.includes("-$") || filename.includes("xDOTx"))
         return res.status(400).json({ message: 'File name not valid' });
-
     filename = filename.replace('.', 'xDOTx');
 
     let chunksNumber = (await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}/${filename}.json`)).data;
@@ -113,12 +151,13 @@ exports.download = async (req, res) => {
         });
         return;
     }
-    console.log(`Download of: "${filename.replace('xDOTx', '.')}" | Chunks: ${chunksNumber}`);
+    console.log(`DWN > The following file will be downloaded in ${chunksNumber} chunks: "${filename.replace('xDOTx', '.')}"`);
 
     const chunksToDownload = (await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`)).data;
     if (chunksNumber != chunksToDownload.length - 1) {
+        console.log("DWN > File corrupted, download aborted")
         res.status(400).json({
-            message: 'File corrupted'
+            message: 'File corrupted. Delete the file or restart the server.'
         });
         return;
     }
@@ -135,9 +174,9 @@ exports.download = async (req, res) => {
         for (let i = 1; i <= chunksNumber; i++) {
             const chunkName = `${filename}-$[${i}]`;
             const fileId = chunksToDownload[i].fileid;
+            console.log(`DWN > Downloading "${filename.replace('xDOTx', '.')}" | Chunk: ${i}`);
             const chunkBuffer = await chunkManagement.fetch(fileId);
             writeStream.write(chunkBuffer);
-            console.log(`Chunk ${chunkName} downloaded`)
         }
         writeStream.end();
         const downloadFolder = (process.env.DOWNLOAD_FOLDER_PATH.endsWith('\\') || process.env.DOWNLOAD_FOLDER_PATH.endsWith('/'))
@@ -147,12 +186,13 @@ exports.download = async (req, res) => {
         }
         const completeFilePath = path.join(downloadFolder, filename.replace('xDOTx', '.'));
         fs.renameSync(tempFilePath, completeFilePath);
-        console.log(`File ${completeFilePath} downloaded`);
+        console.log(`DWN > File saved in: "${completeFilePath}"`);
         if (fs.existsSync(dirPath)) {
             fs.rmdirSync(dirPath, { recursive: true });
         }
         return res.status(200).json({ downloadPath: completeFilePath });
     } catch (error) {
+        console.error('DWN > Error:', error);
         if (fs.existsSync(dirPath)) {
             fs.rmdirSync(dirPath, { recursive: true });
         }

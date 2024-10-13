@@ -23,16 +23,13 @@ exports.upload_checks = async (req, res) => {
     }
     filename = filename.replace('.', 'xDOTx');
     try {
-        console.log("Started checks for chunk upload");
         if ((await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}.json`)).data == null) {
-            console.log("Folder does not exists");
             res.status(400).json({
                 message: 'Folder does not exists',
             });
             return;
         }
         if ((await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}/${filename}.json`)).data != null) {
-            console.log("File already exists");
             res.status(400).json({
                 message: 'File already exists',
             });
@@ -43,7 +40,6 @@ exports.upload_checks = async (req, res) => {
         res.status(500).json({ message: 'Error sending file to Telegram' });
         return;
     }
-    console.log("Everything is okay");
     res.status(200).json({
         message: 'Checks are OK'
     });
@@ -54,11 +50,10 @@ exports.upload_preparation = async (req, res) => {
     if (!req.body.folder) return res.status(400).json({ message: 'No folder specified' });
     if (!req.body.totalChunks) return res.status(400).json({ message: 'No total number of chunks specified' });
     const folder = req.body.folder;
-    const occurrences = req.body.filename.match(/\./g);  // Cerca tutte le occorrenze di '.'
-    console.log("Preparation started for chunk");
+    const occurrences = req.body.filename.match(/\./g);
     if (occurrences && occurrences.length > 1) {
         req.body.filename = req.body.filename.replace(/\.(?=.*\.)/g, '-');
-        console.log("Filename contains multiple dots, replacing them with \'-\'")
+        console.log("UPL > Filename contains multiple dots, replacing them with \'-\'")
     }
     req.body.filename = req.body.filename.replace('.', 'xDOTx');
     try {
@@ -70,7 +65,6 @@ exports.upload_preparation = async (req, res) => {
         res.status(500).json({ message: 'Error sending file to Telegram' });
         return;
     }
-    console.log("Preparation ended");
     res.status(200).json({
         message: 'Registration completed'
     });
@@ -88,7 +82,7 @@ exports.upload = async (req, res) => {
         const occurrences = file.originalname.match(/\./g);  // Cerca tutte le occorrenze di '.'
         if (occurrences && occurrences.length > 1) file.originalname = file.originalname.replace(/\.(?=.*\.)/g, '-');
         file.originalname = file.originalname.replace('.', 'xDOTx');
-        console.log(`Upload of: \"${file.originalname}\" | Chunk: ${chunk_number} | ${sizes.bytesToSize(file.size)}`);
+        console.log(`UPL > Uploading "${file.originalname.replace('xDOTx', '.')}" | Chunk: ${chunk_number} | ${sizes.bytesToSize(file.size)}`);
         const databaseResponse = await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}.json`);
         const topic = databaseResponse.data.id;
         await chunkManagement.send(new ChunkData(`${file.originalname}-$[${chunk_number}]`, file.buffer), topic, folder);
