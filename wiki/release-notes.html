@@ -43,6 +43,7 @@
 				    <li class="nav-item section-title"><a class="nav-link scrollto active" href="#section-1"><span class="theme-icon-holder me-2"><i class="fas fa-angle-right"></i></span>Version 1</a></li>
 				    <li class="nav-item"><a class="nav-link scrollto" href="#item-1-1">1.1</a></li>
 				    <li class="nav-item"><a class="nav-link scrollto" href="#item-1-2">1.2</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-1-3">1.3</a></li>
 			    </ul>
 		    </nav><!--//docs-nav-->
 	    </div><!--//docs-sidebar-->
@@ -52,7 +53,7 @@
 
 				<article class="docs-article">
 				    <header class="docs-header">
-					    <h1 class="docs-heading"><a href="#item-1-2">Go to the latest version</a></h1>
+					    <h1 class="docs-heading"><a href="#item-1-3">Go to the latest version</a></h1>
 				    </header>
 				</article>
 
@@ -93,6 +94,25 @@
 								after the server loads, the client will start fully automatically in the default browser</li>
 							<li><strong class="me-1">Wiki</strong>:
 								a wiki has been implemented (this one on which you are reading)</li>
+						</ul>
+					</section>
+
+				    <section class="docs-section" id="item-1-3">
+						<h2 class="section-heading">1.3 - Corrupted files management, startup checks and logs refactoring</h2>
+						<h5><a href="https://github.com/frekkanzer2/HorizonGram/releases/tag/v1.3" target="_blank">Click me to download</a></h5>
+						<ul>
+						    <li><strong class="me-1">Downloading a corrupted file</strong>: 
+								if a file is corrupted, the download will not works and the user is informed</li>
+							<li><strong class="me-1">Manual deletion of corrupted files</strong>:
+								server no longer crashes when trying to manually delete a corrupted file</li>
+							<li><strong class="me-1">Missing env file</strong>:
+								during startup, the server checks whether the .env file has been created</li>
+							<li><strong class="me-1">Integrity checks</strong>:
+								during startup, the server detects and deletes any corrupted file</li>
+							<li><strong class="me-1">Logs refactoring</strong>:
+								server logs are more readable</li>
+							<li><strong class="me-1">Server already running</strong>:
+								if the server is already started and the user is trying to start a new instance, he will be informed about the running instance</li>
 						</ul>
 					</section>
 					
