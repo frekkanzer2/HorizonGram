@@ -33,16 +33,26 @@ exports.envfile_exists = (path) => {
 }
 
 exports.integrity_checks = async () => {
-    console.log("PRE > Integrity check of files managed by HorizonGram")
     let data = await folder_controller.getFileList_explicit();
     let corruptedFiles = [];
     for (const folderName in data) {
-        console.log(`PRE > Integrity check on folder \"${folderName}\"`)
+        console.log(`PRE > Integrity check of files in \"${folderName}\"`);
         const folderContents = data[folderName];
-        for (const fileName in folderContents) {
+        // Prepara le promesse per tutti i file nella cartella
+        const fileChecks = Object.keys(folderContents).map(async (fileName) => {
             let success = await file_controller.integrity_check_explicit(folderName, fileName);
-            if (!success) console.log(`PRE > File \"${folderName}/${fileName.replace('xDOTx', '.')}\" is corrupted`)
-        }
+            if (!success) {
+                const fullFileName = `${folderName}/${fileName.replace('xDOTx', '.')}`;
+                console.log(`PRE > File \"${fullFileName}\" is corrupted`);
+                corruptedFiles.push(fullFileName); // Aggiungi alla lista se è corrotto
+            }
+        });
+        // Attendi che tutte le promesse dei file della cartella siano completate
+        await Promise.all(fileChecks);
     }
-    console.log("PRE > Integrity check successfully ended")
+    for (const fullFileName of corruptedFiles) {
+        const [folder, filename] = fullFileName.split('/');
+        await file_controller.delete_corrupted_file_explicit(folder, filename);
+        console.log(`PRE > Deleted corrupted file: \"${folder}/${filename}\"`);
+    }
 }
