@@ -122,15 +122,31 @@ async function downloadFile() {
             folder: selectedFolder
         })
     });
+
+    // Controlla se la risposta è andata a buon fine
+    if (!downloadResponse.ok) {
+        // Se la risposta non è OK, gestisci l'errore
+        const errorData = await downloadResponse.json();
+        const errorMessage = errorData.message || 'Unknown error occurred';
+        
+        // Mostra il messaggio di errore
+        statusMessage.textContent = errorMessage;
+        statusMessage.className = 'status-error-bg'; // Cambia lo stile per indicare un errore
+        
+        // Nascondi il messaggio di caricamento
+        document.getElementById('loading-sub-message').style.display = 'none'; 
+        document.getElementById('loading-overlay').style.display = 'none'; 
+        return; // Esci dalla funzione
+    }
+
+    // Se la risposta è andata a buon fine
     const downloadPath = (await downloadResponse.json()).downloadPath;
 
     statusMessage.textContent = `File downloaded in: \"${downloadPath}\"`;
     statusMessage.className = 'status-success-bg';
 
-    document.getElementById('loading-sub-message').style.display = 'none'; // Mostra il messaggio di caricamento
+    document.getElementById('loading-sub-message').style.display = 'none'; // Nascondi il messaggio di caricamento
     document.getElementById('loading-overlay').style.display = 'none'; // Nascondi il messaggio di caricamento
-    
-    errMsgComponent.textContent = "Server offline. Start the server and refresh the page.";
 }
 
 // Funzione per recuperare i dati dall'API
@@ -141,7 +157,7 @@ async function fetchData() {
         const data = await response.json();
         createFolderStructure(data.data);
     } catch (error) {
-        errMsgComponent.textContent = "Server offline. Start the server and refresh the page.";
+        errMsgComponent.textContent = "Exception thrown. Restart the server and refresh the page.";
         console.log(error);
     }
 }

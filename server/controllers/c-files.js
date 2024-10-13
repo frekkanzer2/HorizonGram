@@ -157,7 +157,7 @@ exports.download = async (req, res) => {
     const chunksToDownload = (await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`)).data;
     if (chunksNumber != chunksToDownload.length - 1) {
         res.status(400).json({
-            message: 'File corrupted'
+            message: 'File corrupted. Delete the file or restart the server.'
         });
         return;
     }
