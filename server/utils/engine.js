@@ -19,7 +19,7 @@ exports.open_client = () => {
     if (command) {
         exec(command, (err) => {
             if (err) {
-                console.error('Errore nell\'apertura del browser. Avviare manualmente il client.');
+                console.error('RUN > Error during client startup, start it manually');
             }
         });
     }

@@ -1,5 +1,5 @@
 exports.PrintUploadError = (error) => {
-    console.error(`File not uploaded, received error: ${error}`);
+    console.error(`UPL > File not uploaded, received error: ${error}`);
     if (error.response) {
         console.log('Status:', error.response.status); // Status code
         console.log('Headers:', error.response.headers);
@@ -7,7 +7,7 @@ exports.PrintUploadError = (error) => {
     } else if (error.request) {
         console.log('Request data:', error.request);
     } else {
-        console.log('Errore:', error.message);
+        console.log('Error:', error.message);
     }
     console.log('Config:', error.config);
 }

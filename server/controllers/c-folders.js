@@ -32,7 +32,7 @@ exports.createTopic = async (req, res) => {
         }
     });
 
-    console.log(`Created folder \"${telegramResponse.name}\" with ID ${telegramResponse.id}`);
+    console.log(`FOL > Created folder \"${telegramResponse.name}\" with ID ${telegramResponse.id}`);
 
     res.status(200).json(telegramResponse);
 };
@@ -69,6 +69,6 @@ exports.deleteTopic = async (req, res) => {
     });
     await axios.delete(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${body.name}.json`)
     await axios.delete(`${process.env.REALTIME_DATABASE_URL}${body.name}.json`)
-    console.log(`Deleted folder \"${body.name}\"`);
+    console.log(`FOL > Deleted folder \"${body.name}\"`);
     res.status(200).json({message: "Folder deleted successfully"});
 }

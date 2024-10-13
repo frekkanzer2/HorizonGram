@@ -25,15 +25,13 @@ exports.send = async (chunkData, topicId, topicName) => {
     form.append('caption', chunkData.name);
     form.append('message_thread_id', topicId);
     const headers = form.getHeaders();
-
-    console.log(`Uploading chunk ${chunkData.name}`)
     let response = await axios.post(fileUploadEndpoint, form, { headers });
     let name_parts = response.data.result.caption.split('-$');
     await axios.put(`${process.env.REALTIME_DATABASE_URL}${topicName}/content/${name_parts[0]}/${name_parts.length == 2 ? name_parts[1].replace(/[\[\]]/g, '') : 1}.json`, {
         fileid: `${response.data.result.document.file_id}`,
         msgid: response.data.result.message_id
     });
-    console.log(`Chunk ${chunkData.name} uploaded successfully.`);
+    console.log(`UPL > Chunk successfully uploaded`);
 }
 
 /// INPUT

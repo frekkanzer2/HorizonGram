@@ -32,7 +32,7 @@ exports.upload = async (req, res) => {
         return;
     }
 
-    console.log(`The following file will be uploaded: \"${file.originalname}\" | ${sizes.bytesToSize(file.size)}`);
+    console.log(`UPL > Uploading "${file.originalname.replace('xDOTx', '.')}" | ${sizes.bytesToSize(file.size)}`);
 
     const databaseResponse = await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}.json`);
     const topic = databaseResponse.data.id;
@@ -46,7 +46,7 @@ exports.upload = async (req, res) => {
         } 
         else {
             let chunks = chunkManagement.split(file.buffer, file.originalname, file.size);
-            console.log(`File splitted in ${chunks.length} chunks`)
+            console.log(`UPL > File splitted in ${chunks.length} chunks`)
             await axios.patch(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}.json`, {
                 [file.originalname]: chunks.length
             });
@@ -78,7 +78,6 @@ exports.deleteFile = async (req, res) => {
         return;
     }
     let filedataRes = (await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`)).data;
-    console.log(filedataRes);
     const idsToDelete = filedataRes.slice(1).map(item => item.msgid);
     for (let i=1; i < filedataRes.length; i++)
         axios.delete(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}/${i}.json`);
@@ -88,7 +87,7 @@ exports.deleteFile = async (req, res) => {
         message_ids: idsToDelete
     });
     
-    console.log(`File ${filename} deleted`);
+    console.log(`DEL > File "${filename.replace('xDOTx', '.')}" deleted`);
     res.status(200).json({
         message: 'File successfully deleted'
     });
@@ -152,10 +151,11 @@ exports.download = async (req, res) => {
         });
         return;
     }
-    console.log(`The following file will be downloaded in ${chunksNumber} chunks: "${filename.replace('xDOTx', '.')}"`);
+    console.log(`DWN > The following file will be downloaded in ${chunksNumber} chunks: "${filename.replace('xDOTx', '.')}"`);
 
     const chunksToDownload = (await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`)).data;
     if (chunksNumber != chunksToDownload.length - 1) {
+        console.log("DWN > File corrupted, download aborted")
         res.status(400).json({
             message: 'File corrupted. Delete the file or restart the server.'
         });
@@ -174,7 +174,7 @@ exports.download = async (req, res) => {
         for (let i = 1; i <= chunksNumber; i++) {
             const chunkName = `${filename}-$[${i}]`;
             const fileId = chunksToDownload[i].fileid;
-            console.log(`Downloading chunk ${chunkName}`);
+            console.log(`DWN > Downloading "${filename.replace('xDOTx', '.')}" | Chunk: ${i}`);
             const chunkBuffer = await chunkManagement.fetch(fileId);
             writeStream.write(chunkBuffer);
         }
@@ -186,13 +186,13 @@ exports.download = async (req, res) => {
         }
         const completeFilePath = path.join(downloadFolder, filename.replace('xDOTx', '.'));
         fs.renameSync(tempFilePath, completeFilePath);
-        console.log(`File ${completeFilePath} saved`);
+        console.log(`DWN > File saved in: "${completeFilePath}"`);
         if (fs.existsSync(dirPath)) {
             fs.rmdirSync(dirPath, { recursive: true });
         }
         return res.status(200).json({ downloadPath: completeFilePath });
     } catch (error) {
-        console.error('Errore durante il download del file:', error);
+        console.error('DWN > Error:', error);
         if (fs.existsSync(dirPath)) {
             fs.rmdirSync(dirPath, { recursive: true });
         }
