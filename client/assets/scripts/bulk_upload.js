@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             const start = (currentChunkIndex - 1) * CHUNK_SIZE;
                             const end = Math.min(start + CHUNK_SIZE, file.size);
                             const chunk = file.slice(start, end);
-                            setLoadingMessage(`File ${file.name}`, `Chunks uploaded: ${completedChunks} of ${totalChunks}`, true);
+                            setLoadingMessage(`File "${file.name}"`, `Chunks uploaded: ${completedChunks} of ${totalChunks}`, true);
 
                             activeUploads++; // Increment active uploads count
                             uploadChunk(file, chunk, currentChunkIndex, folderName)
@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                     completedChunks++;
                                     activeUploads--; // Decrement active uploads count
 
-                                    setLoadingMessage(`File ${file.name}`, `Chunks uploaded: ${completedChunks} of ${totalChunks}`, true);
+                                    setLoadingMessage(`File "${file.name}"`, `Chunks uploaded: ${completedChunks} of ${totalChunks}`, true);
 
                                     if (completedChunks === totalChunks) {
                                         resolve(); // Resolve when all chunks are completed
