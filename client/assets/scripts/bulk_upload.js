@@ -11,8 +11,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function setLoadingMessage(messageUp, messageDown, turnOn) {
         loadingMessageUp.textContent = messageUp;
         loadingMessageDown.textContent = messageDown;
-        if (turnOn) loadingOverlay.style.display = 'block';
-        else loadingOverlay.style.display = 'none';
+        loadingOverlay.style.display = turnOn ? 'block' : 'none';
     }
 
     if (!filePicker || !uploadButton || !statusMessage || !loadingOverlay || !loadingMessageUp || !loadingMessageDown) {
@@ -91,33 +90,42 @@ document.addEventListener("DOMContentLoaded", function() {
                 .then(() => prepareFile(file, folderName))
                 .then(totalChunks => {
                     let currentChunkIndex = 1; // Start index from 1
+                    let activeUploads = 0; // Track the number of currently active uploads
+                    let completedChunks = 0; // Track completed chunks
 
-                    function uploadNextChunk() {
-                        if (currentChunkIndex > totalChunks) {
-                            resolve(); // Resolve the Promise once all chunks are uploaded
-                            return;
+                    function uploadNextChunks() {
+                        while (currentChunkIndex <= totalChunks && activeUploads < 5) { // Max 5 concurrent uploads
+                            const start = (currentChunkIndex - 1) * CHUNK_SIZE;
+                            const end = Math.min(start + CHUNK_SIZE, file.size);
+                            const chunk = file.slice(start, end);
+                            setLoadingMessage(`File ${file.name}`, `Chunks uploaded: ${completedChunks} of ${totalChunks}`, true);
+
+                            activeUploads++; // Increment active uploads count
+                            uploadChunk(file, chunk, currentChunkIndex, folderName)
+                                .then(() => {
+                                    completedChunks++;
+                                    activeUploads--; // Decrement active uploads count
+
+                                    setLoadingMessage(`File ${file.name}`, `Chunks uploaded: ${completedChunks} of ${totalChunks}`, true);
+
+                                    if (completedChunks === totalChunks) {
+                                        resolve(); // Resolve when all chunks are completed
+                                    } else {
+                                        uploadNextChunks(); // Upload the next chunk
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Upload error:', error);
+                                    statusMessage.textContent = `Error during upload of ${file.name}`;
+                                    statusMessage.className = 'status-error';
+                                    reject(error); // Reject the Promise on error
+                                });
+
+                            currentChunkIndex++; // Move to the next chunk index
                         }
-
-                        const start = (currentChunkIndex - 1) * CHUNK_SIZE;
-                        const end = Math.min(start + CHUNK_SIZE, file.size);
-                        const chunk = file.slice(start, end);
-                        setLoadingMessage(`File ${file.name}`, `Uploading chunk ${currentChunkIndex}/${totalChunks}`, true);
-
-                        uploadChunk(file, chunk, currentChunkIndex, folderName)
-                            .then(() => {
-                                currentChunkIndex++;
-                                setLoadingMessage(`File ${file.name}`, `Uploading chunk ${currentChunkIndex}/${totalChunks}`, true);
-                                uploadNextChunk();
-                            })
-                            .catch(error => {
-                                console.error('Upload error:', error);
-                                statusMessage.textContent = `Error during upload of ${file.name}`;
-                                statusMessage.className = 'status-error';
-                                reject(error); // Reject the Promise on error
-                            });
                     }
 
-                    uploadNextChunk();
+                    uploadNextChunks(); // Start uploading chunks
                 })
                 .catch(error => {
                     console.error('Preparation error:', error);
@@ -159,6 +167,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 })
                 .catch(error => {
                     console.error('Error during file upload:', error);
+                    statusMessage.textContent = `Error during upload of ${file.name}`;
+                    statusMessage.className = 'status-error';
                 });
         }
 
