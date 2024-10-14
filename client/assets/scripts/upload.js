@@ -1,4 +1,5 @@
 const CHUNK_SIZE = 20 * 1024 * 1024; // 20 MB chunk size
+const MAX_CONCURRENT_UPLOADS = 5; // Maximum number of simultaneous uploads
 
 document.addEventListener("DOMContentLoaded", function() {
     const filePicker = document.getElementById('file-picker');
@@ -12,8 +13,8 @@ document.addEventListener("DOMContentLoaded", function() {
         return;
     }
 
-    function updateLoadingMessage(chunk, totalChunks) {
-        loadingMessage.textContent = `Loading status: ${chunk}/${totalChunks} chunks`;
+    function updateLoadingMessage(current, total) {
+        loadingMessage.textContent = `Loading status: ${current}/${total} chunks`;
     }
 
     function uploadChunk(file, chunk, index, folderName) {
@@ -47,14 +48,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 folder: folderName,
             }),
         })
-        .then(response => {
-            return response.json().then(data => {
-                console.log(`Check has status ${response.status}`)
-                if (response.status !== 200) {
-                    throw new Error(data.message);
-                }
-            });
-        });
+        .then(response => response.json().then(data => {
+            console.log(`Check has status ${response.status}`)
+            if (response.status !== 200) {
+                throw new Error(data.message);
+            }
+        }));
     }
 
     function prepareFile(file, folderName) {
@@ -69,14 +68,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 totalChunks: Math.ceil(file.size / CHUNK_SIZE),
             }),
         })
-        .then(response => {
-            return response.json().then(data => {
-                if (response.status !== 200) {
-                    throw new Error(data.message);
-                }
-                return Math.ceil(file.size / CHUNK_SIZE);
-            });
-        });
+        .then(response => response.json().then(data => {
+            if (response.status !== 200) {
+                throw new Error(data.message);
+            }
+            return Math.ceil(file.size / CHUNK_SIZE);
+        }));
     }
 
     function processFile(file) {
@@ -92,38 +89,50 @@ document.addEventListener("DOMContentLoaded", function() {
         checkFile(file, folderName)
             .then(() => prepareFile(file, folderName))
             .then(totalChunks => {
-                let currentChunkIndex = 1; // Start index from 1
+                let currentChunkIndex = 1;
+                let activeUploads = 0;
+                let completedChunks = 0;
 
-                function uploadNextChunk() {
-                    if (currentChunkIndex > totalChunks) {
-                        statusMessage.textContent = 'File upload complete!';
-                        statusMessage.className = 'status-success';
-                        loadingOverlay.style.display = 'none';
-                        document.body.style.pointerEvents = 'auto';
-                        return;
+                function uploadNextChunks() {
+                    while (currentChunkIndex <= totalChunks && activeUploads < MAX_CONCURRENT_UPLOADS) {
+                        const start = (currentChunkIndex - 1) * CHUNK_SIZE;
+                        const end = Math.min(start + CHUNK_SIZE, file.size);
+                        const chunk = file.slice(start, end);
+
+                        // Update progress
+                        updateLoadingMessage(completedChunks + 1, totalChunks);
+
+                        // Upload the chunk
+                        activeUploads++;
+                        uploadChunk(file, chunk, currentChunkIndex, folderName)
+                            .then(() => {
+                                completedChunks++;
+                                activeUploads--;
+
+                                updateLoadingMessage(completedChunks, totalChunks);
+
+                                if (completedChunks === totalChunks) {
+                                    statusMessage.textContent = 'File upload complete!';
+                                    statusMessage.className = 'status-success';
+                                    loadingOverlay.style.display = 'none';
+                                    document.body.style.pointerEvents = 'auto';
+                                } else {
+                                    uploadNextChunks(); // Continue uploading next chunks
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Upload error:', error);
+                                statusMessage.textContent = 'Error during upload';
+                                statusMessage.className = 'status-error';
+                                loadingOverlay.style.display = 'none';
+                                document.body.style.pointerEvents = 'auto';
+                            });
+
+                        currentChunkIndex++;
                     }
-
-                    const start = (currentChunkIndex - 1) * CHUNK_SIZE;
-                    const end = Math.min(start + CHUNK_SIZE, file.size);
-                    const chunk = file.slice(start, end);
-                    updateLoadingMessage(currentChunkIndex, totalChunks); // Update progress
-
-                    uploadChunk(file, chunk, currentChunkIndex, folderName)
-                        .then(() => {
-                            currentChunkIndex++;
-                            updateLoadingMessage(currentChunkIndex, totalChunks); // Update progress
-                            uploadNextChunk();
-                        })
-                        .catch(error => {
-                            console.error('Upload error:', error);
-                            statusMessage.textContent = 'Error during upload';
-                            statusMessage.className = 'status-error';
-                            loadingOverlay.style.display = 'none';
-                            document.body.style.pointerEvents = 'auto';
-                        });
                 }
 
-                uploadNextChunk();
+                uploadNextChunks();
             })
             .catch(error => {
                 console.error('Preparation error:', error);
