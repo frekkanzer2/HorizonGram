@@ -120,16 +120,21 @@ exports.delete_corrupted_file_explicit = async (raw_folder, raw_filename) => {
     let folder = raw_folder;
     let filename = raw_filename;
     filename = filename.replace('.', 'xDOTx');
-    let filedataRes = (await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`)).data;
-    filedataRes = Object.values(filedataRes);
-    filedataRes = filedataRes.filter(element => element !== null);
-    const idsToDelete = filedataRes.map(item => item.msgid);
     try {
-        await axios.post(`https://api.telegram.org/bot${process.env.BOT_TOKEN}/deleteMessages`, {
-            chat_id: process.env.ARCHIVE_CHATID,
-            message_ids: idsToDelete
-        });
-    } catch (err) {}
+        let filedataRes = (await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`)).data;
+        filedataRes = Object.values(filedataRes);
+        filedataRes = filedataRes.filter(element => element !== null);
+        const idsToDelete = filedataRes.map(item => item.msgid);
+        try {
+            await axios.post(`https://api.telegram.org/bot${process.env.BOT_TOKEN}/deleteMessages`, {
+                chat_id: process.env.ARCHIVE_CHATID,
+                message_ids: idsToDelete
+            });
+        } catch (err) {
+            console.log(`PRE > ERR::${err.code} > Cannot delete "${raw_filename}" data on Telegram`);
+        }
+    }
+    catch (err) { }
     await axios.delete(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`);
     await axios.delete(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}/${filename}.json`);
 }
