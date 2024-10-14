@@ -1,5 +1,4 @@
 const CHUNK_SIZE = 20 * 1024 * 1024; // 20 MB chunk size
-const MAX_CONCURRENT_UPLOADS = 5; // Maximum number of simultaneous uploads
 
 document.addEventListener("DOMContentLoaded", function() {
     const filePicker = document.getElementById('file-picker');
@@ -77,6 +76,15 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function processFile(file) {
+        const speedToConcurrentUploads = {
+            1: 1,   // <10 Mbps
+            2: 3,   // 10-30 Mbps
+            3: 5,   // 30-50 Mbps
+            4: 8,   // 50-100 Mbps
+            5: 10,   // 100+ Mbps
+        };
+        const MAX_CONCURRENT_UPLOADS = speedToConcurrentUploads[document.getElementById('connection-speed').value];
+
         const folderName = document.getElementById('folder-name').value.trim();
         if (!folderName) {
             alert('Please enter a destination folder name.');
