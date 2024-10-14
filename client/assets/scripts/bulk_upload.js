@@ -83,6 +83,14 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function processFile(file, folderName) {
+        const speedToConcurrentUploads = {
+            1: 1,   // <10 Mbps
+            2: 3,   // 10-30 Mbps
+            3: 5,   // 30-50 Mbps
+            4: 8,   // 50-100 Mbps
+            5: 10,   // 100+ Mbps
+        };
+        const MAX_CONCURRENT_UPLOADS = speedToConcurrentUploads[document.getElementById('connection-speed').value];
         return new Promise((resolve, reject) => {
             document.body.style.pointerEvents = 'none';
 
@@ -94,7 +102,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     let completedChunks = 0; // Track completed chunks
 
                     function uploadNextChunks() {
-                        while (currentChunkIndex <= totalChunks && activeUploads < 5) { // Max 5 concurrent uploads
+                        while (currentChunkIndex <= totalChunks && activeUploads < MAX_CONCURRENT_UPLOADS) { // Max 5 concurrent uploads
                             const start = (currentChunkIndex - 1) * CHUNK_SIZE;
                             const end = Math.min(start + CHUNK_SIZE, file.size);
                             const chunk = file.slice(start, end);
