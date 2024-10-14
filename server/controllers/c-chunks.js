@@ -83,9 +83,32 @@ exports.upload = async (req, res) => {
         if (occurrences && occurrences.length > 1) file.originalname = file.originalname.replace(/\.(?=.*\.)/g, '-');
         file.originalname = file.originalname.replace('.', 'xDOTx');
         console.log(`UPL > Uploading "${file.originalname.replace('xDOTx', '.')}" | Chunk: ${chunk_number} | ${sizes.bytesToSize(file.size)}`);
-        const databaseResponse = await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}.json`);
+        const maxRetries = 5; // Numero massimo di tentativi
+        let attempt = 1; 
+        let databaseResponse;
+        while (attempt < maxRetries) {
+            try {
+                databaseResponse = await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}.json`);
+                if (databaseResponse && databaseResponse.data) break;
+            } catch (error) {
+                if (error.code === 'ETIMEDOUT' || error.code === 'ECONNABORTED') {
+                    attempt++;
+                    console.log(`UPL > ERR::${error.code} > Catched when uploading "${file.originalname.replace('xDOTx', '.')}" | Chunk: ${chunk_number}`);
+                    if (attempt > maxRetries) {
+                        console.error('UPL > Maximum number of upload attempts reached');
+                        throw error;
+                    } else {
+                        console.error(`UPL > Executing new upload attempt (${attempt}/${maxRetries}) for "${file.originalname.replace('xDOTx', '.')}" | Chunk: ${chunk_number}`);
+                    }
+                } else {
+                    console.error(`UPL > ERR::${error.code} > Error not managed`);
+                    throw error;
+                }
+            }
+        }
         const topic = databaseResponse.data.id;
         await chunkManagement.send(new ChunkData(`${file.originalname}-$[${chunk_number}]`, file.buffer), topic, folder);
+        console.log(`UPL > "${file.originalname.replace('xDOTx', '.')}" | Chunk: ${chunk_number} successfully uploaded`);
     } catch (error) {
         errorFiles.PrintUploadError(error);
         return res.status(500).json({ message: 'Error sending file to Telegram' });
