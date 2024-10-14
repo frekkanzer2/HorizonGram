@@ -70,6 +70,23 @@ exports.upload_preparation = async (req, res) => {
     });
 }
 
+function getWaitingTime(attempt) {
+    switch (attempt) {
+        case 2:
+            return 5;
+        case 3:
+            return 30;
+        case 4:
+            return 300;
+        case 5:
+            return 900;
+    }
+}
+
+function sleep(seconds) {
+    return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+}
+
 exports.upload = async (req, res) => {
     // Controlla se il file è stato caricato
     if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
@@ -84,7 +101,7 @@ exports.upload = async (req, res) => {
         file.originalname = file.originalname.replace('.', 'xDOTx');
         console.log(`UPL > Uploading "${file.originalname.replace('xDOTx', '.')}" | Chunk: ${chunk_number} | ${sizes.bytesToSize(file.size)}`);
         const maxRetries = 5; // Numero massimo di tentativi
-        let attempt = 1; 
+        let attempt = 1;
         let databaseResponse;
         while (attempt < maxRetries) {
             try {
@@ -93,12 +110,14 @@ exports.upload = async (req, res) => {
             } catch (error) {
                 if (error.code === 'ETIMEDOUT' || error.code === 'ECONNABORTED') {
                     attempt++;
-                    console.log(`UPL > ERR::${error.code} > Catched when uploading "${file.originalname.replace('xDOTx', '.')}" | Chunk: ${chunk_number}`);
+                    console.log(`UPL > ERR::${error.code} > Catched when reading metadata for "${file.originalname.replace('xDOTx', '.')}" upload | Chunk: ${chunk_number}`);
                     if (attempt > maxRetries) {
-                        console.error('UPL > Maximum number of upload attempts reached');
+                        console.error('UPL > Maximum number of attempts reached');
                         throw error;
                     } else {
-                        console.error(`UPL > Executing new upload attempt (${attempt}/${maxRetries}) for "${file.originalname.replace('xDOTx', '.')}" | Chunk: ${chunk_number}`);
+                        console.log(`TIM > Waiting ${getWaitingTime(attempt)} seconds for a new reading metadata attempt of "${file.originalname.replace('xDOTx', '.')}" | Chunk: ${chunk_number}`);
+                        await sleep(getWaitingTime(attempt));
+                        console.log(`UPL > Executing new reading metadata attempt (${attempt}/${maxRetries}) for "${file.originalname.replace('xDOTx', '.')}" | Chunk: ${chunk_number}`);
                     }
                 } else {
                     console.error(`UPL > ERR::${error.code} > Error not managed`);
@@ -107,7 +126,24 @@ exports.upload = async (req, res) => {
             }
         }
         const topic = databaseResponse.data.id;
-        await chunkManagement.send(new ChunkData(`${file.originalname}-$[${chunk_number}]`, file.buffer), topic, folder);
+        attempt = 1; 
+        while (attempt < maxRetries) {
+            try {
+                await chunkManagement.send(new ChunkData(`${file.originalname}-$[${chunk_number}]`, file.buffer), topic, folder);
+                break;
+            } catch (error) {
+                attempt++;
+                console.log(`UPL > ERR::${error.code} > Catched when uploading "${file.originalname.replace('xDOTx', '.')}" | Chunk: ${chunk_number}`);
+                if (attempt > maxRetries) {
+                    console.error('UPL > Maximum number of upload attempts reached');
+                    throw error;
+                } else {
+                    console.log(`TIM > Waiting ${getWaitingTime(attempt)} seconds for a upload attempt of "${file.originalname.replace('xDOTx', '.')}" | Chunk: ${chunk_number}`);
+                    await sleep(getWaitingTime(attempt));
+                    console.error(`UPL > Executing new upload attempt (${attempt}/${maxRetries}) for "${file.originalname.replace('xDOTx', '.')}" | Chunk: ${chunk_number}`);
+                }
+            }
+        }
         console.log(`UPL > "${file.originalname.replace('xDOTx', '.')}" | Chunk: ${chunk_number} successfully uploaded`);
     } catch (error) {
         errorFiles.PrintUploadError(error);
