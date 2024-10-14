@@ -11,21 +11,6 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<style>
-			/* Stile per il messaggio di caricamento e la sovrapposizione */
-			#loading-overlay {
-				display: none;
-				position: fixed;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				background: rgba(0, 0, 0, 0.5);
-				color: white;
-				text-align: center;
-				padding-top: 20%;
-				font-size: 1.5em;
-				z-index: 1000;
-			}
 			/* Stile per il messaggio di stato */
 			#status-message {
 				margin-top: 10px;
@@ -56,7 +41,7 @@
 
 							<header>
 								<h2 class="alt">Insert the new folder name
-								<div><input id="folder-name"  type="text" name="fname" placeholder="Insert here" /></div>
+								<div><input id="folder-name"  type="text" name="fname" placeholder="Insert here" style="color: black; font-weight: bold;"/></div>
 								<div id="status-message"></div>
 								<input id="create-folder" type="button" value="Submit" />
 							</header>

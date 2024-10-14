@@ -11,21 +11,6 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<style>
-			/* Stile per il messaggio di caricamento e la sovrapposizione */
-			#loading-overlay {
-				display: none;
-				position: fixed;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				background: rgba(0, 0, 0, 0.5);
-				color: white;
-				text-align: center;
-				padding-top: 20%;
-				font-size: 1.5em;
-				z-index: 1000;
-			}
 			/* Stile per il messaggio di stato */
 			#status-message {
 				margin-top: 10px;
@@ -93,9 +78,21 @@
 								<div><input id="file-picker" type="file" /></div>
 								<div id="folder-loading-message" style="font-size: 32px;">Waiting for folder loading...</div>
 								<div id="folder-select-container" style="display: none;">
-									<select id="folder-name" name="fname">
+									<select id="folder-name" name="fname" style="color: black; font-weight: bold;">
 										<option value="">Select a folder</option> <!-- Default empty option -->
 									</select>
+								</div>
+								<div style="font-size: 32px; display: flex; justify-content: center; align-items: center; margin-top: 8px;">
+									<div style="margin-right: 16px;">Select your upload connection speed: </div>
+									<div id="speed-select-container" style="margin-top: 0;">
+										<select id="connection-speed" name="connectionSpeed" style="width: 160px; padding-left: 8px; color: black; font-weight: bold;">
+											<option value="1">&lt;10 Mbps</option>
+											<option value="2">10-30 Mbps</option>
+											<option value="3">30-50 Mbps</option>
+											<option value="4">50-100 Mbps</option>
+											<option value="5">100+ Mbps</option>
+										</select>
+									</div>
 								</div>
 								<div id="status-message"></div>
 								<input id="upload-button" type="button" value="Submit" />

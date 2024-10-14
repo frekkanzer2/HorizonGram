@@ -32,10 +32,10 @@ engine.integrity_checks().then(
         // Gestione degli errori
         server.on('error', (err) => {
             if (err.code === 'EADDRINUSE') {
-                console.error(`RUN > Server already started`);
+                console.log(`RUN > ERR::${err.code} > Server already started`);
                 process.exit(1); // Uscita dal processo
             } else {
-                console.error(`RUN > Generical server error: ${err.message}`);
+                console.error(`RUN > ERR::${err.code} > Error not managed\n${err.message}`);
             }
         });
     }

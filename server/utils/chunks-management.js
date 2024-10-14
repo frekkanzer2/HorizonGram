@@ -17,7 +17,6 @@ exports.fetch = async (chunkFileId) => {
 exports.send = async (chunkData, topicId, topicName) => {
     if (!(chunkData instanceof ChunkData))
         throw new TypeError("Variable chunkData is not of type ChunkData");
-
     const fileUploadEndpoint = `https://api.telegram.org/bot${process.env.BOT_TOKEN}/sendDocument`;
     const form = new FormData();
     form.append('chat_id', process.env.ARCHIVE_CHATID);
@@ -31,7 +30,6 @@ exports.send = async (chunkData, topicId, topicName) => {
         fileid: `${response.data.result.document.file_id}`,
         msgid: response.data.result.message_id
     });
-    console.log(`UPL > Chunk successfully uploaded`);
 }
 
 /// INPUT
