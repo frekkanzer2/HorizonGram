@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function updateLoadingMessage(current, total) {
-        loadingMessage.textContent = `Loading status: ${current}/${total} chunks`;
+        loadingMessage.textContent = `Chunks uploaded: ${current} of ${total}`;
     }
 
     function uploadChunk(file, chunk, index, folderName) {
@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         const chunk = file.slice(start, end);
 
                         // Update progress
-                        updateLoadingMessage(completedChunks + 1, totalChunks);
+                        updateLoadingMessage(completedChunks, totalChunks);
 
                         // Upload the chunk
                         activeUploads++;
