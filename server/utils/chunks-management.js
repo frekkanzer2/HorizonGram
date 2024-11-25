@@ -3,10 +3,11 @@ const CONST = require('../utils/const');
 const ChunkData = require('../dtos/ChunkData'); 
 const FormData = require('form-data');
 const axios = require('axios');
+const { getDatabaseUrl, getBotToken, getChatId } = require('./settings-config');
 
 exports.fetch = async (chunkFileId) => {
-    let filePath = (await axios.get(`https://api.telegram.org/bot${process.env.BOT_TOKEN}/getFile?file_id=${chunkFileId}`)).data.result.file_path;
-    const fileResponse = await axios.get(`https://api.telegram.org/file/bot${process.env.BOT_TOKEN}/${filePath}`, { responseType: 'arraybuffer' });
+    let filePath = (await axios.get(`https://api.telegram.org/bot${getBotToken()}/getFile?file_id=${chunkFileId}`)).data.result.file_path;
+    const fileResponse = await axios.get(`https://api.telegram.org/file/bot${getBotToken()}/${filePath}`, { responseType: 'arraybuffer' });
     return fileResponse.data;
 }
 
@@ -17,16 +18,16 @@ exports.fetch = async (chunkFileId) => {
 exports.send = async (chunkData, topicId, topicName) => {
     if (!(chunkData instanceof ChunkData))
         throw new TypeError("Variable chunkData is not of type ChunkData");
-    const fileUploadEndpoint = `https://api.telegram.org/bot${process.env.BOT_TOKEN}/sendDocument`;
+    const fileUploadEndpoint = `https://api.telegram.org/bot${getBotToken()}/sendDocument`;
     const form = new FormData();
-    form.append('chat_id', process.env.ARCHIVE_CHATID);
+    form.append('chat_id', getChatId());
     form.append('document', chunkData.buffer, chunkData.name);
     form.append('caption', chunkData.name);
     form.append('message_thread_id', topicId);
     const headers = form.getHeaders();
     let response = await axios.post(fileUploadEndpoint, form, { headers });
     let name_parts = response.data.result.caption.split('-$');
-    await axios.put(`${process.env.REALTIME_DATABASE_URL}${topicName}/content/${name_parts[0]}/${name_parts.length == 2 ? name_parts[1].replace(/[\[\]]/g, '') : 1}.json`, {
+    await axios.put(`${getDatabaseUrl()}${topicName}/content/${name_parts[0]}/${name_parts.length == 2 ? name_parts[1].replace(/[\[\]]/g, '') : 1}.json`, {
         fileid: `${response.data.result.document.file_id}`,
         msgid: response.data.result.message_id
     });

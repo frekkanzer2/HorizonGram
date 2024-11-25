@@ -45,6 +45,8 @@
 				    <li class="nav-item"><a class="nav-link scrollto" href="#item-1-2">Archive chat</a></li>
 				    <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-2"><span class="theme-icon-holder me-2"><i class="fas fa-fire"></i></span>Firebase setup</a></li>
 				    <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-3"><span class="theme-icon-holder me-2"><i class="fas fa-gear"></i></span>Server setup</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#section-3-1">Version 1 to 1.4.1</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#section-3-2">Version 2+</a></li>
 			    </ul>
 		    </nav><!--//docs-nav-->
 	    </div><!--//docs-sidebar-->
@@ -129,17 +131,65 @@
 								<p>If you installed Node.js via WSL (Windows method), the terminal you need to open is the WSL.</p>
 							</div><!--//content-->
 						</div>
-						<ol>
-							<li>Create a folder on your local computer to store downloaded files. We are going to reference its absolute path with <code>&ltDOWNLOADS_FOLDER&gt</code></li>
-							<li>Open the <code>&ltREPOSITORY_FOLDER&gtserver</code> folder</li>
-							<li>Create a file named <code>.env</code> and add the following code:<br/>
-								<script src="https://gist.github.com/frekkanzer2/04b200b680af724f8237aa03f57acfea.js"></script></li>
-							<li>Change <code>&lt...&gt</code> with the values obtained during this guide</li>
-							<li>
-								Open a terminal in the server folder and run the following command:<br/>
-								<code>npm install</code><br/>
-							</li>
-						</ol>
+						<section class="docs-section" id="section-3-1">
+							<h2 class="section-heading">Version 1 to 1.4.1</h2>
+							<ol>
+								<li>Create a folder on your local computer to store downloaded files. We are going to reference its absolute path with <code>&ltDOWNLOADS_FOLDER&gt</code></li>
+								<li>Open the <code>&ltREPOSITORY_FOLDER&gtserver</code> folder</li>
+								<li>Create a file named <code>.env</code> and add the following code:<br/>
+									<script src="https://gist.github.com/frekkanzer2/04b200b680af724f8237aa03f57acfea.js"></script></li>
+								<li>Change <code>&lt...&gt</code> with the values obtained during this guide</li>
+								<li>
+									Open a terminal in the server folder and run the following command:<br/>
+									<code>npm install</code><br/>
+								</li>
+							</ol>
+						</section>
+						<section class="docs-section" id="section-3-2">
+							<h2 class="section-heading">Version 2+</h2>
+							<ol>
+								<li>Create a folder on your local computer to store downloaded files. We are going to reference its absolute path with <code>&ltDOWNLOADS_FOLDER&gt</code></li>
+								<li>Open the <code>&ltREPOSITORY_FOLDER&gtserver/settings</code> folder</li>
+								<li>Duplicate <code>config-template.json</code> and rename the copy to <code>config.json</code></li>
+								<li>Look at <a href="./assets/images/settings-profiles.png" target="_blank">this image</a> to understand what will be meant by profile configuration</li>
+								<li>Delete all profiles except the first one. In the last remaining profile (so the first one) the comma should not appear after the parentheses. Look at <a href="./assets/images/settings-profiles-only-first.png" target="_blank">this image</a></li>
+								<li>
+									Change all placeholder values with the values obtained following this guide:<br/>
+									<ul>
+										<li>Change <code>ACCOUNT_NAME_1</code> with a name you want to give to your profile: it’s a name of your choice.</li>
+										<li>Change <code>TOKEN_1</code> with <code>&ltBOT_TOKEN&gt</code> value</li>
+										<li>Change <code>CHATID_1</code> with <code>-100&ltGROUP_ARCHIVE&gt</code> value</li>
+										<li>Change <code>DB_URL_1</code> with <code>&ltFIREBASE_REALTIME_DATABASE_BASE_URL&gt</code> value</li>
+									</ul>
+								</li>
+								<li>Leave <code>active_account_index</code> value to <code>1</code></li>
+								<li>Change <code>DOWNLOAD_FOLDER_PATH</code> value to <code>&ltDOWNLOADS_FOLDER&gt</code>. 
+									If a <code>\</code> character appears in the path, add another one right after it (see the download path declared in the example <code>config.json</code> file to understand)</li>
+							</ol>
+							<p>Your <code>config.json</code> file should be similar to this one:</p>
+							<script src="https://gist.github.com/frekkanzer2/dcd49d2ea982fd27ca9d4a6c464a9dbe.js"></script>
+							<h5>Add more profiles</h5>
+							<p>
+								To add new profiles you must repeat all the steps listed in <code>Telegram setup</code> and <code>Firebase setup</code>. 
+								Each profile must have a different bot, chat archive, and metadata database.<br/>
+								Suppose you followed the steps again, so you have a new <code>&ltBOT_TOKEN&gt</code>, <code>&ltGROUP_ARCHIVE&gt</code> and <code>&ltFIREBASE_REALTIME_DATABASE_BASE_URL&gt</code>:
+							</p>
+							<ol>
+								<li>Open the <code>&ltREPOSITORY_FOLDER&gtserver/settings</code> folder</li>
+								<li>Open <code>config.json</code></li>
+								<li>Add a new profile by adding a comma between the last and the new. Look at <a href="./assets/images/settings-new-profile.png" target="_blank">this image</a></li>
+								<li>
+									Change all placeholder values with the values obtained following <code>Telegram setup</code> and <code>Firebase setup</code>:<br/>
+									<ul>
+										<li>Change <code>ACCOUNT_NAME_X</code> with a name you want to give to your profile: it’s a name of your choice.</li>
+										<li>Change <code>TOKEN_X</code> with <code>&ltBOT_TOKEN&gt</code> value</li>
+										<li>Change <code>CHATID_X</code> with <code>-100&ltGROUP_ARCHIVE&gt</code> value</li>
+										<li>Change <code>DB_URL_X</code> with <code>&ltFIREBASE_REALTIME_DATABASE_BASE_URL&gt</code> value</li>
+									</ul>
+								</li>
+							</ol>
+						</section>
+						
 				    </header>
 				    
 			    </article><!--//docs-article-->

@@ -49,6 +49,7 @@
 				    <li class="nav-item"><a class="nav-link scrollto" href="#item-3-3">Upload</a></li>
 				    <li class="nav-item"><a class="nav-link scrollto" href="#item-3-4">Download</a></li>
 				    <li class="nav-item"><a class="nav-link scrollto" href="#item-3-5">Upload patterns</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-3-6">Select a profile (v2+)</a></li>
 				    <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-4"><span class="theme-icon-holder me-2"><i class="fas fa-xmark"></i></span>Warnings</a></li>
 			    </ul>
 		    </nav><!--//docs-nav-->
@@ -256,6 +257,26 @@
 							<li>Select the created folder</li>
 							<li>Confirm by pressing the submit button</li>
 						</ol>
+					</section>
+
+					<section class="docs-section" id="item-3-6">
+						<h2 class="section-heading">Select a profile</h2>
+						<div class="alert alert-info" role="alert">
+							<b>Available from version 2.0</b>
+						</div>
+						<p>
+							If you have just installed or upgraded HorizonGram v2.0 or higher, it will start with the first profile declared 
+							in the <code>config.json</code> file.<br/>
+							If you have added new profiles, you can change the profile that HorizonGram will start with.
+							<ol>
+								<li>Open the <code>config.json</code> file placed in the <code>server/settings</code> folder</li>
+								<li>Create a folder on HorizonGram with the same name as the folder to be uploaded</li>
+								<li>Look <a href="./assets/images/settings-profiles.png" target="_blank">here</a> how the profiles are enumerated</li>
+								<li>Change the value of <code>active_account_index</code> to the chosen profile number</li>
+								<li>If you have already started the server, restart it.</li>
+							</ol>
+						</p>
+						
 					</section>
 
 			    </article><!--//docs-article-->

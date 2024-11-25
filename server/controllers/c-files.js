@@ -7,6 +7,7 @@ const path = require('path');
 const axios = require('axios');
 const fs = require('fs');
 require('dotenv').config();
+const { getDatabaseUrl, getBotToken, getChatId, getDownloadFolder } = require('../utils/settings-config');
 
 exports.upload = async (req, res) => {
     // Controlla se il file è stato caricato
@@ -19,13 +20,13 @@ exports.upload = async (req, res) => {
     file.originalname = file.originalname.replace('.', 'xDOTx');
 
     
-    if ((await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}.json`)).data == null) {
+    if ((await axios.get(`${getDatabaseUrl()}ffolder_names/${folder}.json`)).data == null) {
         res.status(400).json({
             message: 'Folder does not exists',
         });
         return;
     }
-    if ((await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}/${file.originalname}.json`)).data != null) {
+    if ((await axios.get(`${getDatabaseUrl()}ffolder_names/${folder}/${file.originalname}.json`)).data != null) {
         res.status(400).json({
             message: 'File already exists',
         });
@@ -34,12 +35,12 @@ exports.upload = async (req, res) => {
 
     console.log(`UPL > Uploading "${file.originalname.replace('xDOTx', '.')}" | ${sizes.bytesToSize(file.size)}`);
 
-    const databaseResponse = await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}.json`);
+    const databaseResponse = await axios.get(`${getDatabaseUrl()}${folder}.json`);
     const topic = databaseResponse.data.id;
 
     try {
         if (file.size <= CONST.MAX_CHUNK_SIZE){
-            await axios.patch(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}.json`, {
+            await axios.patch(`${getDatabaseUrl()}ffolder_names/${folder}.json`, {
                 [file.originalname]: 1
             });
             await chunkManagement.send(new ChunkData(file.originalname, file.buffer), topic, folder);
@@ -47,7 +48,7 @@ exports.upload = async (req, res) => {
         else {
             let chunks = chunkManagement.split(file.buffer, file.originalname, file.size);
             console.log(`UPL > File splitted in ${chunks.length} chunks`)
-            await axios.patch(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}.json`, {
+            await axios.patch(`${getDatabaseUrl()}ffolder_names/${folder}.json`, {
                 [file.originalname]: chunks.length
             });
             for (let i = 0; i < chunks.length; i++) {
@@ -71,19 +72,19 @@ exports.deleteFile = async (req, res) => {
     if (filename.includes("-$") || filename.includes("xDOTx"))
         return res.status(400).json({ message: 'File name not valid' });
     filename = filename.replace('.', 'xDOTx');
-    if ((await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}/${filename}.json`)).data == null) {
+    if ((await axios.get(`${getDatabaseUrl()}ffolder_names/${folder}/${filename}.json`)).data == null) {
         res.status(400).json({
             message: 'Folder or file does not exists',
         });
         return;
     }
-    let filedataRes = (await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`)).data;
+    let filedataRes = (await axios.get(`${getDatabaseUrl()}${folder}/content/${filename}.json`)).data;
     const idsToDelete = filedataRes.slice(1).map(item => item.msgid);
     for (let i=1; i < filedataRes.length; i++)
-        axios.delete(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}/${i}.json`);
-    axios.delete(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}/${filename}.json`);
-    await axios.post(`https://api.telegram.org/bot${process.env.BOT_TOKEN}/deleteMessages`, {
-        chat_id: process.env.ARCHIVE_CHATID,
+        axios.delete(`${getDatabaseUrl()}${folder}/content/${filename}/${i}.json`);
+    axios.delete(`${getDatabaseUrl()}ffolder_names/${folder}/${filename}.json`);
+    await axios.post(`https://api.telegram.org/bot${getBotToken()}/deleteMessages`, {
+        chat_id: getChatId(),
         message_ids: idsToDelete
     });
     
@@ -101,8 +102,8 @@ exports.integrity_check = async (req, res) => {
     if (filename.includes("-$") || filename.includes("xDOTx"))
         return res.status(400).json({ message: 'File name not valid' });
     filename = filename.replace('.', 'xDOTx');
-    let filedataRes = (await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`)).data;
-    let chunksNumber = (await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}/${filename}.json`)).data;
+    let filedataRes = (await axios.get(`${getDatabaseUrl()}${folder}/content/${filename}.json`)).data;
+    let chunksNumber = (await axios.get(`${getDatabaseUrl()}ffolder_names/${folder}/${filename}.json`)).data;
     if (Array.isArray(filedataRes) && (chunksNumber != null && chunksNumber == filedataRes.length-1))
         return res.status(200).json();
     else return res.status(400).json();
@@ -111,8 +112,8 @@ exports.integrity_check = async (req, res) => {
 exports.integrity_check_explicit = async (raw_folder, raw_filename) => {
     const folder = raw_folder;
     let filename = raw_filename;
-    let filedataRes = (await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`)).data;
-    let chunksNumber = (await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}/${filename}.json`)).data;
+    let filedataRes = (await axios.get(`${getDatabaseUrl()}${folder}/content/${filename}.json`)).data;
+    let chunksNumber = (await axios.get(`${getDatabaseUrl()}ffolder_names/${folder}/${filename}.json`)).data;
     return (Array.isArray(filedataRes) && (chunksNumber != null && chunksNumber == filedataRes.length-1));
 }
 
@@ -121,13 +122,13 @@ exports.delete_corrupted_file_explicit = async (raw_folder, raw_filename) => {
     let filename = raw_filename;
     filename = filename.replace('.', 'xDOTx');
     try {
-        let filedataRes = (await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`)).data;
+        let filedataRes = (await axios.get(`${getDatabaseUrl()}${folder}/content/${filename}.json`)).data;
         filedataRes = Object.values(filedataRes);
         filedataRes = filedataRes.filter(element => element !== null);
         const idsToDelete = filedataRes.map(item => item.msgid);
         try {
-            await axios.post(`https://api.telegram.org/bot${process.env.BOT_TOKEN}/deleteMessages`, {
-                chat_id: process.env.ARCHIVE_CHATID,
+            await axios.post(`https://api.telegram.org/bot${getBotToken()}/deleteMessages`, {
+                chat_id: getChatId(),
                 message_ids: idsToDelete
             });
         } catch (err) {
@@ -135,8 +136,8 @@ exports.delete_corrupted_file_explicit = async (raw_folder, raw_filename) => {
         }
     }
     catch (err) { }
-    await axios.delete(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`);
-    await axios.delete(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}/${filename}.json`);
+    await axios.delete(`${getDatabaseUrl()}${folder}/content/${filename}.json`);
+    await axios.delete(`${getDatabaseUrl()}ffolder_names/${folder}/${filename}.json`);
 }
 
 exports.download = async (req, res) => {
@@ -149,7 +150,7 @@ exports.download = async (req, res) => {
         return res.status(400).json({ message: 'File name not valid' });
     filename = filename.replace('.', 'xDOTx');
 
-    let chunksNumber = (await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}/${filename}.json`)).data;
+    let chunksNumber = (await axios.get(`${getDatabaseUrl()}ffolder_names/${folder}/${filename}.json`)).data;
     if (chunksNumber == null) {
         res.status(400).json({
             message: 'Folder or file does not exist',
@@ -158,7 +159,7 @@ exports.download = async (req, res) => {
     }
     console.log(`DWN > The following file will be downloaded in ${chunksNumber} chunks: "${filename.replace('xDOTx', '.')}"`);
 
-    const chunksToDownload = (await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}/content/${filename}.json`)).data;
+    const chunksToDownload = (await axios.get(`${getDatabaseUrl()}${folder}/content/${filename}.json`)).data;
     if (chunksNumber != chunksToDownload.length - 1) {
         console.log("DWN > File corrupted, download aborted")
         res.status(400).json({
@@ -184,8 +185,8 @@ exports.download = async (req, res) => {
             writeStream.write(chunkBuffer);
         }
         writeStream.end();
-        const downloadFolder = (process.env.DOWNLOAD_FOLDER_PATH.endsWith('\\') || process.env.DOWNLOAD_FOLDER_PATH.endsWith('/'))
-            ? process.env.DOWNLOAD_FOLDER_PATH + `${folder}\\`: process.env.DOWNLOAD_FOLDER_PATH + `\\${folder}\\`;
+        const downloadFolder = (getDownloadFolder().endsWith('\\') || getDownloadFolder().endsWith('/'))
+            ? getDownloadFolder() + `${folder}\\`: getDownloadFolder() + `\\${folder}\\`;
         if (!fs.existsSync(downloadFolder)) {
             fs.mkdirSync(downloadFolder);
         }
