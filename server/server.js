@@ -1,3 +1,4 @@
+const VERSION = "2.0";
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -6,8 +7,10 @@ const engine = require('./utils/engine')
 const { loadSettings, getAccountLabel } = require('./utils/settings-config');
 const settings_path = './settings/config.json';
 
+console.log(`======== HORIZONGRAM ${VERSION} ========`);
 engine.settingsfile_exists(path.join(__dirname, settings_path));
 loadSettings(settings_path).then(() => {
+    console.log(`====== Profile :: ${getAccountLabel()} ======`)
     let routes = {
         status: require('./routes/r-status'),
         files: require('./routes/r-files'),
@@ -28,7 +31,7 @@ loadSettings(settings_path).then(() => {
     engine.integrity_checks().then(
         () => {
             const server = app.listen(PORT, () => {
-                console.log(`RUN > Server successfully started on http://localhost:${PORT} with account \"${getAccountLabel()}\"`);
+                console.log(`RUN > Server successfully started on http://localhost:${PORT}`);
                 engine.open_client();
             });
             // Gestione degli errori
