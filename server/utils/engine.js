@@ -32,6 +32,13 @@ exports.envfile_exists = (path) => {
     } else console.log("PRE > \".env\" file found")
 }
 
+exports.settingsfile_exists = (path) => {
+    if (!fs.existsSync(path)) {
+        console.error('PRE > Settings file \"config.json\" not configured, please read the configuration guide to start the server');
+        process.exit(1);
+    } else console.log("PRE > \"config.json\" file found")
+}
+
 exports.integrity_checks = async () => {
     let data = await folder_controller.getFileList_explicit();
     let corruptedFiles = [];

@@ -1,0 +1,36 @@
+{
+    "download_folder": "DOWNLOAD_FOLDER_PATH",
+    "active_account_index": 1,
+    "accounts": [
+        {
+            "label": "ACCOUNT_NAME_1",
+            "bot_token": "TOKEN_1",
+            "chat_id": "CHATID_1",
+            "database_url": "DB_URL_1"
+        },
+        {
+            "label": "ACCOUNT_NAME_2",
+            "bot_token": "TOKEN_2",
+            "chat_id": "CHATID_2",
+            "database_url": "DB_URL_2"
+        },
+        {
+            "label": "ACCOUNT_NAME_3",
+            "bot_token": "TOKEN_3",
+            "chat_id": "CHATID_3",
+            "database_url": "DB_URL_3"
+        },
+        {
+            "label": "ACCOUNT_NAME_4",
+            "bot_token": "TOKEN_4",
+            "chat_id": "CHATID_4",
+            "database_url": "DB_URL_4"
+        },
+        {
+            "label": "ACCOUNT_NAME_5",
+            "bot_token": "TOKEN_5",
+            "chat_id": "CHATID_5",
+            "database_url": "DB_URL_5"
+        }
+    ]
+}

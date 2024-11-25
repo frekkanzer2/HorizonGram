@@ -5,6 +5,7 @@ const chunkManagement = require('../utils/chunks-management')
 const sizes = require('../utils/sizes')
 const axios = require('axios');
 require('dotenv').config();
+const { getDatabaseUrl } = require('../utils/settings-config');
 
 exports.upload_checks = async (req, res) => {
     if (!req.body.filename) return res.status(400).json({ message: 'No file name specified' });
@@ -23,13 +24,13 @@ exports.upload_checks = async (req, res) => {
     }
     filename = filename.replace('.', 'xDOTx');
     try {
-        if ((await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}.json`)).data == null) {
+        if ((await axios.get(`${getDatabaseUrl()}ffolder_names/${folder}.json`)).data == null) {
             res.status(400).json({
                 message: 'Folder does not exists',
             });
             return;
         }
-        if ((await axios.get(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}/${filename}.json`)).data != null) {
+        if ((await axios.get(`${getDatabaseUrl()}ffolder_names/${folder}/${filename}.json`)).data != null) {
             res.status(400).json({
                 message: 'File already exists',
             });
@@ -57,7 +58,7 @@ exports.upload_preparation = async (req, res) => {
     }
     req.body.filename = req.body.filename.replace('.', 'xDOTx');
     try {
-        await axios.patch(`${process.env.REALTIME_DATABASE_URL}ffolder_names/${folder}.json`, {
+        await axios.patch(`${getDatabaseUrl()}ffolder_names/${folder}.json`, {
             [req.body.filename]: req.body.totalChunks
         });
     } catch (error) {
@@ -105,7 +106,7 @@ exports.upload = async (req, res) => {
         let databaseResponse;
         while (attempt < maxRetries) {
             try {
-                databaseResponse = await axios.get(`${process.env.REALTIME_DATABASE_URL}${folder}.json`);
+                databaseResponse = await axios.get(`${getDatabaseUrl()}${folder}.json`);
                 if (databaseResponse && databaseResponse.data) break;
             } catch (error) {
                 if (error.code === 'ETIMEDOUT' || error.code === 'ECONNABORTED') {
