@@ -3,7 +3,7 @@ const app = express();
 const cors = require('cors');
 const path = require('path');
 const engine = require('./utils/engine')
-const { loadSettings, getAccountsNumber, getActualAccount, getAccountLabel } = require('./utils/settings-config');
+const { loadSettings, getAccountLabel } = require('./utils/settings-config');
 const settings_path = './settings/config.json';
 
 engine.settingsfile_exists(path.join(__dirname, settings_path));
