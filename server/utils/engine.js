@@ -43,25 +43,41 @@ exports.settingsfile_exists = (path) => {
 exports.integrity_checks = async () => {
     let data = await folder_controller.getFileList_explicit();
     let corruptedFiles = [];
-    let allTasks = [];
-    for (const folderName in data) {
-        console.log(`PRE > Integrity check of files in \"${folderName}\"`);
-        const folderContents = data[folderName];
-        const localTasks = Object.keys(folderContents).map((fileName) => async () => {
-            let success = await file_controller.integrity_check_explicit(folderName, fileName);
-            if (!success) {
-                const fullFileName = `${folderName}/${fileName.replace('xDOTx', '.')}`;
-                console.log(`PRE > File \"${fullFileName}\" is corrupted`);
-                corruptedFiles.push(fullFileName);
-            }
-        });
-        allTasks.push(...localTasks);
-    }
-    await limitedConcurrency(allTasks, 50);
-    console.log("PRE > Integrity check ended");
-    for (const fullFileName of corruptedFiles) {
-        const [folder, filename] = fullFileName.split('/');
-        await file_controller.delete_corrupted_file_explicit(folder, filename);
-        console.log(`PRE > Deleted corrupted file: \"${folder}/${filename}\"`);
-    }
+    if (Object.keys(data).length > 0) {
+        let allTasks = [];
+        const startTime = Date.now();
+        console.log(`PRE > Started integrity check of ${Object.keys(data).length} folders`);
+        for (const folderName in data) {
+            const folderContents = data[folderName];
+            const localTasks = Object.keys(folderContents).map((fileName) => async () => {
+                let success = await file_controller.integrity_check_explicit(folderName, fileName);
+                if (!success) {
+                    const fullFileName = `${folderName}/${fileName.replace('xDOTx', '.')}`;
+                    console.log(`PRE > File \"${fullFileName}\" is corrupted`);
+                    corruptedFiles.push(fullFileName);
+                }
+            });
+            allTasks.push(...localTasks);
+        }
+        await limitedConcurrency(allTasks, 200);
+        const endTime = Date.now();
+        console.log();
+        let duration = endTime - startTime;
+        let output;
+        if (duration >= 60000) {
+            duration = duration / 60000;
+            output = `${duration.toFixed(2)} minutes`;
+        } else if (duration >= 1000) {
+            duration = duration / 1000;
+            output = `${duration.toFixed(2)} seconds`;
+        } else {
+            output = `${duration} milliseconds`;
+        }
+        console.log(`PRE > Integrity check ended in ${output}`);
+        for (const fullFileName of corruptedFiles) {
+            const [folder, filename] = fullFileName.split('/');
+            await file_controller.delete_corrupted_file_explicit(folder, filename);
+            console.log(`PRE > Deleted corrupted file: \"${folder}/${filename}\"`);
+        }
+    } else console.log("PRE > Integrity check skipped because this profile has 0 folders")
 }

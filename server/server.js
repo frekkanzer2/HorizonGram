@@ -45,7 +45,11 @@ loadSettings(settings_path).then(() => {
                 }
             });
         }
-    )
+    ).catch((error) => {
+        console.log("PRE > ERR > Integrity check failed")
+        console.error(error);
+        process.exit(1);
+    });
 })
 .catch((error) => {
     console.error(error);
