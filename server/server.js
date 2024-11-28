@@ -7,6 +7,7 @@ const engine = require('./utils/engine')
 const { loadSettings, getAccountLabel } = require('./utils/settings-config');
 const settings_path = './settings/config.json';
 
+console.clear();
 console.log(`======== HORIZONGRAM ${VERSION} ========`);
 engine.settingsfile_exists(path.join(__dirname, settings_path));
 loadSettings(settings_path).then(() => {
