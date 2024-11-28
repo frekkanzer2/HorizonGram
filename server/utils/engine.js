@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const folder_controller = require('./../controllers/c-folders');
 const file_controller = require('./../controllers/c-files');
+const { limitedConcurrency } = require('../utils/concurrency');
 
 exports.open_client = () => {
     let url = path.join(__dirname, './../../client/index.html');
@@ -42,22 +43,21 @@ exports.settingsfile_exists = (path) => {
 exports.integrity_checks = async () => {
     let data = await folder_controller.getFileList_explicit();
     let corruptedFiles = [];
-    const allFileChecks = [];
+    let allTasks = [];
     for (const folderName in data) {
         console.log(`PRE > Integrity check of files in \"${folderName}\"`);
         const folderContents = data[folderName];
-        // Prepara le promesse per tutti i file nella cartella
-        let localFileChecks = Object.keys(folderContents).map(async (fileName) => {
+        const localTasks = Object.keys(folderContents).map((fileName) => async () => {
             let success = await file_controller.integrity_check_explicit(folderName, fileName);
             if (!success) {
                 const fullFileName = `${folderName}/${fileName.replace('xDOTx', '.')}`;
                 console.log(`PRE > File \"${fullFileName}\" is corrupted`);
-                corruptedFiles.push(fullFileName); // Aggiungi alla lista se è corrotto
+                corruptedFiles.push(fullFileName);
             }
         });
-        allFileChecks.push(localFileChecks);
+        allTasks.push(...localTasks);
     }
-    await Promise.all(allFileChecks);
+    await limitedConcurrency(allTasks, 50);
     console.log("PRE > Integrity check ended");
     for (const fullFileName of corruptedFiles) {
         const [folder, filename] = fullFileName.split('/');
