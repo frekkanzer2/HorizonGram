@@ -42,11 +42,12 @@ exports.settingsfile_exists = (path) => {
 exports.integrity_checks = async () => {
     let data = await folder_controller.getFileList_explicit();
     let corruptedFiles = [];
+    const allFileChecks = [];
     for (const folderName in data) {
         console.log(`PRE > Integrity check of files in \"${folderName}\"`);
         const folderContents = data[folderName];
         // Prepara le promesse per tutti i file nella cartella
-        const fileChecks = Object.keys(folderContents).map(async (fileName) => {
+        let localFileChecks = Object.keys(folderContents).map(async (fileName) => {
             let success = await file_controller.integrity_check_explicit(folderName, fileName);
             if (!success) {
                 const fullFileName = `${folderName}/${fileName.replace('xDOTx', '.')}`;
@@ -54,9 +55,10 @@ exports.integrity_checks = async () => {
                 corruptedFiles.push(fullFileName); // Aggiungi alla lista se è corrotto
             }
         });
-        // Attendi che tutte le promesse dei file della cartella siano completate
-        await Promise.all(fileChecks);
+        allFileChecks.push(localFileChecks);
     }
+    await Promise.all(allFileChecks);
+    console.log("PRE > Integrity check ended");
     for (const fullFileName of corruptedFiles) {
         const [folder, filename] = fullFileName.split('/');
         await file_controller.delete_corrupted_file_explicit(folder, filename);
