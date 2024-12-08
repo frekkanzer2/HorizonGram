@@ -130,3 +130,4 @@ dist
 .pnp.*
 /downloads
 server/settings/config.json
+server/settings/future_deletion.txt

@@ -1,15 +1,18 @@
-const VERSION = "2.0";
+const CONST = require('./utils/const');
 const express = require('express');
 const app = express();
 const cors = require('cors');
 const path = require('path');
 const engine = require('./utils/engine')
 const { loadSettings, getAccountLabel } = require('./utils/settings-config');
+const { checkAndDeleteFolders } = require('./utils/future-deletion');
 const settings_path = './settings/config.json';
+const temp_download_path = './settings/future_deletion.txt'
 
-console.log(`======== HORIZONGRAM ${VERSION} ========`);
+console.clear();
+console.log(`======== HORIZONGRAM ${CONST.VERSION} ========`);
 engine.settingsfile_exists(path.join(__dirname, settings_path));
-loadSettings(settings_path).then(() => {
+loadSettings(settings_path, temp_download_path).then(() => {
     console.log(`====== Profile :: ${getAccountLabel()} ======`)
     let routes = {
         status: require('./routes/r-status'),
@@ -30,6 +33,7 @@ loadSettings(settings_path).then(() => {
 
     engine.integrity_checks().then(
         () => {
+            setInterval(checkAndDeleteFolders, 60 * 1000);
             const server = app.listen(PORT, () => {
                 console.log(`RUN > Server successfully started on http://localhost:${PORT}`);
                 engine.open_client();
@@ -45,7 +49,11 @@ loadSettings(settings_path).then(() => {
                 }
             });
         }
-    )
+    ).catch((error) => {
+        console.log("PRE > ERR > Integrity check failed")
+        console.error(error);
+        process.exit(1);
+    });
 })
 .catch((error) => {
     console.error(error);

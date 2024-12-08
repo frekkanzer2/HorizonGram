@@ -6,6 +6,7 @@ const sizes = require('../utils/sizes')
 const path = require('path');
 const axios = require('axios');
 const fs = require('fs');
+const { addFolderToFutureDeletion } = require('../utils/future-deletion');
 require('dotenv').config();
 const { getDatabaseUrl, getBotToken, getChatId, getDownloadFolder } = require('../utils/settings-config');
 
@@ -185,8 +186,7 @@ exports.download = async (req, res) => {
             writeStream.write(chunkBuffer);
         }
         writeStream.end();
-        const downloadFolder = (getDownloadFolder().endsWith('\\') || getDownloadFolder().endsWith('/'))
-            ? getDownloadFolder() + `${folder}\\`: getDownloadFolder() + `\\${folder}\\`;
+        const downloadFolder = path.join(getDownloadFolder(), folder);
         if (!fs.existsSync(downloadFolder)) {
             fs.mkdirSync(downloadFolder);
         }
@@ -196,6 +196,11 @@ exports.download = async (req, res) => {
         if (fs.existsSync(dirPath)) {
             fs.rmdirSync(dirPath, { recursive: true });
         }
+
+        if (req.body.timer && req.body.timer == true) {
+            addFolderToFutureDeletion(req.body.folder);
+        }
+
         return res.status(200).json({ downloadPath: completeFilePath });
     } catch (error) {
         console.error('DWN > Error:', error);
