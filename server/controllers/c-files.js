@@ -185,8 +185,7 @@ exports.download = async (req, res) => {
             writeStream.write(chunkBuffer);
         }
         writeStream.end();
-        const downloadFolder = (getDownloadFolder().endsWith('\\') || getDownloadFolder().endsWith('/'))
-            ? getDownloadFolder() + `${folder}\\`: getDownloadFolder() + `\\${folder}\\`;
+        const downloadFolder = path.join(getDownloadFolder(), folder);
         if (!fs.existsSync(downloadFolder)) {
             fs.mkdirSync(downloadFolder);
         }
