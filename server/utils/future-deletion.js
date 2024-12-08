@@ -7,8 +7,7 @@ exports.checkAndDeleteFolders = async () => {
     try {
         const data = await fs.readFile(filePath, 'utf-8');
         const lines = data.split('\n');
-        const currentTime = new Date();
-        const deletionMinutes = getDeletionMinutes();
+        const currentTime = new Date()
         const downloadFolder = getDownloadFolder();
         const newLines = [];
 
@@ -20,7 +19,7 @@ exports.checkAndDeleteFolders = async () => {
             const folderDateTime = new Date(year, month - 1, day, hours, minutes);
             const timeDifference = (currentTime - folderDateTime) / (1000 * 60);
 
-            if (timeDifference > deletionMinutes) {
+            if (timeDifference > 0) {
                 const folderPath = path.join(downloadFolder, folderName);
                 try {
                     await fs.rm(folderPath, { recursive: true, force: true });
