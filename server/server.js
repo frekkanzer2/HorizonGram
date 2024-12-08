@@ -1,4 +1,4 @@
-const VERSION = "2.0";
+const CONST = require('./utils/const');
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -10,7 +10,7 @@ const settings_path = './settings/config.json';
 const temp_download_path = './settings/future_deletion.txt'
 
 console.clear();
-console.log(`======== HORIZONGRAM ${VERSION} ========`);
+console.log(`======== HORIZONGRAM ${CONST.VERSION} ========`);
 engine.settingsfile_exists(path.join(__dirname, settings_path));
 loadSettings(settings_path, temp_download_path).then(() => {
     console.log(`====== Profile :: ${getAccountLabel()} ======`)
