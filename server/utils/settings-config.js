@@ -3,9 +3,15 @@ const fs = require('fs/promises');
 let accounts = [];
 let downloadFolder = undefined;
 let actualIndex = undefined;
+let future_deletion_minutes = undefined;
 
-async function loadSettings(path) {
-    let data = await fs.readFile(path, 'utf-8');
+async function loadSettings(config_path, future_deletion_path) {
+    let data = await fs.readFile(config_path, 'utf-8');
+    try {
+        await fs.access(future_deletion_path);
+    } catch {
+        await fs.writeFile(future_deletion_path, '', 'utf8');
+    }
     data = JSON.parse(data);
     accounts = data.accounts;
     downloadFolder = data.download_folder;
@@ -15,6 +21,8 @@ async function loadSettings(path) {
     else actualIndex--;
     if (actualIndex < 0 || actualIndex >= accounts.length) throw new Error('PRE > Invalid active account index, please read the configuration guide to start the server');
     if (downloadFolder == undefined) throw new Error('PRE > Download folder not declared, please read the configuration guide to start the server');
+    if (data.future_deletion_minutes == undefined) future_deletion_minutes = 5;
+    else future_deletion_minutes = parseInt(data.future_deletion_minutes);
     const labels = new Set();
     const bot_tokens = new Set();
     const chat_ids = new Set();
@@ -34,6 +42,10 @@ async function loadSettings(path) {
         chat_ids.add(chat_id);
         databaseUrls.add(database_url);
     });
+}
+
+function getDeletionMinutes() {
+    return future_deletion_minutes;
 }
 
 function getDownloadFolder() {
@@ -81,5 +93,6 @@ module.exports = {
     getAccountsNumber,
     getBotToken,
     getChatId,
-    getDatabaseUrl
+    getDatabaseUrl,
+    getDeletionMinutes
 };

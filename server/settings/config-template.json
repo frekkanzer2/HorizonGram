@@ -1,6 +1,7 @@
 {
     "download_folder": "DOWNLOAD_FOLDER_PATH",
     "active_account_index": 1,
+    "future_deletion_minutes": 10,
     "accounts": [
         {
             "label": "ACCOUNT_NAME_1",
