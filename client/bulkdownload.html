@@ -19,6 +19,13 @@
 			.status-success {
 				color: rgb(96, 255, 96);
 			}
+			.status-timer {
+				color: rgb(0, 0, 0);
+				font-size: 32px;
+				font-weight: bold;
+				margin-top: 6px;
+				margin-bottom: -8px;
+			}
 			.status-error {
 				color: rgb(255, 105, 105);
 			}
@@ -81,6 +88,11 @@
 										<option value="">Select a folder</option> <!-- Default empty option -->
 									</select>
 								</div>
+								<!-- Pulsante per mostrare/nascondere il campo numerico -->
+								<div style="margin-top: 10px;">
+									<input type="button" id="toggle-delete-timer" class="important-button" value="Enable Delete Timer" />
+								</div>
+								<div id="status-timer-message" class="status-timer"></div>
 								<div id="status-message"></div>
 								<input id="download-button" type="button" value="Download" />
 							</header>
