@@ -1,0 +1,7 @@
+{
+    "backup_account_index": 1,
+    "backupper_script_path": "/backupper/backupper.py",
+    "paths_to_include": [
+        
+    ]
+}
