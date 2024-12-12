@@ -17,7 +17,7 @@ function createFolderStructure(data) {
         const files = data[folderName];
         const fileCount = Object.keys(files).length;
 
-        folderLabel.textContent = `${folderName} [${fileCount}]`;
+        folderLabel.textContent = `${folderName.replace('1bkp1', 'BACKUP > ').replace(/2/g, '/')} [${fileCount}]`;
 
         const filesDiv = document.createElement('div');
         filesDiv.classList.add('files'); // Mantenuto per nascondere/mostrare i file
