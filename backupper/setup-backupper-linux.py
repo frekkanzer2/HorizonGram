@@ -2,21 +2,25 @@ import json
 import subprocess
 import os
 
-
-def read_script_path():
+def get_config():
     settings_path = './settings/bk-config.json'
-    
     if not os.path.exists(settings_path):
         raise FileNotFoundError(f"ERR > File \"{settings_path}\" does not exists!")
-    
     with open(settings_path, 'r') as file:
         config = json.load(file)
+    return config
 
+def read_script_path():
+    config = get_config()
     return config["backupper_script_path"]
 
+def get_cron_expression():
+    config = get_config()
+    return config["cron_expression"]
 
-def setup_cronjob(script_path):
-    cron_command = f"0 0 1,15 * * /usr/bin/python3 {script_path}"
+
+def setup_cronjob(script_path, cron_exp):
+    cron_command = f"{cron_exp} /usr/bin/python3 {script_path}"
     print(f"COM > {cron_command}");
     try:
         result = subprocess.run(['crontab', '-l'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -34,8 +38,9 @@ def setup_cronjob(script_path):
 
 if __name__ == "__main__":
     try:
+        cron_exp = get_cron_expression()
         script_path = read_script_path()
         print(f"Script principale trovato: {script_path}")
-        setup_cronjob(script_path)
+        setup_cronjob(script_path, cron_exp)
     except Exception as e:
         print("Errore:", e)
