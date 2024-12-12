@@ -27,7 +27,7 @@ def setup_cronjob(script_path):
             subprocess.run(['crontab'], input=new_cron, text=True)
             print("LOG > HorizonGram Backupper successfully scheduled")
         else:
-            print("LOG > HorizonGram Backupper already scheduled")
+            print("LOG > HorizonGram Backupper already scheduled. You can delete it by executing: $ crontab -e")
     except Exception as e:
         print("ERR > Error during configuration :: ", str(e))
 
