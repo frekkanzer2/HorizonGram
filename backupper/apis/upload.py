@@ -55,4 +55,4 @@ async def upload_files(files_structure):
         alias = entry['alias']
         for item in entry['items']:
             file_path = os.path.join(path, item.replace("xDOTx", "."))
-            # await process_file(file_path, alias)
+            await process_file(file_path, alias)

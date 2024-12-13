@@ -18,7 +18,7 @@ exports.upload = async (req, res) => {
     const folder = req.body.folder;
     if (file.originalname.includes("-$") || file.originalname.includes("xDOTx"))
         return res.status(400).json({ message: 'File name not valid' });
-    file.originalname = file.originalname.replace('.', 'xDOTx');
+    file.originalname = file.originalname.replace(/\./g, 'xDOTx');
 
     
     if ((await axios.get(`${getDatabaseUrl()}ffolder_names/${folder}.json`)).data == null) {
@@ -34,7 +34,7 @@ exports.upload = async (req, res) => {
         return;
     }
 
-    console.log(`UPL > Uploading "${file.originalname.replace('xDOTx', '.')}" | ${sizes.bytesToSize(file.size)}`);
+    console.log(`UPL > Uploading "${file.originalname.replace(/xDOTx/g, '.')}" | ${sizes.bytesToSize(file.size)}`);
 
     const databaseResponse = await axios.get(`${getDatabaseUrl()}${folder}.json`);
     const topic = databaseResponse.data.id;
@@ -72,7 +72,7 @@ exports.deleteFile = async (req, res) => {
     let filename = req.body.filename;
     if (filename.includes("-$") || filename.includes("xDOTx"))
         return res.status(400).json({ message: 'File name not valid' });
-    filename = filename.replace('.', 'xDOTx');
+    filename = filename.replace(/\./g, 'xDOTx');
     if ((await axios.get(`${getDatabaseUrl()}ffolder_names/${folder}/${filename}.json`)).data == null) {
         res.status(400).json({
             message: 'Folder or file does not exists',
@@ -89,7 +89,7 @@ exports.deleteFile = async (req, res) => {
         message_ids: idsToDelete
     });
     
-    console.log(`DEL > File "${filename.replace('xDOTx', '.')}" deleted`);
+    console.log(`DEL > File "${filename.replace(/xDOTx/g, '.')}" deleted`);
     res.status(200).json({
         message: 'File successfully deleted'
     });
@@ -102,7 +102,7 @@ exports.integrity_check = async (req, res) => {
     let filename = req.body.filename;
     if (filename.includes("-$") || filename.includes("xDOTx"))
         return res.status(400).json({ message: 'File name not valid' });
-    filename = filename.replace('.', 'xDOTx');
+    filename = filename.replace(/\./g, 'xDOTx');
     let filedataRes = (await axios.get(`${getDatabaseUrl()}${folder}/content/${filename}.json`)).data;
     let chunksNumber = (await axios.get(`${getDatabaseUrl()}ffolder_names/${folder}/${filename}.json`)).data;
     if (Array.isArray(filedataRes) && (chunksNumber != null && chunksNumber == filedataRes.length-1))
@@ -121,7 +121,7 @@ exports.integrity_check_explicit = async (raw_folder, raw_filename) => {
 exports.delete_corrupted_file_explicit = async (raw_folder, raw_filename) => {
     let folder = raw_folder;
     let filename = raw_filename;
-    filename = filename.replace('.', 'xDOTx');
+    filename = filename.replace(/\./g, 'xDOTx');
     try {
         let filedataRes = (await axios.get(`${getDatabaseUrl()}${folder}/content/${filename}.json`)).data;
         filedataRes = Object.values(filedataRes);
@@ -144,12 +144,12 @@ exports.delete_corrupted_file_explicit = async (raw_folder, raw_filename) => {
 exports.download = async (req, res) => {
     if (!req.body.folder) return res.status(400).json({ message: 'No folder specified' });
     if (!req.body.filename) return res.status(400).json({ message: 'No file name specified' });
-    const folder = req.body.folder;
+    let folder = req.body.folder;
     let filename = req.body.filename;
 
     if (filename.includes("-$") || filename.includes("xDOTx"))
         return res.status(400).json({ message: 'File name not valid' });
-    filename = filename.replace('.', 'xDOTx');
+    filename = filename.replace(/\./g, 'xDOTx');
 
     let chunksNumber = (await axios.get(`${getDatabaseUrl()}ffolder_names/${folder}/${filename}.json`)).data;
     if (chunksNumber == null) {
@@ -158,7 +158,7 @@ exports.download = async (req, res) => {
         });
         return;
     }
-    console.log(`DWN > The following file will be downloaded in ${chunksNumber} chunks: "${filename.replace('xDOTx', '.')}"`);
+    console.log(`DWN > The following file will be downloaded in ${chunksNumber} chunks: "${filename.replace(/xDOTx/g, '.')}"`);
 
     const chunksToDownload = (await axios.get(`${getDatabaseUrl()}${folder}/content/${filename}.json`)).data;
     if (chunksNumber != chunksToDownload.length - 1) {
@@ -181,16 +181,17 @@ exports.download = async (req, res) => {
         for (let i = 1; i <= chunksNumber; i++) {
             const chunkName = `${filename}-$[${i}]`;
             const fileId = chunksToDownload[i].fileid;
-            console.log(`DWN > Downloading "${filename.replace('xDOTx', '.')}" | Chunk: ${i}`);
+            console.log(`DWN > Downloading "${filename.replace(/xDOTx/g, '.')}" | Chunk: ${i}`);
             const chunkBuffer = await chunkManagement.fetch(fileId);
             writeStream.write(chunkBuffer);
         }
         writeStream.end();
+        folder = folder.replace('1bkp1', '[backup]').replace(/2/g, '_');
         const downloadFolder = path.join(getDownloadFolder(), folder);
         if (!fs.existsSync(downloadFolder)) {
             fs.mkdirSync(downloadFolder);
         }
-        const completeFilePath = path.join(downloadFolder, filename.replace('xDOTx', '.'));
+        const completeFilePath = path.join(downloadFolder, filename.replace(/xDOTx/g, '.'));
         fs.renameSync(tempFilePath, completeFilePath);
         console.log(`DWN > File saved in: "${completeFilePath}"`);
         if (fs.existsSync(dirPath)) {

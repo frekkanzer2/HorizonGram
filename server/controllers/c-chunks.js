@@ -11,6 +11,7 @@ exports.upload_checks = async (req, res) => {
     if (!req.body.filename) return res.status(400).json({ message: 'No file name specified' });
     if (!req.body.folder) return res.status(400).json({ message: 'No folder specified' });
     let filename = req.body.filename;
+    filename = filename.replace(".tar.gz", ".TARFMT");
     const folder = req.body.folder;
     const occurrences = filename.match(/\./g);  // Cerca tutte le occorrenze di '.'
     if (occurrences && occurrences.length > 1) filename = filename.replace(/\.(?=.*\.)/g, '-');
@@ -22,7 +23,8 @@ exports.upload_checks = async (req, res) => {
         else errMessage = 'File name not valid';
         return res.status(400).json({ message: errMessage });
     }
-    filename = filename.replace('.', 'xDOTx');
+    filename = filename.replace(".TARFMT", ".tar.gz");
+    filename = filename.replace(/\./g, 'xDOTx');
     try {
         if ((await axios.get(`${getDatabaseUrl()}ffolder_names/${folder}.json`)).data == null) {
             res.status(400).json({
@@ -51,12 +53,14 @@ exports.upload_preparation = async (req, res) => {
     if (!req.body.folder) return res.status(400).json({ message: 'No folder specified' });
     if (!req.body.totalChunks) return res.status(400).json({ message: 'No total number of chunks specified' });
     const folder = req.body.folder;
+    req.body.filename = req.body.filename.replace(".tar.gz", ".TARFMT");
     const occurrences = req.body.filename.match(/\./g);
     if (occurrences && occurrences.length > 1) {
         req.body.filename = req.body.filename.replace(/\.(?=.*\.)/g, '-');
         console.log("UPL > Filename contains multiple dots, replacing them with \'-\'")
     }
-    req.body.filename = req.body.filename.replace('.', 'xDOTx');
+    req.body.filename = req.body.filename.replace(".TARFMT", ".tar.gz");
+    req.body.filename = req.body.filename.replace(/\./g, 'xDOTx');
     try {
         await axios.patch(`${getDatabaseUrl()}ffolder_names/${folder}.json`, {
             [req.body.filename]: req.body.totalChunks
@@ -97,10 +101,12 @@ exports.upload = async (req, res) => {
         const file = req.file;
         const folder = req.body.folder;
         const chunk_number = req.body.chunkno;
+        file.originalname = file.originalname.replace(".tar.gz", ".TARFMT");
         const occurrences = file.originalname.match(/\./g);  // Cerca tutte le occorrenze di '.'
         if (occurrences && occurrences.length > 1) file.originalname = file.originalname.replace(/\.(?=.*\.)/g, '-');
-        file.originalname = file.originalname.replace('.', 'xDOTx');
-        console.log(`UPL > Uploading "${file.originalname.replace('xDOTx', '.')}" | Chunk: ${chunk_number} | ${sizes.bytesToSize(file.size)}`);
+        file.originalname = file.originalname.replace(".TARFMT", ".tar.gz");
+        file.originalname = file.originalname.replace(/\./g, 'xDOTx');
+        console.log(`UPL > Uploading "${file.originalname.replace(/xDOTx/g, '.')}" | Chunk: ${chunk_number} | ${sizes.bytesToSize(file.size)}`);
         const maxRetries = 5; // Numero massimo di tentativi
         let attempt = 1;
         let databaseResponse;
@@ -111,14 +117,14 @@ exports.upload = async (req, res) => {
             } catch (error) {
                 if (error.code === 'ETIMEDOUT' || error.code === 'ECONNABORTED') {
                     attempt++;
-                    console.log(`UPL > ERR::${error.code} > Catched when reading metadata for "${file.originalname.replace('xDOTx', '.')}" upload | Chunk: ${chunk_number}`);
+                    console.log(`UPL > ERR::${error.code} > Catched when reading metadata for "${file.originalname.replace(/xDOTx/g, '.')}" upload | Chunk: ${chunk_number}`);
                     if (attempt > maxRetries) {
                         console.error('UPL > Maximum number of attempts reached');
                         throw error;
                     } else {
-                        console.log(`TIM > Waiting ${getWaitingTime(attempt)} seconds for a new reading metadata attempt of "${file.originalname.replace('xDOTx', '.')}" | Chunk: ${chunk_number}`);
+                        console.log(`TIM > Waiting ${getWaitingTime(attempt)} seconds for a new reading metadata attempt of "${file.originalname.replace(/xDOTx/g, '.')}" | Chunk: ${chunk_number}`);
                         await sleep(getWaitingTime(attempt));
-                        console.log(`UPL > Executing new reading metadata attempt (${attempt}/${maxRetries}) for "${file.originalname.replace('xDOTx', '.')}" | Chunk: ${chunk_number}`);
+                        console.log(`UPL > Executing new reading metadata attempt (${attempt}/${maxRetries}) for "${file.originalname.replace(/xDOTx/g, '.')}" | Chunk: ${chunk_number}`);
                     }
                 } else {
                     console.error(`UPL > ERR::${error.code} > Error not managed`);
@@ -134,18 +140,18 @@ exports.upload = async (req, res) => {
                 break;
             } catch (error) {
                 attempt++;
-                console.log(`UPL > ERR::${error.code} > Catched when uploading "${file.originalname.replace('xDOTx', '.')}" | Chunk: ${chunk_number}`);
+                console.log(`UPL > ERR::${error.code} > Catched when uploading "${file.originalname.replace(/xDOTx/g, '.')}" | Chunk: ${chunk_number}`);
                 if (attempt > maxRetries) {
                     console.error('UPL > Maximum number of upload attempts reached');
                     throw error;
                 } else {
-                    console.log(`TIM > Waiting ${getWaitingTime(attempt)} seconds for a upload attempt of "${file.originalname.replace('xDOTx', '.')}" | Chunk: ${chunk_number}`);
+                    console.log(`TIM > Waiting ${getWaitingTime(attempt)} seconds for a upload attempt of "${file.originalname.replace(/xDOTx/g, '.')}" | Chunk: ${chunk_number}`);
                     await sleep(getWaitingTime(attempt));
-                    console.error(`UPL > Executing new upload attempt (${attempt}/${maxRetries}) for "${file.originalname.replace('xDOTx', '.')}" | Chunk: ${chunk_number}`);
+                    console.error(`UPL > Executing new upload attempt (${attempt}/${maxRetries}) for "${file.originalname.replace(/xDOTx/g, '.')}" | Chunk: ${chunk_number}`);
                 }
             }
         }
-        console.log(`UPL > "${file.originalname.replace('xDOTx', '.')}" | Chunk: ${chunk_number} successfully uploaded`);
+        console.log(`UPL > "${file.originalname.replace(/xDOTx/g, '.')}" | Chunk: ${chunk_number} successfully uploaded`);
     } catch (error) {
         errorFiles.PrintUploadError(error);
         return res.status(500).json({ message: 'Error sending file to Telegram' });
