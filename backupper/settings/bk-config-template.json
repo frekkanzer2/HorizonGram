@@ -1,0 +1,7 @@
+{
+    "backup_account_index": 1,
+    "backupper_script_path": "BACKUPPER.PY_ABSOLUTE_PATH",
+    "cron_expression": "0 0 1,15 * *",
+    "server_address": "SERVER_ADDRESS",
+    "server_port": "SERVER_PORT"
+}

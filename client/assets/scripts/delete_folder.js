@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Funzione principale per gestire la sottomissione
     function submitFolderName() {
         const inputValue = inputField.value;
-        if (validateInput(inputValue)) {
+        if (inputValue.includes("1bkp1") || validateInput(inputValue)) {
             const sanitizedInput = inputValue.trim().replace(/\s+/g, '_');
 
             // Mostra l'overlay di caricamento e disabilita l'interazione
@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.body.style.pointerEvents = 'auto';
             });
         } else {
-            alert('Invalid folder name. Only letters and underscores are allowed.');
+            alert(`${inputValue} is an invalid folder name. Only letters and underscores are allowed.`);
         }
     }
 

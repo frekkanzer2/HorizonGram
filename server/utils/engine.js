@@ -52,8 +52,8 @@ exports.integrity_checks = async () => {
             const localTasks = Object.keys(folderContents).map((fileName) => async () => {
                 let success = await file_controller.integrity_check_explicit(folderName, fileName);
                 if (!success) {
-                    const fullFileName = `${folderName}/${fileName.replace('xDOTx', '.')}`;
-                    console.log(`PRE > File \"${fullFileName}\" is corrupted`);
+                    const fullFileName = `${folderName}/${fileName.replace(/xDOTx/g, '.')}`;
+                    console.log(`\nPRE > File \"${fullFileName}\" is corrupted`);
                     corruptedFiles.push(fullFileName);
                 }
             });

@@ -39,6 +39,7 @@
 		
 					// Aggiungi ogni cartella come opzione nella dropdown
 					for (const folder in folders) {
+						if (folder.includes('bkp')) continue;
 						const option = document.createElement('option');
 						option.value = folder;  // Il valore è la chiave della cartella
 						option.text = folder;   // Mostra la chiave della cartella

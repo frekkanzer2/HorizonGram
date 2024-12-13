@@ -131,3 +131,5 @@ dist
 /downloads
 server/settings/config.json
 server/settings/future_deletion.txt
+backupper/settings/sources.txt
+backupper/settings/bk-config.json
