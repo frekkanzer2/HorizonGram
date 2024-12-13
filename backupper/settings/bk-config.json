@@ -1,7 +1,0 @@
-{
-    "backup_account_index": 1,
-    "backupper_script_path": "/backupper/backupper.py",
-    "cron_expression": "0 0 1,15 * *",
-    "server_address": "localhost",
-    "server_port": "3000"
-}
