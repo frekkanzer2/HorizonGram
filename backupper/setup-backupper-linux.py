@@ -3,7 +3,8 @@ import subprocess
 import os
 
 def get_config():
-    settings_path = './settings/bk-config.json'
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    settings_path = os.path.join(script_dir, 'settings/bk-config.json')
     if not os.path.exists(settings_path):
         raise FileNotFoundError(f"ERR > File \"{settings_path}\" does not exists!")
     with open(settings_path, 'r') as file:

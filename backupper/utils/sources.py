@@ -2,7 +2,8 @@ import os
 import re
 
 def read_backup_sources():
-    file_path = "settings/sources.txt"
+    script_dir = os.path.dirname(os.path.abspath(__file__)).replace('utils', '')
+    file_path = os.path.join(script_dir, 'settings/sources.txt')
     try:
         with open(file_path, 'r') as file:
             sources = [line.strip() for line in file if line.strip()]

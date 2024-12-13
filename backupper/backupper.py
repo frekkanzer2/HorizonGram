@@ -35,7 +35,7 @@ async def main():
             for source in sources:
                 print(f">> FOLD :: {source['path']} <> {source['alias']}")
                 for item in source['items']:
-                    print(f">>> IT :: {item.replace("xDOTx", ".")}")
+                    print(f">>> IT :: {item.replace('xDOTx', '.')}")
             print(f"LOG > Diff end")
         else:
             print("LOG > Empty diff, there's nothing to backup")
