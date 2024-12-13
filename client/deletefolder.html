@@ -45,7 +45,7 @@
 					for (const folder in folders) {
 						const option = document.createElement('option');
 						option.value = folder;  // Il valore è la chiave della cartella
-						option.text = folder;   // Mostra la chiave della cartella
+						option.text = (folder.includes("bkp")) ? `${folder.replace('1bkp1', 'BACKUP > ').replace(/2/g, '/')}` : folder;
 						folderDropdown.add(option);
 					}
 		
