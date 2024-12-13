@@ -11,6 +11,11 @@ const temp_download_path = './settings/future_deletion.txt'
 
 console.clear();
 console.log(`======== HORIZONGRAM ${CONST.VERSION} ========`);
+if (CONST.VERSION.includes("preview"))
+    console.log("ALERT > > >\nThis is a preview version, so you might encounter some issues during its use.\n\
+Documentation may not have been written yet for this version, so you might encounter malfunctions caused by incorrect updates during use.\n\
+If you prefer to use a stable and secure version, download the previous version of HorizonGram.\n\
+< < < ALERT")
 engine.settingsfile_exists(path.join(__dirname, settings_path));
 loadSettings(settings_path, temp_download_path).then(() => {
     console.log(`====== Profile :: ${getAccountLabel()} ======`)
