@@ -38,7 +38,7 @@ loadSettings(settings_path, temp_download_path).then(() => {
 
     engine.integrity_checks().then(
         () => {
-            setInterval(checkAndDeleteFolders, 60 * 1000);
+            setInterval(checkAndDeleteFolders, 60 * 1000); // Execute each 60s to check if there are downloaded folders to delete
             const server = app.listen(PORT, () => {
                 console.log(`RUN > Server successfully started on http://localhost:${PORT}`);
                 engine.open_client();
