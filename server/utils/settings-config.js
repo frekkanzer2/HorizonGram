@@ -32,7 +32,9 @@ async function loadSettings(config_path, future_deletion_path) {
         if (!label) throw new Error(`PRE > Account n.${index + 1} is missing "label" attribute, please read the configuration guide to start the server`);
         if (!bot_token) throw new Error(`PRE > Account n.${index + 1} is missing "bot_token" attribute, please read the configuration guide to start the server`);
         if (!chat_id) throw new Error(`PRE > Account n.${index + 1} is missing "chat_id" attribute, please read the configuration guide to start the server`);
+        if (!chat_id.startsWith("-100")) throw new Error(`PRE > Account n.${index + 1} has a wrong value on "chat_id" attribute: the chat ID must start with "-100"`);
         if (!database_url) throw new Error(`PRE > Account n.${index + 1} is missing "database_url" attribute, please read the configuration guide to start the server`);
+        if (!database_url.endsWith("/")) throw new Error(`PRE > Account n.${index + 1} has a wrong value on "database_url" attribute: the database URL must end with the "/" character`);
         if (labels.has(label)) throw new Error(`PRE > Found the same label for multiple accounts, that must be unique. Please read the configuration guide to start the server`);
         if (bot_tokens.has(bot_token)) throw new Error(`PRE > Found the same bot token for multiple accounts, that must be unique. Please read the configuration guide to start the server`);
         if (chat_ids.has(chat_id)) throw new Error(`PRE > Found the same archive chat ID for multiple accounts, that must be unique. Please read the configuration guide to start the server`);
