@@ -84,11 +84,12 @@ exports.deleteFile = async (req, res) => {
     for (let i=1; i < filedataRes.length; i++)
         axios.delete(`${getDatabaseUrl()}${folder}/content/${filename}/${i}.json`);
     axios.delete(`${getDatabaseUrl()}ffolder_names/${folder}/${filename}.json`);
-    await axios.post(`https://api.telegram.org/bot${getBotToken()}/deleteMessages`, {
-        chat_id: getChatId(),
-        message_ids: idsToDelete
-    });
-    
+    try {
+        await axios.post(`https://api.telegram.org/bot${getBotToken()}/deleteMessages`, {
+            chat_id: getChatId(),
+            message_ids: idsToDelete
+        });
+    } catch (err) {}
     console.log(`DEL > File "${filename.replace(/xDOTx/g, '.')}" deleted`);
     res.status(200).json({
         message: 'File successfully deleted'
@@ -132,9 +133,7 @@ exports.delete_corrupted_file_explicit = async (raw_folder, raw_filename) => {
                 chat_id: getChatId(),
                 message_ids: idsToDelete
             });
-        } catch (err) {
-            console.log(`PRE > ERR::${err.code} > Cannot delete "${raw_filename}" data on Telegram`);
-        }
+        } catch (err) { }
     }
     catch (err) { }
     await axios.delete(`${getDatabaseUrl()}${folder}/content/${filename}.json`);
