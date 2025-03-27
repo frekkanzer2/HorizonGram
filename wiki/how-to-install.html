@@ -47,6 +47,9 @@
 				    <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-3"><span class="theme-icon-holder me-2"><i class="fas fa-gear"></i></span>Server setup</a></li>
 				    <li class="nav-item"><a class="nav-link scrollto" href="#section-3-1">Version 1 to 1.4.1</a></li>
 				    <li class="nav-item"><a class="nav-link scrollto" href="#section-3-2">Version 2+</a></li>
+				    <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-4"><span class="theme-icon-holder me-2"><i class="fas fa-bolt"></i></span>Shortcut setup (v2.2+)</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#section-4-1">Windows</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#section-4-2">Linux</a></li>
 			    </ul>
 		    </nav><!--//docs-nav-->
 	    </div><!--//docs-sidebar-->
@@ -177,7 +180,7 @@
 									<p>
 										<b>Update 2.1 introduced scheduled deletion of downloaded folders</b>.</br>
 										Edit the <code>config.json</code> file and introduce a new attribute called <code>future_deletion_minutes</code> valued with numeric value that indicates after how many minutes you want to delete the folder. If this is your first time downloading HorizonGram and you downloaded version 2.1, you will find this attribute already included in your <code>config.json</code> file<br/>
-										<b>This step is optional</b>: if you do not add this attribute, HorizonGram will continue to operate normally by automatically setting the scheduled deletion to 5 minutes.
+										It's an <b>optional step</b>: if you do not add this attribute, HorizonGram will continue to operate normally by automatically setting the scheduled deletion to 5 minutes.
 									</p>
 								</div><!--//content-->
 							</div>
@@ -205,6 +208,129 @@
 							</ol>
 						</section>
 						
+				    </header>
+				    
+			    </article><!--//docs-article-->
+
+				<article class="docs-article" id="section-4">
+				    <header class="docs-header">
+					    <h1 class="docs-heading">Shortcut setup</h1>
+						<section class="docs-intro">
+							<p>
+								It's an <b>optional step</b>, but it may be useful to follow it so that you can start HorizonGram more quickly and conveniently.<br/>
+								Shortcuts allow you to start and change HorizonGram profiles with a single click, without having to edit 
+								the configuration file (<code>config.json</code>) and without having to manually start, via command, the server.
+							</p>
+						</section>
+
+						<div class="callout-block callout-block-info">
+							<div class="content">
+								<h4 class="callout-title">
+									<span class="callout-icon-holder me-1">
+										<i class="fas fa-info-circle"></i>
+									</span><!--//icon-holder-->
+									Note
+								</h4>
+								<p>
+									Shortcuts are available <b>starting from version 2.2</b>
+								</p>
+							</div><!--//content-->
+						</div>
+
+						<div class="callout-block callout-block-warning">
+							<div class="content">
+								<h4 class="callout-title">
+									<span class="callout-icon-holder me-1">
+										<i class="fas fa-bullhorn"></i>
+									</span><!--//icon-holder-->
+									Warning
+								</h4>
+								<p>There is not and will not be shortcut support for macOS</p>
+							</div><!--//content-->
+						</div><!--//callout-block-->
+
+						<section class="docs-section" id="section-4-1">
+							<h2 class="section-heading">Windows</h2>
+							<ol>
+								<li>Open the <code>&ltREPOSITORY_FOLDER&gtexecutors</code> folder</li>
+								<li>
+									Duplicate <code>windows-start-template.bat</code> file and rename it - 
+									we will reference it with <code>&ltSTARTER_BAT&gt</code>
+								</li>
+								<li>
+									Duplicate <code>windows-change-profile-template.bat</code> file and rename it by giving it a name that refers to your HorizonGram profile - 
+									we will reference it with <code>&ltCHANGE_PROFILE_BAT&gt</code>
+								</li>
+								<li>
+									Repeat the previous step by creating a copy of <code>windows-change-profile-template.bat</code> file, one for each HorizonGram profile set on the <code>config.json</code> file
+								</li>
+								<li>
+									Edit <code>&ltSTARTER_BAT&gt</code> by setting your server folder path
+								</li>
+								<li>
+									Edit each <code>&ltCHANGE_PROFILE_BAT&gt</code> file by setting your server folder path and the profile ID (see lines 4 and 5) set on the <code>config.json</code> file.<br/>
+									In this step, server path and profile ID should not be in the quotation marks.
+								</li>
+								<li>
+									Move the duplicate files to a location on your pc that is convenient to you, such as the desktop
+								</li>
+								<li>
+									Execute the files by double clicking them!
+								</li>
+							</ol>
+						</section>
+
+						<section class="docs-section" id="section-4-2">
+							<h2 class="section-heading">Linux</h2>
+							<ol>
+								<li>Open the <code>&ltREPOSITORY_FOLDER&gtexecutors</code> folder</li>
+								<li>
+									Duplicate <code>linux-start-template.sh</code> file and rename it - 
+									we will reference it with <code>&ltSTARTER_SH&gt</code>.<br/>
+									You can use the following command: <code>cp linux-start-template.sh &ltSTARTER_SH&gt</code>
+								</li>
+								<li>
+									Duplicate <code>linux-change-profile-template.sh</code> file and rename it by giving it a name that refers to your HorizonGram profile - 
+									we will reference it with <code>&ltCHANGE_PROFILE_SH&gt</code>.<br/>
+									You can use the following command: <code>cp linux-change-profile-template.sh &ltCHANGE_PROFILE_SH&gt</code>
+								</li>
+								<li>
+									Repeat the previous step by creating a copy of <code>linux-change-profile-template.sh</code> file, one for each HorizonGram profile set on the <code>config.json</code> file
+								</li>
+								<li>
+									Edit <code>&ltSTARTER_SH&gt</code> by setting your server folder path
+								</li>
+								<li>
+									Edit each <code>&ltCHANGE_PROFILE_SH&gt</code> file by setting your server folder path and the profile ID (see lines 4 and 5) set on the <code>config.json</code> file.
+								</li>
+								<li>
+									Move the duplicate files to a location on your pc that is convenient to you.
+								</li>
+								<li>
+									Execute the files using the following command: <code>./&ltCHOSEN_FILE&gt</code>
+								</li>
+							</ol>
+							<p>Here's a full editing and utilization example:</p>
+							<ol>
+								<li>
+									<code>cp linux-start-template.sh start-horizongram.sh</code>
+								</li>
+								<li>
+									<code>cp linux-change-profile-template.sh change-profile-to-personal.sh</code>
+								</li>
+								<li>
+									Editing files by setting variable values...<br/>
+									<code>vi start-horizongram.sh</code><br/>
+									<code>vi change-profile-to-personal.sh</code>
+								</li>
+								<li>
+									<code>./change-profile-to-personal.sh</code>
+								</li>
+								<li>
+									<code>./start-horizongram.sh</code>
+								</li>
+							</ol>
+						</section>
 				    </header>
 				    
 			    </article><!--//docs-article-->

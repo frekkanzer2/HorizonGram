@@ -16,9 +16,9 @@ exports.upload_checks = async (req, res) => {
     const occurrences = filename.match(/\./g);  // Cerca tutte le occorrenze di '.'
     if (occurrences && occurrences.length > 1) filename = filename.replace(/\.(?=.*\.)/g, '-');
     const validFilenameRegex = /^[A-Za-z0-9 ._+\-&()]+\.?[A-Za-z0-9]{0,4}$/;
-    if (filename.includes("-$") || filename.includes("xDOTx") || !validFilenameRegex.test(filename) || filename.length > 50) {
+    if (filename.includes("-$") || filename.includes("xDOTx") || !validFilenameRegex.test(filename) || filename.length > 80) {
         let errMessage = "";
-        if (filename.length > 50) errMessage = 'File name too long (50 chars limit)';
+        if (filename.length > 80) errMessage = 'File name too long (80 chars limit)';
         else if (!validFilenameRegex.test(filename)) errMessage = 'Remove special characters from the file name';
         else errMessage = 'File name not valid';
         return res.status(400).json({ message: errMessage });
