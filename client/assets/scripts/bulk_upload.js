@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 })
                                 .catch(error => {
                                     console.error('Upload error:', error);
-                                    statusMessage.textContent = `Error during upload of ${file.name}: ${error.message}`;
+                                    statusMessage.textContent = `Error during upload of ${file.name}`;
                                     statusMessage.className = 'status-error';
                                     reject(error); // Reject the Promise on error
                                 });
