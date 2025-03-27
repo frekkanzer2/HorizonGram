@@ -1,3 +1,5 @@
+=== IGNORE THIS FOLDER, DO NOT USE IT! ===
+
 This readme will be deleted in the release version.
 
 SETUP
