@@ -10,7 +10,18 @@ cd "$SERVER_FOLDER_PATH" || exit
 cd ..
 cd executors
 cd scripts
-python3 update_profile.py "$SERVER_FOLDER_PATH" "$SETTINGS_FILE" "$PROFILE_INDEX"
+
+if command -v python3 &>/dev/null; then
+    PYTHON_CMD="python3"
+elif command -v python &>/dev/null; then
+    PYTHON_CMD="python"
+else
+    echo "ERR :: No Python installation found. Please install it." >&2
+    exit 1
+fi
+
+echo "INFO :: Detected Python installation: $PYTHON_CMD"
+$PYTHON_CMD update_profile.py "$SERVER_FOLDER_PATH" "$SETTINGS_FILE" "$PROFILE_INDEX"
 
 if [ $? -eq 0 ]; then
     echo "OK :: Configuration changed successfully."
