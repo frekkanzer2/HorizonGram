@@ -49,6 +49,7 @@
 				    <li class="nav-item"><a class="nav-link scrollto" href="#section-3-2">Version 2+</a></li>
 				    <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-4"><span class="theme-icon-holder me-2"><i class="fas fa-bolt"></i></span>Shortcut setup (v3+)</a></li>
 				    <li class="nav-item"><a class="nav-link scrollto" href="#section-4-1">Windows</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#section-4-2">Linux</a></li>
 			    </ul>
 		    </nav><!--//docs-nav-->
 	    </div><!--//docs-sidebar-->
@@ -236,6 +237,18 @@
 							</div><!--//content-->
 						</div>
 
+						<div class="callout-block callout-block-warning">
+							<div class="content">
+								<h4 class="callout-title">
+									<span class="callout-icon-holder me-1">
+										<i class="fas fa-bullhorn"></i>
+									</span><!--//icon-holder-->
+									Warning
+								</h4>
+								<p>There is not and will not be shortcut support for macOS</p>
+							</div><!--//content-->
+						</div><!--//callout-block-->
+
 						<section class="docs-section" id="section-4-1">
 							<h2 class="section-heading">Windows</h2>
 							<ol>
@@ -260,6 +273,61 @@
 								</li>
 								<li>
 									Move the duplicate files to a location on your pc that is convenient to you, such as the desktop
+								</li>
+								<li>
+									Execute the files by double clicking them!
+								</li>
+							</ol>
+						</section>
+
+						<section class="docs-section" id="section-4-2">
+							<h2 class="section-heading">Linux</h2>
+							<ol>
+								<li>Open the <code>&ltREPOSITORY_FOLDER&gtexecutors</code> folder</li>
+								<li>
+									Duplicate <code>linux-start-template.sh</code> file and rename it - 
+									we will reference it with <code>&ltSTARTER_SH&gt</code>.<br/>
+									You can use the following command: <code>cp linux-start-template.sh &ltSTARTER_SH&gt</code>
+								</li>
+								<li>
+									Duplicate <code>linux-change-profile-template.sh</code> file and rename it by giving it a name that refers to your HorizonGram profile - 
+									we will reference it with <code>&ltCHANGE_PROFILE_SH&gt</code>.<br/>
+									You can use the following command: <code>cp linux-change-profile-template.sh &ltCHANGE_PROFILE_SH&gt</code>
+								</li>
+								<li>
+									Repeat the previous step by creating a copy of <code>linux-change-profile-template.sh</code> file, one for each HorizonGram profile set on the <code>config.json</code> file
+								</li>
+								<li>
+									Edit <code>&ltSTARTER_SH&gt</code> by setting your server folder path
+								</li>
+								<li>
+									Edit each <code>&ltCHANGE_PROFILE_SH&gt</code> file by setting your server folder path and the profile ID (see lines 4 and 5) set on the <code>config.json</code> file.
+								</li>
+								<li>
+									Move the duplicate files to a location on your pc that is convenient to you.
+								</li>
+								<li>
+									Execute the files using the following command: <code>./&ltCHOSEN_FILE&gt</code>
+								</li>
+							</ol>
+							<p>Here's a full editing and utilization example:</p>
+							<ol>
+								<li>
+									<code>cp linux-start-template.sh start-horizongram.sh</code>
+								</li>
+								<li>
+									<code>cp linux-change-profile-template.sh change-profile-to-personal.sh</code>
+								</li>
+								<li>
+									Editing files by setting variable values...<br/>
+									<code>vi start-horizongram.sh</code><br/>
+									<code>vi change-profile-to-personal.sh</code>
+								</li>
+								<li>
+									<code>./change-profile-to-personal.sh</code>
+								</li>
+								<li>
+									<code>./start-horizongram.sh</code>
 								</li>
 							</ol>
 						</section>
