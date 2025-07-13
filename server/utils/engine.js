@@ -6,26 +6,6 @@ const folder_controller = require('./../controllers/c-folders');
 const file_controller = require('./../controllers/c-files');
 const { limitedConcurrency } = require('../utils/concurrency');
 
-exports.open_client = () => {
-    let url = path.join(__dirname, './../../client/index.html');
-    const platform = os.platform();
-    let command;
-    if (platform === 'win32') {
-        command = `start ${url}`;
-    } else if (platform === 'darwin') {
-        command = `open ${url}`;
-    } else if (platform === 'linux') {
-        command = `xdg-open ${url}`;
-    }
-    if (command) {
-        exec(command, (err) => {
-            if (err) {
-                console.error('RUN > Error during client startup, start it manually');
-            }
-        });
-    }
-}
-
 exports.envfile_exists = (path) => {
     if (!fs.existsSync(path)) {
         console.error('PRE > Settings file (.env) not configured, please read the configuration guide to start the server');
@@ -47,6 +27,7 @@ exports.integrity_checks = async () => {
         let allTasks = [];
         const startTime = Date.now();
         console.log(`PRE > Started integrity check of ${Object.keys(data).length} folders`);
+        console.log(`PRE > Please don't close, just wait: loading may take a long time!`);
         for (const folderName in data) {
             const folderContents = data[folderName];
             const localTasks = Object.keys(folderContents).map((fileName) => async () => {
@@ -61,7 +42,6 @@ exports.integrity_checks = async () => {
         }
         await limitedConcurrency(allTasks, 200);
         const endTime = Date.now();
-        console.log();
         let duration = endTime - startTime;
         let output;
         if (duration >= 60000) {

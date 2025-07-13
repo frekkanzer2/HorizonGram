@@ -34,14 +34,12 @@ loadSettings(settings_path, temp_download_path).then(() => {
     app.use('/api/folder', routes.folders);
     app.use('/api/chunks', routes.chunks);
 
-    const PORT = 3000;
-
     engine.integrity_checks().then(
         () => {
             setInterval(checkAndDeleteFolders, 60 * 1000);
-            const server = app.listen(PORT, () => {
-                console.log(`RUN > Server successfully started on http://localhost:${PORT}`);
-                engine.open_client();
+            const server = app.listen(CONST.BE_PORT, () => {
+                console.log(`RUN > Server successfully started`);
+                console.log(`RUN > Access to Horizongram at http://localhost:3000`);
             });
             // Gestione degli errori
             server.on('error', (err) => {
