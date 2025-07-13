@@ -70,7 +70,7 @@ async function deleteFile() {
 
     document.getElementById('loading-message').textContent = "Deleting. Do not close this page."
 
-    const deleteUrl = 'http://localhost:3000/api/file';
+    const deleteUrl = '/api/file';
     const deleteBody = {
         folder: selectedFolder,
         filename: selectedFile
@@ -112,7 +112,7 @@ async function downloadFile() {
     document.getElementById('loading-sub-message').textContent = "Check server console to see the progress."
 
     console.log(`Downloading file ${selectedFile} from folder ${selectedFolder}`);
-    const downloadResponse = await fetch('http://localhost:3000/api/file/download', {
+    const downloadResponse = await fetch('/api/file/download', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -153,7 +153,7 @@ async function downloadFile() {
 async function fetchData() {
     let errMsgComponent = document.getElementById('status-message');
     try {
-        const response = await fetch('http://localhost:3000/api/folder');
+        const response = await fetch('/api/folder');
         const data = await response.json();
         createFolderStructure(data.data);
     } catch (error) {

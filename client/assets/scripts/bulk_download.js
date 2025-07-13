@@ -27,7 +27,7 @@ async function downloadFolder() {
 
     try {
         // Fetch the folder structure
-        const response = await fetch('http://localhost:3000/api/folder');
+        const response = await fetch('/api/folder');
         const data = await response.json();
         const files = data.data[folderName];
 
@@ -56,7 +56,7 @@ let downloadPath = "";
 
 // Funzione per scaricare un singolo file dal server
 async function downloadFileFromServer(fileName, folderName) {
-    const downloadUrl = 'http://localhost:3000/api/file/download';
+    const downloadUrl = '/api/file/download';
     setLoadingMessage(`Downloading "${fileName}"`, "Check the progress into the server console", true);
 
     const requestBody = {

@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Funzione per ottenere tutte le cartelle e i file
     function getFolders() {
-        return fetch('http://localhost:3000/api/folder')
+        return fetch('/api/folder')
         .then(response => {
             return response.json().then(data => {
                 if (response.ok) {
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Funzione per eliminare un singolo file
     function deleteFile(folderName, fileName) {
         fileName = fileName.replace(/xDOTx/g, '.');
-        return fetch('http://localhost:3000/api/file', {
+        return fetch('/api/file', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Funzione per eliminare una cartella
     function deleteFolder(folderName) {
-        return fetch('http://localhost:3000/api/folder', {
+        return fetch('/api/folder', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

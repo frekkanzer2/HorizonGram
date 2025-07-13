@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function() {
             statusMessage.style.display = 'none';
             document.body.style.pointerEvents = 'none';
 
-            fetch('http://localhost:3000/api/folder', {
+            fetch('/api/folder', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function() {
         formData.append('folder', folderName);
         formData.append('chunkno', index);
 
-        return fetch('http://localhost:3000/api/chunks/upload', {
+        return fetch('/api/chunks/upload', {
             method: 'POST',
             body: formData,
         })
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function checkFile(file, folderName) {
         setLoadingMessage("Do not close this window during the upload!", "Preparing phase...", true);
-        return fetch('http://localhost:3000/api/chunks/upload/checks', {
+        return fetch('/api/chunks/upload/checks', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function prepareFile(file, folderName) {
-        return fetch('http://localhost:3000/api/chunks/upload/preparation', {
+        return fetch('/api/chunks/upload/preparation', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
