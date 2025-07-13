@@ -24,7 +24,7 @@ echo "INFO :: Detected Python installation: $PYTHON_CMD"
 $PYTHON_CMD update_profile.py "$SERVER_FOLDER_PATH" "$SETTINGS_FILE" "$PROFILE_INDEX"
 
 if [ $? -eq 0 ]; then
-    echo "OK :: Configuration changed successfully."
+    echo "OK :: Configuration changed successfully. Please restart Horizongram."
 else
     echo "ERR :: An error occured when executing update_config.py file." >&2
     exit 1

@@ -1,5 +1,5 @@
 #!/bin/bash
-SERVER_FOLDER_PATH="EDIT_HERE"
+HORIZONGRAM_FOLDER_PATH="EDIT_HERE"
 
-cd "$SERVER_FOLDER_PATH" || exit
-npm start
+cd "$HORIZONGRAM_FOLDER_PATH" || exit
+./start.sh

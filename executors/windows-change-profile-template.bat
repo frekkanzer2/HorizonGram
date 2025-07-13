@@ -33,6 +33,6 @@ if %errorlevel% neq 0 (
     echo ERR :: An error occured when executing update_config.py file.
     pause
 ) else (
-    echo OK :: Configuration changed successfully.
+    echo OK :: Configuration changed successfully. Please restart Horizongram.
     pause
 )

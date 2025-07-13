@@ -1,4 +1,4 @@
 @echo off
-cd /d "SERVER_FOLDER_PATH"
-start /b npm start
+cd /d "HORIZONGRAM_FOLDER_PATH"
+start.bat
 exit
