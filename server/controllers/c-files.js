@@ -168,7 +168,7 @@ exports.download = async (req, res) => {
         return;
     }
 
-    const dirPath = "../downloads/"
+    const dirPath = `${CONST.DOWNLOADS_FOLDER}/temp`;
     if (!fs.existsSync(dirPath)){
         fs.mkdirSync(dirPath);
     }

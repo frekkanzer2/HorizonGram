@@ -1,3 +1,4 @@
+const CONST = require('./const');
 const fs = require('fs/promises');
 
 let accounts = [];
@@ -14,7 +15,7 @@ async function loadSettings(config_path, future_deletion_path) {
     }
     data = JSON.parse(data);
     accounts = data.accounts;
-    downloadFolder = data.download_folder;
+    downloadFolder = CONST.DOWNLOADS_FOLDER;
     actualIndex = data.active_account_index;
     if (accounts == undefined || accounts.length == 0) throw new Error('PRE > Accounts not declared, please read the configuration guide to start the server');
     if (actualIndex == undefined) throw new Error('PRE > Active account not declared, please read the configuration guide to start the server');

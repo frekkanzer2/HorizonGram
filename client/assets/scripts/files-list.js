@@ -142,7 +142,7 @@ async function downloadFile() {
     // Se la risposta è andata a buon fine
     const downloadPath = (await downloadResponse.json()).downloadPath;
 
-    statusMessage.textContent = `File downloaded in: \"${downloadPath}\"`;
+    statusMessage.textContent = `File downloaded, now available into the Horizongram downloads folder`;
     statusMessage.className = 'status-success-bg';
 
     document.getElementById('loading-sub-message').style.display = 'none'; // Nascondi il messaggio di caricamento
