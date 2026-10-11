@@ -1,0 +1,30 @@
+# Prerequisite: create server/settings/config.json from config-template.json
+# (see wiki/how-to-install.html). "download_folder" is ignored inside the container:
+# downloaded files end up in ./downloads.
+#
+# Start:  <CONTAINER_ENGINE> compose up -d --build   (e.g. docker / podman)
+# Client: http://localhost:8080
+# Logs:   <CONTAINER_ENGINE> compose logs -f server
+
+services:
+  server:
+    build: ./server
+    container_name: horizongram-server
+    restart: unless-stopped
+    ports:
+      - "3000:3000"   # the client calls http://localhost:3000 (hardcoded)
+    volumes:
+      - ./server/settings:/app/server/settings
+      - ./downloads:/downloads
+    tty: true
+
+  client:
+    image: docker.io/library/nginx:1.27-alpine
+    container_name: horizongram-client
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./client:/usr/share/nginx/html:ro
+    depends_on:
+      - server

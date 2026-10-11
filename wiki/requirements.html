@@ -43,6 +43,8 @@
 				    <li class="nav-item section-title"><a class="nav-link scrollto active" href="#section-1"><span class="theme-icon-holder me-2"><i class="fas fa-toolbox"></i></span>Requirements</a></li>
 				    <li class="nav-item"><a class="nav-link scrollto" href="#item-1-1">Telegram account</a></li>
 				    <li class="nav-item"><a class="nav-link scrollto" href="#item-1-2">Firebase account</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-1-0">Container engine</a></li>
+				    <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-2"><span class="theme-icon-holder me-2"><i class="fas fa-wrench"></i></span>Manual installation</a></li>
 				    <li class="nav-item"><a class="nav-link scrollto" href="#item-1-3">Node.js, Npm</a></li>
 				    <li class="nav-item"><a class="nav-link scrollto" href="#item-1-4">Python</a></li>
 			    </ul>
@@ -76,7 +78,32 @@
 						    <li><strong class="me-1">Firebase</strong>: <a href="https://firebase.google.com/" target="_blank">go to the platform</a></li>
 						</ul>
 					</section>
-					
+
+					<section class="docs-section" id="item-1-0">
+						<h2 class="section-heading">Container engine</h2>
+						<p>
+							Starting from version 3.0, the <b>recommended way</b> to run HorizonGram is inside containers.
+							You only need a container engine with Compose support, such as <a href="https://www.docker.com/" target="_blank">Docker</a>
+							or <a href="https://podman.io/" target="_blank">Podman</a>: follow the official installation guide of the one you prefer.
+						</p>
+						<p>
+							Check if everything works by printing the Compose version, where <code>&ltCONTAINER_ENGINE&gt</code> is the command of your container engine:<br/>
+							<code>&ltCONTAINER_ENGINE&gt compose version</code>
+						</p>
+						<p>Then follow the <a href="./how-to-install.html#section-5">container setup guide</a>. The requirements listed in <i>Manual installation</i> are not needed.</p>
+					</section>
+
+			    </article>
+
+			    <article class="docs-article" id="section-2">
+
+				    <header class="docs-header">
+					    <h1 class="docs-heading">Manual installation</h1>
+					    <section class="docs-intro">
+						    <p>The following requirements are needed only if you want to run HorizonGram without containers.</p>
+						</section>
+				    </header>
+
 				    <section class="docs-section" id="item-1-3">
 						<h2 class="section-heading">Node.js, Npm</h2>
 						<p>Node.js is a JavaScript runtime used to execute HorizonGram server code.</p>

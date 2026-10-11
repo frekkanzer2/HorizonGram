@@ -128,7 +128,8 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
-/downloads
+/downloads/*
+!/downloads/.gitkeep
 server/settings/config.json
 server/settings/future_deletion.txt
 backupper/settings/sources.txt
