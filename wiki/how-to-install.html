@@ -47,7 +47,10 @@
 				    <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-3"><span class="theme-icon-holder me-2"><i class="fas fa-gear"></i></span>Server setup</a></li>
 				    <li class="nav-item"><a class="nav-link scrollto" href="#section-3-1">Version 1 to 1.4.1</a></li>
 				    <li class="nav-item"><a class="nav-link scrollto" href="#section-3-2">Version 2+</a></li>
-				    <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-4"><span class="theme-icon-holder me-2"><i class="fas fa-bolt"></i></span>Shortcut setup (v2.2+)</a></li>
+				    <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-5"><span class="theme-icon-holder me-2"><i class="fa-brands fa-docker"></i></span>Container setup (recommended)</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#section-5-1">Start</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#section-5-2">Change profile</a></li>
+				    <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-4"><span class="theme-icon-holder me-2"><i class="fas fa-bolt"></i></span>Manual: shortcut setup</a></li>
 				    <li class="nav-item"><a class="nav-link scrollto" href="#section-4-1">Windows</a></li>
 				    <li class="nav-item"><a class="nav-link scrollto" href="#section-4-2">Linux</a></li>
 			    </ul>
@@ -131,7 +134,11 @@
 									</span><!--//icon-holder-->
 									Note
 								</h4>
-								<p>If you installed Node.js via WSL (Windows method), the terminal you need to open is the WSL.</p>
+								<p>
+									This configuration is needed both for the <a href="#section-5">container setup</a> (recommended) and for the manual installation.<br/>
+									With containers, the download folder is managed automatically: you can skip the steps marked as <i>manual installation only</i>.<br/>
+									For the manual installation, if you installed Node.js via WSL (Windows method), the terminal you need to open is the WSL.
+								</p>
 							</div><!--//content-->
 						</div>
 						<section class="docs-section" id="section-3-1">
@@ -151,7 +158,7 @@
 						<section class="docs-section" id="section-3-2">
 							<h2 class="section-heading">Version 2+</h2>
 							<ol>
-								<li>Create a folder on your local computer to store downloaded files. We are going to reference its absolute path with <code>&ltDOWNLOADS_FOLDER&gt</code></li>
+								<li><i>Manual installation only</i>: create a folder on your local computer to store downloaded files. We are going to reference its absolute path with <code>&ltDOWNLOADS_FOLDER&gt</code></li>
 								<li>Open the <code>&ltREPOSITORY_FOLDER&gtserver/settings</code> folder</li>
 								<li>Duplicate <code>config-template.json</code> and rename the copy to <code>config.json</code></li>
 								<li>Look at <a href="./assets/images/settings-profiles.png" target="_blank">this image</a> to understand what will be meant by profile configuration</li>
@@ -166,7 +173,7 @@
 									</ul>
 								</li>
 								<li>Leave <code>active_account_index</code> value to <code>1</code></li>
-								<li>Change <code>DOWNLOAD_FOLDER_PATH</code> value to <code>&ltDOWNLOADS_FOLDER&gt</code>. 
+								<li><i>Manual installation only</i>: change <code>DOWNLOAD_FOLDER_PATH</code> value to <code>&ltDOWNLOADS_FOLDER&gt</code>.
 									If a <code>\</code> character appears in the path, add another one right after it (see the download path declared in the example <code>config.json</code> file to understand)</li>
 							</ol>
 							<div class="callout-block callout-block-info">
@@ -212,11 +219,100 @@
 				    
 			    </article><!--//docs-article-->
 
-				<article class="docs-article" id="section-4">
+				<article class="docs-article" id="section-5">
 				    <header class="docs-header">
-					    <h1 class="docs-heading">Shortcut setup</h1>
+					    <h1 class="docs-heading">Container setup</h1>
 						<section class="docs-intro">
 							<p>
+								This is the <b>recommended way</b> to install and start HorizonGram. Server and client run inside containers,
+								so you don't need to install Node.js, Npm or Python, and you don't need shortcuts.<br/>
+								You only need a <a href="./requirements.html#item-1-0">container engine</a> with Compose support.
+							</p>
+							<p>
+								In this guide, <code>&ltCONTAINER_ENGINE&gt</code> is the command of your container engine (for example <code>docker</code> or <code>podman</code>).
+							</p>
+						</section>
+
+						<div class="callout-block callout-block-info">
+							<div class="content">
+								<h4 class="callout-title">
+									<span class="callout-icon-holder me-1">
+										<i class="fas fa-info-circle"></i>
+									</span><!--//icon-holder-->
+									Note
+								</h4>
+								<p>
+									Container support is available <b>starting from version 3.0</b>
+								</p>
+							</div><!--//content-->
+						</div>
+
+						<section class="docs-section" id="section-5-1">
+							<h2 class="section-heading">Start</h2>
+							<ol>
+								<li>Complete the <a href="#section-3-2">server setup</a> to create the <code>config.json</code> file</li>
+								<li>Open a terminal in the <code>&ltREPOSITORY_FOLDER&gt</code> folder</li>
+								<li>
+									Run the following command:<br/>
+									<code>&ltCONTAINER_ENGINE&gt compose up -d --build</code>
+								</li>
+								<li>Open <code>http://localhost:8080</code> with your favorite browser</li>
+							</ol>
+							<p>Two containers will be started:</p>
+							<ul>
+								<li><code>horizongram-server</code>: the server, listening on port <code>3000</code></li>
+								<li><code>horizongram-client</code>: the client, served on port <code>8080</code></li>
+							</ul>
+							<p>
+								Downloaded files are saved in the <code>&ltREPOSITORY_FOLDER&gtdownloads</code> folder. The download path shown by the client refers to the container (for example <code>/downloads/&ltFOLDER&gt/&ltFILE&gt</code>): on your computer the same file is in <code>&ltREPOSITORY_FOLDER&gtdownloads/&ltFOLDER&gt/&ltFILE&gt</code>.<br/>
+								The <code>&ltREPOSITORY_FOLDER&gtserver/settings</code> folder is shared with the server container, so it always reads your <code>config.json</code> file.
+							</p>
+							<p>Other useful commands:</p>
+							<ul>
+								<li>Show server console: <code>&ltCONTAINER_ENGINE&gt compose logs -f server</code></li>
+								<li>Stop HorizonGram: <code>&ltCONTAINER_ENGINE&gt compose down</code></li>
+								<li>Start HorizonGram again: <code>&ltCONTAINER_ENGINE&gt compose up -d</code></li>
+							</ul>
+							<div class="callout-block callout-block-warning">
+								<div class="content">
+									<h4 class="callout-title">
+										<span class="callout-icon-holder me-1">
+											<i class="fas fa-bullhorn"></i>
+										</span><!--//icon-holder-->
+										Warning
+									</h4>
+									<p>
+										The client contacts the server at <code>http://localhost:3000</code>, so it must be opened from the same computer where the containers are running.<br/>
+										The message <code>RUN &gt Error during client startup, start it manually</code> on the server console is normal:
+										the container cannot open your browser, so open the client manually.
+									</p>
+								</div><!--//content-->
+							</div><!--//callout-block-->
+						</section>
+
+						<section class="docs-section" id="section-5-2">
+							<h2 class="section-heading">Change profile</h2>
+							<ol>
+								<li>Open the <code>&ltREPOSITORY_FOLDER&gtserver/settings/config.json</code> file</li>
+								<li>Change the value of <code>active_account_index</code> to the chosen profile number</li>
+								<li>
+									Restart the server by running:<br/>
+									<code>&ltCONTAINER_ENGINE&gt compose restart server</code>
+								</li>
+							</ol>
+							<p>The server console (<code>&ltCONTAINER_ENGINE&gt compose logs server</code>) shows the name of the loaded profile.</p>
+						</section>
+				    </header>
+
+			    </article><!--//docs-article-->
+
+			<article class="docs-article" id="section-4">
+				    <header class="docs-header">
+					    <h1 class="docs-heading">Manual installation: shortcut setup</h1>
+						<section class="docs-intro">
+							<p>
+								This section is only for the <b>manual installation</b> (Node.js and Npm installed on your computer):
+								if you followed the <a href="#section-5">container setup</a>, you can skip it.<br/>
 								It's an <b>optional step</b>, but it may be useful to follow it so that you can start HorizonGram more quickly and conveniently.<br/>
 								Shortcuts allow you to start and change HorizonGram profiles with a single click, without having to edit 
 								the configuration file (<code>config.json</code>) and without having to manually start, via command, the server.
@@ -332,8 +428,9 @@
 							</ol>
 						</section>
 				    </header>
-				    
+
 			    </article><!--//docs-article-->
+
 
 		    </div> 
 	    </div>

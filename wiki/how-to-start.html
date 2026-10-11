@@ -40,19 +40,47 @@
 	    <div id="docs-sidebar" class="docs-sidebar">
 		    <nav id="docs-nav" class="docs-nav navbar">
 			    <ul class="section-items list-unstyled nav flex-column pb-3">
-				    <li class="nav-item section-title"><a class="nav-link scrollto active" href="#section-1"><span class="theme-icon-holder me-2"><i class="fas fa-terminal"></i></span>Start the server</a></li>
-				    <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-2"><span class="theme-icon-holder me-2"><i class="fas fa-desktop"></i></span>Start the client</a></li>
+				    <li class="nav-item section-title"><a class="nav-link scrollto active" href="#section-3"><span class="theme-icon-holder me-2"><i class="fa-brands fa-docker"></i></span>Start with containers</a></li>
+				    <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-1"><span class="theme-icon-holder me-2"><i class="fas fa-terminal"></i></span>Manual: start the server</a></li>
+				    <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-2"><span class="theme-icon-holder me-2"><i class="fas fa-desktop"></i></span>Manual: start the client</a></li>
 			    </ul>
 		    </nav><!--//docs-nav-->
 	    </div><!--//docs-sidebar-->
 
 	    <div class="docs-content">
 		    <div class="container">
+			    <article class="docs-article" id="section-3">
+				    <header class="docs-header">
+						<h1 class="docs-heading">Start with containers</h1>
+						<section class="docs-intro">
+							<p>
+								This is the <b>recommended way</b> to start HorizonGram (version 3.0+): a single command starts both server and client.<br/>
+								It requires the <a href="./how-to-install.html#section-5">container setup</a>.
+								<code>&ltCONTAINER_ENGINE&gt</code> is the command of your container engine (for example <code>docker</code> or <code>podman</code>).
+							</p>
+						</section>
+						<ol>
+							<li>Open a terminal in the <code>&ltREPOSITORY_FOLDER&gt</code> folder</li>
+							<li>
+								Run the following command:<br/>
+								<code>&ltCONTAINER_ENGINE&gt compose up -d --build</code>
+							</li>
+							<li>Open <code>http://localhost:8080</code> with your favorite browser</li>
+						</ol>
+						<p>You will see the HorizonGram homepage with the server status which will be on.</p>
+						<p>To stop HorizonGram, run <code>&ltCONTAINER_ENGINE&gt compose down</code>.</p>
+						<p>To read the server console, run <code>&ltCONTAINER_ENGINE&gt compose logs -f server</code>.</p>
+					</header>
+			    </article>
+
 			    <article class="docs-article" id="section-1">
 				    <header class="docs-header">
-						<h1 class="docs-heading">Start the server</h1>
+						<h1 class="docs-heading">Manual: start the server</h1>
 						<section class="docs-intro">
-							<p>The following procedure is used to start the server, the engine behind the application that allows you to manage files and metadata.</p>
+							<p>
+								The following procedure is used to start the server, the engine behind the application that allows you to manage files and metadata.<br/>
+								It's needed only if you are <b>not</b> using containers.
+							</p>
 						</section>
 
 						<div class="callout-block callout-block-info">
@@ -120,7 +148,7 @@
 			    
 			    <article class="docs-article" id="section-2">
 				    <header class="docs-header">
-					    <h1 class="docs-heading">Start the client</h1>
+					    <h1 class="docs-heading">Manual: start the client</h1>
 					    <section class="docs-intro">
 						    <p>The following procedure will display the graphical interface of HorizonGram, that is, the platform that will interact 
 								with the server so that you can manage your files with a few simple clicks.</p>

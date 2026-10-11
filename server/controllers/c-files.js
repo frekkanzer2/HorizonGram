@@ -168,34 +168,27 @@ exports.download = async (req, res) => {
         return;
     }
 
-    const dirPath = "../downloads/"
-    if (!fs.existsSync(dirPath)){
-        fs.mkdirSync(dirPath);
-    }
-    const tempFilePath = path.join(dirPath, `${filename}-temp`);
+    folder = folder.replace('1bkp1', '[backup]').replace(/2/g, '_');
+    const downloadFolder = path.join(getDownloadFolder(), folder);
+    const completeFilePath = path.join(downloadFolder, filename.replace(/xDOTx/g, '.'));
+    // Temp file in the destination folder, so the final rename never crosses filesystems
+    const tempFilePath = `${completeFilePath}-temp`;
 
+    let fileHandle;
     try {
-        const writeStream = fs.createWriteStream(tempFilePath);
+        fs.mkdirSync(downloadFolder, { recursive: true });
+        fileHandle = await fs.promises.open(tempFilePath, 'w');
         // Scarica ogni chunk e salvalo su disco
         for (let i = 1; i <= chunksNumber; i++) {
-            const chunkName = `${filename}-$[${i}]`;
             const fileId = chunksToDownload[i].fileid;
             console.log(`DWN > Downloading "${filename.replace(/xDOTx/g, '.')}" | Chunk: ${i}`);
             const chunkBuffer = await chunkManagement.fetch(fileId);
-            writeStream.write(chunkBuffer);
+            await fileHandle.write(chunkBuffer);
         }
-        writeStream.end();
-        folder = folder.replace('1bkp1', '[backup]').replace(/2/g, '_');
-        const downloadFolder = path.join(getDownloadFolder(), folder);
-        if (!fs.existsSync(downloadFolder)) {
-            fs.mkdirSync(downloadFolder);
-        }
-        const completeFilePath = path.join(downloadFolder, filename.replace(/xDOTx/g, '.'));
+        await fileHandle.close();
+        fileHandle = undefined;
         fs.renameSync(tempFilePath, completeFilePath);
         console.log(`DWN > File saved in: "${completeFilePath}"`);
-        if (fs.existsSync(dirPath)) {
-            fs.rmdirSync(dirPath, { recursive: true });
-        }
 
         if (req.body.timer && req.body.timer == true) {
             addFolderToFutureDeletion(req.body.folder);
@@ -204,9 +197,8 @@ exports.download = async (req, res) => {
         return res.status(200).json({ downloadPath: completeFilePath });
     } catch (error) {
         console.error('DWN > Error:', error);
-        if (fs.existsSync(dirPath)) {
-            fs.rmdirSync(dirPath, { recursive: true });
-        }
+        if (fileHandle) await fileHandle.close().catch(() => {});
+        fs.rmSync(tempFilePath, { force: true });
         res.status(500).json({ message: 'Internal server error' });
     }
 };

@@ -42,14 +42,14 @@ exports.getFileList = async (req, res) => {
     let databaseResponse = await axios.get(`${getDatabaseUrl()}ffolder_names.json`);
     for (const key in databaseResponse.data) if (databaseResponse.data[key].hasOwnProperty('xDOTx')) delete databaseResponse.data[key]['xDOTx'];
     res.status(200).json({
-        data: databaseResponse.data
+        data: databaseResponse.data || {}
     });
 }
 
 exports.getFileList_explicit = async () => {
     let databaseResponse = await axios.get(`${getDatabaseUrl()}ffolder_names.json`);
     for (const key in databaseResponse.data) if (databaseResponse.data[key].hasOwnProperty('xDOTx')) delete databaseResponse.data[key]['xDOTx'];
-    return databaseResponse.data;
+    return databaseResponse.data || {};
 }
 
 exports.deleteTopic = async (req, res) => {

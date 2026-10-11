@@ -1,0 +1,7 @@
+node_modules
+npm-debug.log*
+.env
+settings/config.json
+settings/future_deletion.txt
+Dockerfile
+.dockerignore

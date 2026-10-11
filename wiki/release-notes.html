@@ -48,6 +48,7 @@
 				    <li class="nav-item section-title"><a class="nav-link scrollto active" href="#section-2"><span class="theme-icon-holder me-2"><i class="fas fa-angle-right"></i></span>Version 2</a></li>
 				    <li class="nav-item"><a class="nav-link scrollto" href="#item-2-1">2.1</a></li>
 					  <li class="nav-item"><a class="nav-link scrollto" href="#item-2-2">2.2</a></li>
+				    <li class="nav-item section-title"><a class="nav-link scrollto active" href="#section-3"><span class="theme-icon-holder me-2"><i class="fas fa-angle-right"></i></span>Version 3</a></li>
 			    </ul>
 		    </nav><!--//docs-nav-->
 	    </div><!--//docs-sidebar-->
@@ -57,7 +58,7 @@
 
 				<article class="docs-article">
 				    <header class="docs-header">
-					    <h1 class="docs-heading"><a href="#section-2">Go to the latest version</a></h1>
+					    <h1 class="docs-heading"><a href="#section-3">Go to the latest version</a></h1>
 				    </header>
 				</article>
 
@@ -220,6 +221,39 @@
 							</div><!--//content-->
 						</div>
 					</section>
+				</article>
+
+				<article class="docs-article" id="section-3">
+				    <header class="docs-header">
+					    <h1 class="docs-heading">Version 3 - Container support</h1>
+						<h5><a href="https://github.com/frekkanzer2/HorizonGram/releases/tag/v3" target="_blank">Click me to download</a></h5>
+					    <section class="docs-intro">
+							<ul>
+								<li><strong class="me-1">Container support</strong>: 
+									HorizonGram can be started with a single command (<code>&ltCONTAINER_ENGINE&gt compose up -d --build</code>) using any container engine with Compose support, without installing Node.js on your computer. This is now the <b>recommended way</b> to install and start HorizonGram.
+									The server runs in a container and the client is served at <code>http://localhost:8080</code>.</li>
+								<li><strong class="me-1">Download folder from environment variable</strong>:
+									the <code>DOWNLOAD_FOLDER</code> environment variable, when set, overrides the <code>download_folder</code> attribute of the <code>config.json</code> file.
+									The container sets it automatically, so downloaded files end up in the <code>downloads</code> folder of the repository.</li>
+								<li><strong class="me-1">Server crash with empty profiles</strong>:
+									the server could not start when the active profile had no folders yet (for example a profile just created), failing during the integrity check.
+									The folders list returned to the client was broken for the same reason. Both problems have been solved.</li>
+								<li><strong class="me-1">Download fails when the download folder is on another disk</strong>:
+									downloaded files were temporarily saved inside the HorizonGram folder and then moved to the download folder: when the two folders were on different disks (or with containers), the download failed with the <code>EXDEV</code> error. Now the temporary file is created directly in the download folder.</li>
+							</ul>
+						</section><!--//docs-intro-->
+				    </header>
+					<div class="callout-block callout-block-info">
+						<div class="content">
+							<h4 class="callout-title">
+								<span class="callout-icon-holder me-1">
+									<i class="fas fa-info-circle"></i>
+								</span><!--//icon-holder-->
+								Note: how can i start HorizonGram with containers?
+							</h4>
+							<p>Follow <a href="./how-to-install.html#section-5" target="_blank">this guide</a>. The manual installation with Node.js is still supported and unchanged.</p>
+						</div><!--//content-->
+					</div>
 				</article>
 		    </div> 
 	    </div>

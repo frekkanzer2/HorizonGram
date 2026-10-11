@@ -71,6 +71,18 @@
 							<li>Open the server folder in Y and X HorizonGram folders</li>
 							<li>Copy all files from server Y folder to server X folder (this prevents the .env file from being overwritten or deleted)</li>
 						</ol>
+						<div class="callout-block callout-block-info">
+							<div class="content">
+								<h4 class="callout-title">
+									<span class="callout-icon-holder me-1">
+										<i class="fas fa-info-circle"></i>
+									</span><!--//icon-holder-->
+									Note: containers (version 3.0+)
+								</h4>
+								<p>If you are using containers, after updating the files rebuild and restart them by running 
+								<code>&ltCONTAINER_ENGINE&gt compose up -d --build</code> in the repository folder.</p>
+							</div><!--//content-->
+						</div>
 						<h5>Breaking changes updates</h5>
 						<p>
 							Suppose you are using version X and want to upgrade to Y.<br/>
